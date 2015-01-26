@@ -34,6 +34,7 @@ def mesh_cleanup():
 	bpy.ops.mesh.select_all(action="SELECT")
 	bpy.ops.mesh.remove_doubles(threshold=0.0001)
 	bpy.ops.mesh.delete_loose()
+	bpy.ops.mesh.select_mode(type='EDGE')
 	bpy.ops.mesh.select_non_manifold(extend=False, use_wire=False, use_multi_face=False, use_non_contiguous=False, use_verts=False)
 	bpy.ops.mesh.fill(use_beauty=True)
 	bpy.ops.mesh.select_all(action="SELECT")
@@ -42,9 +43,9 @@ def mesh_cleanup():
 
 def mesh_selection(ob, select_action, context):
 	obj = context.active_object
-	
 	context.scene.objects.active = ob
 	bpy.ops.object.mode_set(mode="EDIT")
+
 	mesh_cleanup()
 	bpy.ops.mesh.select_all(action=select_action)
 
@@ -81,6 +82,7 @@ def union(context):
 	obj = context.active_object
 
 	object_prepare()
+	
 	obj.select = False
 	obs = context.selected_objects
 
@@ -96,6 +98,7 @@ def intersect(context):
 	obj = context.active_object
 
 	object_prepare()
+	
 	obj.select = False
 	obs = context.selected_objects
 
@@ -111,6 +114,7 @@ def difference(context):
 	obj = context.active_object
 
 	object_prepare()
+	
 	obj.select = False
 	obs = context.selected_objects
 	ob = obs[0]
@@ -128,8 +132,9 @@ def difference(context):
 
 def separate(context):
 	obj = context.active_object
-
+	
 	object_prepare()
+	
 	obj.select = False
 	obs = context.selected_objects
 
