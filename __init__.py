@@ -27,12 +27,12 @@ bl_info = {
 	"author": "Mikhail Rachinskiy jewelcourses.com",
 	"version": (2000,0),
 	"blender": (2, 7, 3),
-	"location": "3D View > Tool shelf, Shift-Ctrl-B",
-	"description": "Booltron - super addon for super fast booleans",
+	"location": "3D View → Tool Shelf (Shift Ctrl B)",
+	"description": "Booltron — super addon for super fast booleans",
 	"warning": "",
 	"wiki_url": "http://jewelcourses.com",
 	"tracker_url": "http://jewelcourses.com",
-	"category": "3D View"}
+	"category": "Mesh"}
 
 if "bpy" in locals():
 	import importlib
