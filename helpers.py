@@ -32,13 +32,13 @@ def object_prepare():
 
 def mesh_cleanup():
 	bpy.ops.mesh.select_all(action="SELECT")
-	bpy.ops.mesh.remove_doubles(threshold=0.0001)
+	bpy.ops.mesh.remove_doubles()
 	bpy.ops.mesh.delete_loose()
 	bpy.ops.mesh.select_mode(type='EDGE')
 	bpy.ops.mesh.select_non_manifold(extend=False, use_wire=False, use_multi_face=False, use_non_contiguous=False, use_verts=False)
-	bpy.ops.mesh.fill(use_beauty=True)
+	bpy.ops.mesh.fill()
 	bpy.ops.mesh.select_all(action="SELECT")
-	bpy.ops.mesh.normals_make_consistent(inside=False)
+	bpy.ops.mesh.normals_make_consistent()
 
 
 def mesh_selection(ob, select_action, context):
