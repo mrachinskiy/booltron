@@ -36,11 +36,12 @@ class BooltronPanel(Panel):
 
 	@classmethod
 	def poll(cls, context):
-		obj = context.active_object
-		return (obj and context.mode == 'OBJECT')
+		return (context.active_object and context.mode == 'OBJECT')
 
 	def draw(self, context):
 		layout = self.layout
+		if len(context.selected_objects) < 2:
+			layout.enabled = False
 
 		col = layout.column(align=True)
 		col.operator("booltron.union")
@@ -59,6 +60,8 @@ class BooltronMenu(Menu):
 	def draw(self, context):
 		layout = self.layout
 		layout.operator_context = 'INVOKE_REGION_WIN'
+		if len(context.selected_objects) < 2:
+			layout.enabled = False
 
 		layout.operator("booltron.union")
 		layout.operator("booltron.difference")

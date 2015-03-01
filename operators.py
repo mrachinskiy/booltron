@@ -33,10 +33,6 @@ class OT_UNION(Operator):
 	bl_label = "Union"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	@classmethod
-	def poll(cls, context):
-		return (context.active_object and len(context.selected_objects) > 1)
-
 	def execute(self, context):
 		helpers.union(context)
 		return {'FINISHED'}
@@ -47,10 +43,6 @@ class OT_DIFFERENCE(Operator):
 	bl_idname = "booltron.difference"
 	bl_label = "Difference"
 	bl_options = {'REGISTER', 'UNDO'}
-
-	@classmethod
-	def poll(cls, context):
-		return (context.active_object and len(context.selected_objects) > 1)
 
 	def execute(self, context):
 		helpers.difference(context)
@@ -63,24 +55,20 @@ class OT_INTERSECT(Operator):
 	bl_label = "Intersect"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	@classmethod
-	def poll(cls, context):
-		return (context.active_object and len(context.selected_objects) > 1)
-
 	def execute(self, context):
 		helpers.intersect(context)
 		return {'FINISHED'}
 
 
 class OT_SEPARATE(Operator):
-	'''Separates the active object along the intersection of the selected objects'''
+	'''Separates the active object along the intersection of the selected object (can handle only two objects at the time)'''
 	bl_idname = "booltron.separate"
 	bl_label = "Separate"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(cls, context):
-		return (context.active_object and len(context.selected_objects) == 2)
+		return len(context.selected_objects) == 2
 
 	def execute(self, context):
 		helpers.separate(context)
