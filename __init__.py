@@ -1,6 +1,6 @@
 # ##### BEGIN MIT LICENSE BLOCK #####
 #
-# Copyright (c) 2012 Mikhail Rachinskiy
+# Copyright (c) 2014 Mikhail Rachinskiy
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
 
 bl_info = {
 	"name": "Booltron",
-	"author": "Mikhail Rachinskiy jewelcourses.com",
-	"version": (2000,0),
-	"blender": (2, 7, 3),
+	"author": "Mikhail Rachinskiy (jewelcourses.com)",
+	"version": (2000,),
+	"blender": (2, 7, 4),
 	"location": "3D View → Tool Shelf (Shift Ctrl B)",
-	"description": "Booltron — super addon for super fast booleans",
+	"description": "Booltron—super add-on for super fast booleans.",
 	"warning": "",
 	"wiki_url": "http://jewelcourses.com",
 	"tracker_url": "http://jewelcourses.com",
@@ -45,15 +45,17 @@ else:
 	from . import operators
 	from . import ui
 
+
 classes = [
 	ui.BooltronPanel,
 	ui.BooltronMenu,
-	
-	operators.OT_UNION,
-	operators.OT_DIFFERENCE,
-	operators.OT_INTERSECT,
-	operators.OT_SEPARATE,
+
+	operators.UNION,
+	operators.DIFFERENCE,
+	operators.INTERSECT,
+	operators.SEPARATE,
 ]
+
 
 def register():
 	for cls in classes:
@@ -63,7 +65,7 @@ def register():
 	if kc:
 		km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
 		kmi = km.keymap_items.new('wm.call_menu', 'B', 'PRESS', ctrl=True, shift=True)
-		kmi.properties.name = "OBJECT_PT_BOOLTRON_MENU"
+		kmi.properties.name = 'BOOLTRON_MENU'
 
 def unregister():
 	for cls in classes:
@@ -71,10 +73,10 @@ def unregister():
 
 	kc = bpy.context.window_manager.keyconfigs.addon
 	if kc:
-		km = kc.keymaps["3D View"]
+		km = kc.keymaps['3D View']
 		for kmi in km.keymap_items:
 			if kmi.idname == 'wm.call_menu':
-				if kmi.properties.name == "OBJECT_PT_BOOLTRON_MENU":
+				if kmi.properties.name == 'BOOLTRON_MENU':
 					km.keymap_items.remove(kmi)
 					break
 
