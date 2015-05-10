@@ -1,7 +1,7 @@
 Booltron—super add-on
 ===========================
 
-Booltron—super addon for super fast booleans.
+Booltron—super add-on for super fast booleans.
 
 
 How to install

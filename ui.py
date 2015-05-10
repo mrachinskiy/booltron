@@ -1,6 +1,6 @@
 # ##### BEGIN MIT LICENSE BLOCK #####
 #
-# Copyright (c) 2012 Mikhail Rachinskiy
+# Copyright (c) 2014 Mikhail Rachinskiy
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +27,11 @@ from bpy.types import (Panel, Menu)
 
 
 class BooltronPanel(Panel):
-	
+
 	bl_label = "Booltron"
-	bl_idname = "OBJECT_PT_BOOLTRON"
-	bl_space_type = 'VIEW_3D'
-	bl_region_type = 'TOOLS'
+	bl_idname = "BOOLTRON_PANEL"
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "TOOLS"
 	bl_category = "Booltron"
 
 	@classmethod
@@ -40,6 +40,7 @@ class BooltronPanel(Panel):
 
 	def draw(self, context):
 		layout = self.layout
+
 		if len(context.selected_objects) < 2:
 			layout.enabled = False
 
@@ -47,7 +48,7 @@ class BooltronPanel(Panel):
 		col.operator("booltron.union")
 		col.operator("booltron.difference")
 		col.operator("booltron.intersect")
-		
+
 		col.separator()
 		col.operator("booltron.separate")
 
@@ -55,11 +56,12 @@ class BooltronPanel(Panel):
 class BooltronMenu(Menu):
 
 	bl_label = "Booltron"
-	bl_idname = "OBJECT_PT_BOOLTRON_MENU"
+	bl_idname = "BOOLTRON_MENU"
 
 	def draw(self, context):
 		layout = self.layout
 		layout.operator_context = 'INVOKE_REGION_WIN'
+
 		if len(context.selected_objects) < 2:
 			layout.enabled = False
 
