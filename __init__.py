@@ -26,7 +26,7 @@ bl_info = {
 	"name": "Booltron",
 	"author": "Mikhail Rachinskiy (jewelcourses.com)",
 	"version": (2000,),
-	"blender": (2, 7, 4),
+	"blender": (2,7,4),
 	"location": "3D View → Tool Shelf (Shift Ctrl B)",
 	"description": "Booltron—super add-on for super fast booleans.",
 	"warning": "",
@@ -36,9 +36,9 @@ bl_info = {
 
 if "bpy" in locals():
 	import importlib
+	importlib.reload(helpers)
 	importlib.reload(operators)
 	importlib.reload(ui)
-	importlib.reload(helpers)
 else:
 	import bpy
 	from bpy.types import (Panel, Menu)
@@ -46,7 +46,7 @@ else:
 	from . import ui
 
 
-classes = [
+classes = (
 	ui.BooltronPanel,
 	ui.BooltronMenu,
 
@@ -54,7 +54,7 @@ classes = [
 	operators.DIFFERENCE,
 	operators.INTERSECT,
 	operators.SEPARATE,
-]
+)
 
 
 def register():

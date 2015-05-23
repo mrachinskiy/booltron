@@ -26,22 +26,19 @@ import bpy
 
 
 def object_prepare():
-	O = bpy.ops.object
+	ops_ob = bpy.ops.object
 
-	O.make_single_user(type="SELECTED_OBJECTS", object=True, obdata=True)
-	O.convert(target="MESH")
+	ops_ob.make_single_user(type="SELECTED_OBJECTS", object=True, obdata=True)
+	ops_ob.convert(target="MESH")
 
 
 def mesh_selection(ob, select_action):
-	O = bpy.ops
-	ops_ob = O.object
-	ops_me = O.mesh
-	C = bpy.context
-	sce = C.scene
-	obj = C.active_object
-
-	sce.objects.active = ob
-	ops_ob.mode_set(mode="EDIT")
+	context = bpy.context
+	sce = context.scene
+	obj = context.active_object
+	ops = bpy.ops
+	ops_ob = ops.object
+	ops_me = ops.mesh
 
 
 	def mesh_cleanup():
@@ -54,6 +51,9 @@ def mesh_selection(ob, select_action):
 		ops_me.select_all(action="SELECT")
 		ops_me.normals_make_consistent()
 
+
+	sce.objects.active = ob
+	ops_ob.mode_set(mode="EDIT")
 
 	mesh_cleanup()
 	ops_me.select_all(action=select_action)
@@ -77,14 +77,14 @@ def modifier_boolean(obj, ob, mode):
 
 
 def union():
-	C = bpy.context
+	context = bpy.context
 	mode = 'UNION'
-	obj = C.active_object
+	obj = context.active_object
 
 	object_prepare()
 
 	obj.select = False
-	obs = C.selected_objects
+	obs = context.selected_objects
 
 	mesh_selection(obj, 'DESELECT')
 	for ob in obs:
@@ -94,14 +94,14 @@ def union():
 
 
 def intersect():
-	C = bpy.context
+	context = bpy.context
 	mode = 'INTERSECT'
-	obj = C.active_object
+	obj = context.active_object
 
 	object_prepare()
 
 	obj.select = False
-	obs = C.selected_objects
+	obs = context.selected_objects
 
 	mesh_selection(obj, 'DESELECT')
 	for ob in obs:
@@ -111,20 +111,20 @@ def intersect():
 
 
 def difference():
-	C = bpy.context
+	context = bpy.context
 	mode = 'DIFFERENCE'
-	obj = C.active_object
+	obj = context.active_object
 
 	object_prepare()
 
 	obj.select = False
-	obs = C.selected_objects
+	obs = context.selected_objects
 	ob = obs[0]
 
 	if len(obs) != 1:
-		C.scene.objects.active = ob
+		context.scene.objects.active = ob
 		bpy.ops.object.join()
-		C.scene.objects.active = obj
+		context.scene.objects.active = obj
 
 	mesh_selection(obj, 'DESELECT')
 	mesh_selection(ob, 'SELECT')
@@ -133,41 +133,37 @@ def difference():
 
 
 def separate():
-	C = bpy.context
-	obj = C.active_object
-
-	object_prepare()
-
-	obj.select = False
-	obs = C.selected_objects
+	context = bpy.context
+	sce = context.scene
+	obj = context.active_object
+	ops_ob = bpy.ops.object
 
 
 	def object_duplicate(ob):
-		O = bpy.ops.object
-
-		O.select_all(action = "DESELECT")
-		O.select_pattern(pattern = ob.name)
-		O.duplicate()
-		obj_copy = C.selected_objects[0]
-
-		C.scene.objects.active = obj
-		return obj_copy
+		ops_ob.select_all(action = "DESELECT")
+		ops_ob.select_pattern(pattern = ob.name)
+		ops_ob.duplicate()
+		ob_copy = context.selected_objects[0]
+		return ob_copy
 
 
-	for ob in obs:
-		C.scene.objects.active = ob
-		obj_copy = object_duplicate(obj)
-		ob_copy = object_duplicate(ob)
-		mode = 'INTERSECT'
+	object_prepare()
+	obj.select = False
+	ob = context.selected_objects[0]
 
-		mesh_selection(obj_copy, 'SELECT')
-		mesh_selection(ob, 'DESELECT')
-		modifier_boolean(ob, obj_copy, mode)
-		mesh_selection(ob, 'INVERT')
-		C.scene.objects.active = obj
+	obj_copy = object_duplicate(obj)
+	ob_copy = object_duplicate(ob)
+
+	mode = 'INTERSECT'
+	mesh_selection(obj_copy, 'SELECT')
+	mesh_selection(ob, 'DESELECT')
+	sce.objects.active = ob
+	modifier_boolean(ob, obj_copy, mode)
 
 	mode = 'DIFFERENCE'
 	mesh_selection(ob_copy, 'SELECT')
 	mesh_selection(obj, 'DESELECT')
+	sce.objects.active = obj
 	modifier_boolean(obj, ob_copy, mode)
+
 	obj.select = True
