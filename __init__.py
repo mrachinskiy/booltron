@@ -30,8 +30,8 @@ bl_info = {
 	"location": "3D View → Tool Shelf (Shift Ctrl B)",
 	"description": "Booltron—super add-on for super fast booleans.",
 	"warning": "",
-	"wiki_url": "http://jewelcourses.com",
-	"tracker_url": "http://jewelcourses.com",
+	"wiki_url": "https://github.com/mrachinskiy/blender-addon-booltron",
+	"tracker_url": "https://github.com/mrachinskiy/blender-addon-booltron/issues",
 	"category": "Mesh"}
 
 if "bpy" in locals():
