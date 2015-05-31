@@ -29,7 +29,6 @@ bl_info = {
 	"blender": (2,7,4),
 	"location": "3D View → Tool Shelf (Shift Ctrl B)",
 	"description": "Booltron—super add-on for super fast booleans.",
-	"warning": "",
 	"wiki_url": "https://github.com/mrachinskiy/blender-addon-booltron",
 	"tracker_url": "https://github.com/mrachinskiy/blender-addon-booltron/issues",
 	"category": "Mesh"}
