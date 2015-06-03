@@ -130,10 +130,7 @@ def union():
 	boolean_optimized(mode)
 	separate()
 	if len(context.selected_objects) != 1:
-		boolean_optimized(mode)
-		separate()
-		if len(context.selected_objects) != 1:
-			boolean_each(mode)
+		boolean_each(mode)
 
 
 def intersect():
