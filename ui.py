@@ -21,12 +21,12 @@ class BooltronPanel(Panel):
 			layout.enabled = False
 
 		col = layout.column(align=True)
-		col.operator("booltron.union")
-		col.operator("booltron.difference")
-		col.operator("booltron.intersect")
+		col.operator("booltron.union", text="Union")
+		col.operator("booltron.difference", text="Difference")
+		col.operator("booltron.intersect", text="Intersect")
 
 		col.separator()
-		col.operator("booltron.separate")
+		col.operator("booltron.separate", text="Separate")
 
 
 class BooltronPopup(Menu):
@@ -41,9 +41,9 @@ class BooltronPopup(Menu):
 		if len(context.selected_objects) < 2:
 			layout.enabled = False
 
-		layout.operator("booltron.union")
-		layout.operator("booltron.difference")
-		layout.operator("booltron.intersect")
+		layout.operator("booltron.union", text="Union")
+		layout.operator("booltron.difference", text="Difference")
+		layout.operator("booltron.intersect", text="Intersect")
 
 		layout.separator()
-		layout.operator("booltron.separate")
+		layout.operator("booltron.separate", text="Separate")
