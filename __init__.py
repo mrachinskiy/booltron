@@ -23,7 +23,7 @@ else:
 
 classes = (
 	ui.BooltronPanel,
-	ui.BooltronMenu,
+	ui.BooltronPopup,
 
 	operators.UNION,
 	operators.DIFFERENCE,
@@ -31,29 +31,26 @@ classes = (
 	operators.SEPARATE,
 )
 
+addon_keymaps = []
+
 
 def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
 
 	kc = bpy.context.window_manager.keyconfigs.addon
-	if kc:
-		km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
-		kmi = km.keymap_items.new('wm.call_menu', 'B', 'PRESS', ctrl=True, shift=True)
-		kmi.properties.name = 'BOOLTRON_MENU'
+	km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
+	kmi = km.keymap_items.new('wm.call_menu', 'B', 'PRESS', key_modifier='F')
+	kmi.properties.name = 'Booltron Popup'
+	addon_keymaps.append((km, kmi))
 
 def unregister():
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
 
-	kc = bpy.context.window_manager.keyconfigs.addon
-	if kc:
-		km = kc.keymaps['3D View']
-		for kmi in km.keymap_items:
-			if kmi.idname == 'wm.call_menu':
-				if kmi.properties.name == 'BOOLTRON_MENU':
-					km.keymap_items.remove(kmi)
-					break
+	for km, kmi in addon_keymaps:
+		km.keymap_items.remove(kmi)
+	addon_keymaps.clear()
 
 if __name__ == "__main__":
 	register()

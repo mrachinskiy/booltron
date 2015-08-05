@@ -5,7 +5,7 @@ from bpy.types import (Panel, Menu)
 class BooltronPanel(Panel):
 
 	bl_label = "Booltron"
-	bl_idname = "BOOLTRON_PANEL"
+	bl_idname = "Booltron Panel"
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "TOOLS"
 	bl_category = "Booltron"
@@ -29,10 +29,10 @@ class BooltronPanel(Panel):
 		col.operator("booltron.separate")
 
 
-class BooltronMenu(Menu):
+class BooltronPopup(Menu):
 
 	bl_label = "Booltron"
-	bl_idname = "BOOLTRON_MENU"
+	bl_idname = "Booltron Popup"
 
 	def draw(self, context):
 		layout = self.layout
