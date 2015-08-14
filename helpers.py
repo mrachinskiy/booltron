@@ -20,10 +20,8 @@ def mesh_selection(ob, select_action):
 		ops_me.select_all(action="SELECT")
 		ops_me.remove_doubles()
 		ops_me.delete_loose()
-		ops_me.select_mode(type='EDGE')
-		ops_me.select_non_manifold(extend=False, use_wire=False, use_multi_face=False, use_non_contiguous=False, use_verts=False)
-		ops_me.fill()
 		ops_me.select_all(action="SELECT")
+		ops_me.fill_holes(sides=0)
 		ops_me.normals_make_consistent()
 
 
