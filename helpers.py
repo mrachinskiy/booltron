@@ -3,7 +3,7 @@ import bpy
 
 def object_prepare():
 	ops_ob = bpy.ops.object
-	ops_ob.make_single_user(type="SELECTED_OBJECTS", object=True, obdata=True)
+	ops_ob.make_single_user(object=True, obdata=True)
 	ops_ob.convert(target="MESH")
 
 
@@ -18,9 +18,9 @@ def mesh_selection(ob, select_action):
 
 	def mesh_cleanup():
 		ops_me.select_all(action="SELECT")
-		ops_me.remove_doubles()
 		ops_me.delete_loose()
 		ops_me.select_all(action="SELECT")
+		ops_me.remove_doubles(threshold=0.0001)
 		ops_me.fill_holes(sides=0)
 		ops_me.normals_make_consistent()
 
@@ -42,7 +42,7 @@ def modifier_boolean(obj, ob, mode):
 	md.operation = mode
 	md.object = ob
 
-	bpy.ops.object.modifier_apply(apply_as="DATA", modifier="Booltron")
+	bpy.ops.object.modifier_apply(modifier="Booltron")
 	bpy.context.scene.objects.unlink(ob)
 	bpy.data.objects.remove(ob)
 
