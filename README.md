@@ -28,4 +28,4 @@ How to install
 
 [Demo]: https://youtu.be/KxbJSUQpw7I
 [master.zip]: https://github.com/mrachinskiy/blender-addon-booltron/archive/master.zip
-[Install from File…]: http://www.blender.org/manual/extensions/python/add_ons.html#installation-of-a-3rd-party-add-on
+[Install from File…]: https://blender.org/manual/advanced/scripting/python/add_ons.html#installation-of-a-3rd-party-add-on
