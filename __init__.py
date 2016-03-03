@@ -3,27 +3,27 @@ bl_info = {
 	"author": "Mikhail Rachinskiy (jewelcourses.com)",
 	"version": (2000,),
 	"blender": (2,7,4),
-	"location": "3D View → Tool Shelf (Shift Ctrl B)",
+	"location": "3D View → Tool Shelf (F B)",
 	"description": "Booltron—super add-on for super fast booleans.",
 	"wiki_url": "https://github.com/mrachinskiy/blender-addon-booltron",
 	"tracker_url": "https://github.com/mrachinskiy/blender-addon-booltron/issues",
 	"category": "Mesh"}
 
 if "bpy" in locals():
-	import importlib
-	importlib.reload(helpers)
-	importlib.reload(operators)
-	importlib.reload(ui)
+	from importlib import reload
+	reload(helpers)
+	reload(operators)
+	reload(ui)
+	del reload
 else:
 	import bpy
-	from bpy.types import (Panel, Menu)
 	from . import operators
 	from . import ui
 
 
 classes = (
-	ui.BooltronPanel,
-	ui.BooltronPopup,
+	ui.ToolShelf,
+	ui.Popup,
 
 	operators.UNION,
 	operators.DIFFERENCE,
@@ -41,7 +41,7 @@ def register():
 	kc = bpy.context.window_manager.keyconfigs.addon
 	km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
 	kmi = km.keymap_items.new('wm.call_menu', 'B', 'PRESS', key_modifier='F')
-	kmi.properties.name = 'Booltron Popup'
+	kmi.properties.name = 'BOOLTRON_POPUP'
 	addon_keymaps.append((km, kmi))
 
 def unregister():

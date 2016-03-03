@@ -2,10 +2,10 @@ import bpy
 from bpy.types import (Panel, Menu)
 
 
-class BooltronPanel(Panel):
+class ToolShelf(Panel):
 
 	bl_label = "Booltron"
-	bl_idname = "Booltron Panel"
+	bl_idname = "BOOLTRON_PANEL"
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "TOOLS"
 	bl_category = "Booltron"
@@ -17,8 +17,7 @@ class BooltronPanel(Panel):
 	def draw(self, context):
 		layout = self.layout
 
-		if len(context.selected_objects) < 2:
-			layout.enabled = False
+		layout.enabled = len(context.selected_objects) > 1
 
 		col = layout.column(align=True)
 		col.operator("booltron.union", text="Union")
@@ -29,17 +28,16 @@ class BooltronPanel(Panel):
 		col.operator("booltron.separate", text="Separate")
 
 
-class BooltronPopup(Menu):
+class Popup(Menu):
 
 	bl_label = "Booltron"
-	bl_idname = "Booltron Popup"
+	bl_idname = "BOOLTRON_POPUP"
 
 	def draw(self, context):
 		layout = self.layout
 		layout.operator_context = 'INVOKE_REGION_WIN'
 
-		if len(context.selected_objects) < 2:
-			layout.enabled = False
+		layout.enabled = len(context.selected_objects) > 1
 
 		layout.operator("booltron.union", text="Union")
 		layout.operator("booltron.difference", text="Difference")

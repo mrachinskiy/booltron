@@ -4,7 +4,7 @@ from . import helpers
 
 
 class UNION(Operator):
-	'''Performes a boolean union operation'''
+	'''Combine objects in an additive way'''
 	bl_idname = "booltron.union"
 	bl_label = "Booltron: Union"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -15,7 +15,7 @@ class UNION(Operator):
 
 
 class DIFFERENCE(Operator):
-	'''Performes a boolean difference operation'''
+	'''Combine objects in a subtractive way'''
 	bl_idname = "booltron.difference"
 	bl_label = "Booltron: Difference"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -26,7 +26,7 @@ class DIFFERENCE(Operator):
 
 
 class INTERSECT(Operator):
-	'''Performes a boolean intersect operation'''
+	'''Keep geometry that intersects with each other'''
 	bl_idname = "booltron.intersect"
 	bl_label = "Booltron: Intersect"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -37,7 +37,7 @@ class INTERSECT(Operator):
 
 
 class SEPARATE(Operator):
-	'''Separates the active object along the intersection of the selected object (can handle only two objects at the time)'''
+	'''Separate active object along the intersection of the selected object (can handle only two objects at the time)'''
 	bl_idname = "booltron.separate"
 	bl_label = "Booltron: Separate"
 	bl_options = {'REGISTER', 'UNDO'}
