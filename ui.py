@@ -26,22 +26,4 @@ class ToolShelf(Panel):
 
 		col.separator()
 		col.operator("booltron.separate", text="Separate")
-
-
-class Popup(Menu):
-
-	bl_label = "Booltron"
-	bl_idname = "BOOLTRON_POPUP"
-
-	def draw(self, context):
-		layout = self.layout
-		layout.operator_context = 'INVOKE_REGION_WIN'
-
-		layout.enabled = len(context.selected_objects) > 1
-
-		layout.operator("booltron.union", text="Union")
-		layout.operator("booltron.difference", text="Difference")
-		layout.operator("booltron.intersect", text="Intersect")
-
-		layout.separator()
-		layout.operator("booltron.separate", text="Separate")
+		col.operator("booltron.subtract", text="Subtract")
