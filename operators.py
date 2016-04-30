@@ -83,7 +83,7 @@ class SEPARATE(Operator):
 
 
 class SUBTRACT(Operator):
-	"""Subtract selected object from active object (can handle only two objects at a time)"""
+	"""Subtract selected object from active object, subtracted object won’t be removed (can handle only two objects at a time)"""
 	bl_idname = "booltron.subtract"
 	bl_label = "Booltron: Subtract"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -93,9 +93,6 @@ class SUBTRACT(Operator):
 		return len(context.selected_objects) == 2
 
 	def execute(self, context):
-		scene = context.scene
 		obj, ob = utility.objects_get()
-
 		utility.modifier_boolean(obj, ob, 'DIFFERENCE', delete_not=True)
-
 		return {'FINISHED'}
