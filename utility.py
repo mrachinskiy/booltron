@@ -33,13 +33,13 @@ def mesh_selection(ob, select_action):
 
 
 def modifier_boolean(obj, ob, mode, delete_not=False):
-	md = obj.modifiers.new('Booltron', 'BOOLEAN')
+	md = obj.modifiers.new("Immediate apply", 'BOOLEAN')
 	md.show_viewport = False
 	md.show_render = False
 	md.operation = mode
 	md.object = ob
 
-	bpy.ops.object.modifier_apply(modifier="Booltron")
+	bpy.ops.object.modifier_apply(modifier="Immediate apply")
 	if delete_not is True:
 		return
 	bpy.context.scene.objects.unlink(ob)

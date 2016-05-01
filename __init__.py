@@ -26,7 +26,7 @@ classes = (
 	operators.UNION,
 	operators.DIFFERENCE,
 	operators.INTERSECT,
-	operators.SEPARATE,
+	operators.SLICE,
 	operators.SUBTRACT,
 )
 

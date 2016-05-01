@@ -1,5 +1,5 @@
 import bpy
-from bpy.types import (Panel, Menu)
+from bpy.types import Panel
 
 
 class ToolShelf(Panel):
@@ -25,5 +25,5 @@ class ToolShelf(Panel):
 		col.operator("booltron.intersect", text="Intersect")
 
 		col.separator()
-		col.operator("booltron.separate", text="Separate")
+		col.operator("booltron.slice", text="Slice")
 		col.operator("booltron.subtract", text="Subtract")
