@@ -2,12 +2,12 @@ bl_info = {
 	"name": "Booltron",
 	"author": "Mikhail Rachinskiy (jewelcourses.com)",
 	"version": (2000,),
-	"blender": (2,7,4),
+	"blender": (2,74,0),
 	"location": "3D View → Tool Shelf",
 	"description": "Booltron—super add-on for super fast booleans.",
 	"wiki_url": "https://github.com/mrachinskiy/blender-addon-booltron",
 	"tracker_url": "https://github.com/mrachinskiy/blender-addon-booltron/issues",
-	"category": "Mesh"}
+	"category": "Object"}
 
 if "bpy" in locals():
 	from importlib import reload
