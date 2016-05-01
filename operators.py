@@ -38,7 +38,7 @@ class DIFFERENCE(Operator):
 
 
 class INTERSECT(Operator):
-	"""Keeps only intersecting geometry"""
+	"""Keep the common part of all selected objects"""
 	bl_idname = "booltron.intersect"
 	bl_label = "Booltron: Intersect"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -48,10 +48,10 @@ class INTERSECT(Operator):
 		return {'FINISHED'}
 
 
-class SEPARATE(Operator):
-	"""Separate active object along the intersection of the selected object, also hides selected object (can handle only two objects at a time)"""
-	bl_idname = "booltron.separate"
-	bl_label = "Booltron: Separate"
+class SLICE(Operator):
+	"""Slice active object along the volume of selected object, also hides selected object (can handle only two objects at a time)"""
+	bl_idname = "booltron.slice"
+	bl_label = "Booltron: Slice"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -76,9 +76,7 @@ class SEPARATE(Operator):
 		utility.modifier_boolean(obj_copy, ob, 'INTERSECT', delete_not=True)
 
 		ob.hide = True
-
 		self.report({'INFO'}, "Object “%s” is hidden, use “Show Hidden” to make it visible again" % ob.name)
-
 		return {'FINISHED'}
 
 
