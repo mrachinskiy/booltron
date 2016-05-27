@@ -5,8 +5,8 @@ from . import utility
 
 class UNION(Operator):
 	"""Combine selected objects"""
-	bl_idname = "booltron.union"
-	bl_label = "Booltron: Union"
+	bl_idname = 'booltron.union'
+	bl_label = 'Booltron: Union'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def execute(self, context):
@@ -14,9 +14,9 @@ class UNION(Operator):
 		def separate_shels():
 			ops_ob = bpy.ops.object
 			ops_me = bpy.ops.mesh
-			ops_ob.mode_set(mode="EDIT")
-			ops_me.separate(type="LOOSE")
-			ops_ob.mode_set(mode="OBJECT")
+			ops_ob.mode_set(mode='EDIT')
+			ops_me.separate(type='LOOSE')
+			ops_ob.mode_set(mode='OBJECT')
 
 		utility.boolean_optimized('UNION')
 		separate_shels()
@@ -28,8 +28,8 @@ class UNION(Operator):
 
 class DIFFERENCE(Operator):
 	"""Subtract selected objects from active object"""
-	bl_idname = "booltron.difference"
-	bl_label = "Booltron: Difference"
+	bl_idname = 'booltron.difference'
+	bl_label = 'Booltron: Difference'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def execute(self, context):
@@ -39,8 +39,8 @@ class DIFFERENCE(Operator):
 
 class INTERSECT(Operator):
 	"""Keep the common part of all selected objects"""
-	bl_idname = "booltron.intersect"
-	bl_label = "Booltron: Intersect"
+	bl_idname = 'booltron.intersect'
+	bl_label = 'Booltron: Intersect'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def execute(self, context):
@@ -50,8 +50,8 @@ class INTERSECT(Operator):
 
 class SLICE(Operator):
 	"""Slice active object along the volume of selected object, also hides selected object (can handle only two objects at a time)"""
-	bl_idname = "booltron.slice"
-	bl_label = "Booltron: Slice"
+	bl_idname = 'booltron.slice'
+	bl_label = 'Booltron: Slice'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -64,7 +64,7 @@ class SLICE(Operator):
 
 		def object_duplicate(ob):
 			ops_ob = bpy.ops.object
-			ops_ob.select_all(action="DESELECT")
+			ops_ob.select_all(action='DESELECT')
 			ops_ob.select_pattern(pattern=ob.name)
 			ops_ob.duplicate()
 			scene.objects.active = obj
@@ -76,14 +76,14 @@ class SLICE(Operator):
 		utility.modifier_boolean(obj_copy, ob, 'INTERSECT', delete_not=True)
 
 		ob.hide = True
-		self.report({'INFO'}, "Object “%s” is hidden, use “Show Hidden” to make it visible again" % ob.name)
+		self.report({'INFO'}, 'Object "%s" is hidden, use "Show Hidden" to make it visible again' % ob.name)
 		return {'FINISHED'}
 
 
 class SUBTRACT(Operator):
-	"""Subtract selected object from active object, subtracted object won’t be removed (can handle only two objects at a time)"""
-	bl_idname = "booltron.subtract"
-	bl_label = "Booltron: Subtract"
+	"""Subtract selected object from active object, subtracted object won't be removed (can handle only two objects at a time)"""
+	bl_idname = 'booltron.subtract'
+	bl_label = 'Booltron: Subtract'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
