@@ -1,15 +1,16 @@
 bl_info = {
-	"name": "Booltron",
-	"author": "Mikhail Rachinskiy (jewelcourses.com)",
-	"version": (2000,),
-	"blender": (2,74,0),
-	"location": "3D View → Tool Shelf",
-	"description": "Booltron—super add-on for super fast booleans.",
-	"wiki_url": "https://github.com/mrachinskiy/blender-addon-booltron",
-	"tracker_url": "https://github.com/mrachinskiy/blender-addon-booltron/issues",
-	"category": "Object"}
+	'name': 'Booltron',
+	'author': 'Mikhail Rachinskiy (jewelcourses.com)',
+	'version': (2000, ),
+	'blender': (2, 74, 0),
+	'location': '3D View > Tool Shelf',
+	'description': 'Super add-on for super fast booleans.',
+	'wiki_url': 'https://github.com/mrachinskiy/blender-addon-booltron#readme',
+	'tracker_url': 'https://github.com/mrachinskiy/blender-addon-booltron/issues',
+	'category': 'Object'}
 
-if "bpy" in locals():
+
+if 'bpy' in locals():
 	from importlib import reload
 	reload(utility)
 	reload(operators)
@@ -41,5 +42,5 @@ def unregister():
 		bpy.utils.unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register()
