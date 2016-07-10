@@ -5,15 +5,15 @@ bl_info = {
 	'blender': (2, 74, 0),
 	'location': '3D View > Tool Shelf',
 	'description': 'Super add-on for super fast booleans.',
-	'wiki_url': 'https://github.com/mrachinskiy/blender-addon-booltron#readme',
-	'tracker_url': 'https://github.com/mrachinskiy/blender-addon-booltron/issues',
+	'wiki_url': 'https://github.com/mrachinskiy/booltron#readme',
+	'tracker_url': 'https://github.com/mrachinskiy/booltron/issues',
 	'category': 'Object'}
 
 
 if 'bpy' in locals():
 	from importlib import reload
-	reload(utility)
 	reload(operators)
+	reload(tools)
 	reload(ui)
 	del reload
 else:
