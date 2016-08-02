@@ -3,7 +3,6 @@ Booltron—super add-on
 
 Booltron—super add-on for super fast booleans.
 
-
 #### Watch [Demo]
 
 
@@ -27,8 +26,6 @@ How to install
 
 \* **Для пользователей Mac:** OSX автоматически распаковывает скачиваемые zip архивы, поэтому, чтобы установить аддон, необходимо запаковать директорию с файлами аддона обратно в zip архив  
 \*\* Аддон доступен для **Blender 2.74 и новее**, ранние версии не поддерживаются
-
-
 
 
 [addon]: https://github.com/mrachinskiy/booltron/archive/master.zip

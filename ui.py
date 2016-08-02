@@ -16,14 +16,15 @@ class ToolShelf(Panel):
 
 	def draw(self, context):
 		layout = self.layout
-
 		layout.enabled = len(context.selected_objects) > 1
 
 		col = layout.column(align=True)
 		col.operator('booltron.union', text='Union')
 		col.operator('booltron.difference', text='Difference')
 		col.operator('booltron.intersect', text='Intersect')
-
 		col.separator()
-		col.operator('booltron.slice', text='Slice')
-		col.operator('booltron.subtract', text='Subtract')
+
+		sub = col.column(align=True)
+		sub.enabled = len(context.selected_objects) == 2
+		sub.operator('booltron.slice', text='Slice')
+		sub.operator('booltron.subtract', text='Subtract')
