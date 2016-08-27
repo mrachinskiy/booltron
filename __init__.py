@@ -29,7 +29,7 @@ class Preferences(AddonPreferences):
 		name='Boolean Solver',
 		items=(('BMESH', 'BMesh', ''),
 		       ('CARVE', 'Carve', '')),
-		default='BMESH',
+		default='CARVE',
 		description='Specify solver for boolean operations')
 
 	def draw(self, context):
