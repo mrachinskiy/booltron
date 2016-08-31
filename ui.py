@@ -12,7 +12,7 @@ class ToolShelf(Panel):
 
 	@classmethod
 	def poll(cls, context):
-		return context.active_object
+		return context.active_object is not None
 
 	def draw(self, context):
 		layout = self.layout
