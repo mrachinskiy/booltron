@@ -1,22 +1,32 @@
 import bpy
 from bpy.types import Operator
-from bpy.props import (EnumProperty, BoolProperty)
+from bpy.props import (
+	EnumProperty,
+	BoolProperty,
+	)
 import bmesh
+
+
+"""
+Cannot inherit properties from a base class,
+because property order will be random every time in operator redo UI
+"""
+_solver = EnumProperty(
+	name='Boolean Solver',
+	items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
+	       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
+	description='Specify solver for boolean operation',
+	options={'SKIP_SAVE'},
+	)
+_triangulate = BoolProperty(
+	name='Triangulate',
+	description='Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)',
+	options={'SKIP_SAVE'},
+	)
 
 
 class Booleans:
 	bl_options = {'REGISTER', 'UNDO'}
-
-	solver = EnumProperty(
-		name='Boolean Solver',
-		items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
-		       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
-		description='Specify solver for boolean operation',
-		options={'SKIP_SAVE'})
-	triangulate = BoolProperty(
-		name='Triangulate',
-		description='Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)',
-		options={'SKIP_SAVE'})
 
 	def __init__(self):
 		self.context = bpy.context
@@ -87,10 +97,14 @@ class Booleans:
 		bpy.data.objects.remove(ob)
 
 
+
 class UNION(Booleans, Operator):
 	"""Combine selected objects"""
 	bl_label = 'Union'
 	bl_idname = 'booltron.union'
+
+	solver = _solver
+	triangulate = _triangulate
 
 	mode = 'UNION'
 
@@ -116,6 +130,9 @@ class DIFFERENCE(Booleans, Operator):
 	bl_label = 'Difference'
 	bl_idname = 'booltron.difference'
 
+	solver = _solver
+	triangulate = _triangulate
+
 	mode = 'DIFFERENCE'
 
 	def execute(self, context):
@@ -129,6 +146,9 @@ class INTERSECT(Booleans, Operator):
 	bl_label = 'Intersect'
 	bl_idname = 'booltron.intersect'
 
+	solver = _solver
+	triangulate = _triangulate
+
 	mode = 'INTERSECT'
 
 	def execute(self, context):
@@ -141,6 +161,9 @@ class SLICE(Booleans, Operator):
 	"""Slice active object along the volume of selected object, also hides selected object (can handle only two objects at a time)"""
 	bl_label = 'Slice'
 	bl_idname = 'booltron.slice'
+
+	solver = _solver
+	triangulate = _triangulate
 
 	def execute(self, context):
 		scene = context.scene
@@ -170,6 +193,9 @@ class SUBTRACT(Booleans, Operator):
 	"""Subtract selected object from active object, subtracted object won't be removed (can handle only two objects at a time)"""
 	bl_label = 'Subtract'
 	bl_idname = 'booltron.subtract'
+
+	solver = _solver
+	triangulate = _triangulate
 
 	def execute(self, context):
 		obj, ob = get_objects(context, self.triangulate)
