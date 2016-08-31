@@ -16,23 +16,14 @@ _solver = EnumProperty(
 	items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
 	       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
 	description='Specify solver for boolean operation',
-	options={'SKIP_SAVE'},
-	)
+	options={'SKIP_SAVE'})
 _triangulate = BoolProperty(
 	name='Triangulate',
 	description='Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)',
-	options={'SKIP_SAVE'},
-	)
+	options={'SKIP_SAVE'})
 
 
-class Booleans:
-	bl_options = {'REGISTER', 'UNDO'}
-
-	def __init__(self):
-		self.context = bpy.context
-		prefs = self.context.user_preferences.addons[__package__].preferences
-		self.solver = prefs.solver
-		self.triangulate = prefs.triangulate
+class Mesh:
 
 	def check_manifold(self):
 		me = self.context.active_object.data
@@ -45,11 +36,48 @@ class Booleans:
 				self.report({'WARNING'}, 'Boolean operation result is non manifold')
 				return
 
+	def mesh_selection(self, ob, select_action):
+		scene = self.context.scene
+		obj = self.context.active_object
+		ops_me = bpy.ops.mesh
+		ops_ob = bpy.ops.object
+
+		def mesh_cleanup():
+			ops_me.select_all(action='SELECT')
+			ops_me.delete_loose()
+			ops_me.select_all(action='SELECT')
+			ops_me.remove_doubles(threshold=0.0001)
+			ops_me.fill_holes(sides=0)
+			ops_me.normals_make_consistent()
+			if self.triangulate:
+				ops_me.quads_convert_to_tris()
+
+		scene.objects.active = ob
+		ops_ob.mode_set(mode='EDIT')
+
+		mesh_cleanup()
+		ops_me.select_all(action=select_action)
+
+		ops_ob.mode_set(mode='OBJECT')
+		scene.objects.active = obj
+
+
+class Booleans(Mesh):
+	bl_options = {'REGISTER', 'UNDO'}
+
+	def __init__(self):
+		self.context = bpy.context
+		prefs = self.context.user_preferences.addons[__package__].preferences
+
+		self.solver = prefs.solver
+		self.triangulate = prefs.triangulate
+
+		bpy.ops.object.make_single_user(object=True, obdata=True)
+		bpy.ops.object.convert(target='MESH')
+
 	def boolean_optimized(self):
 		scene = self.context.scene
 		obj = self.context.active_object
-
-		prepare_objects()
 
 		obj.select = False
 		obs = self.context.selected_objects
@@ -60,22 +88,20 @@ class Booleans:
 			bpy.ops.object.join()
 			scene.objects.active = obj
 
-		mesh_selection(obj, 'DESELECT', self.triangulate)
-		mesh_selection(ob, 'SELECT', self.triangulate)
+		self.mesh_selection(obj, 'DESELECT')
+		self.mesh_selection(ob, 'SELECT')
 		self.boolean_mod(obj, ob, self.mode)
 		obj.select = True
 
 	def boolean_each(self):
 		obj = self.context.active_object
 
-		prepare_objects()
-
 		obj.select = False
 		obs = self.context.selected_objects
 
-		mesh_selection(obj, 'DESELECT', self.triangulate)
+		self.mesh_selection(obj, 'DESELECT')
 		for ob in obs:
-			mesh_selection(ob, 'SELECT', self.triangulate)
+			self.mesh_selection(ob, 'SELECT')
 			self.boolean_mod(obj, ob, self.mode)
 		obj.select = True
 
@@ -95,7 +121,6 @@ class Booleans:
 			return
 		self.context.scene.objects.unlink(ob)
 		bpy.data.objects.remove(ob)
-
 
 
 class UNION(Booleans, Operator):
@@ -167,21 +192,22 @@ class SLICE(Booleans, Operator):
 
 	def execute(self, context):
 		scene = context.scene
-		obj, ob = get_objects(context, self.triangulate)
+		obj = context.active_object
+		obj.select = False
+		ob = context.selected_objects[0]
 
-		def object_duplicate(ob):
-			bpy.ops.object.select_all(action='DESELECT')
-			bpy.ops.object.select_pattern(pattern=ob.name)
-			bpy.ops.object.duplicate()
-			scene.objects.active = obj
-			return context.selected_objects[0]
+		self.mesh_selection(obj, 'DESELECT')
+		self.mesh_selection(ob, 'SELECT')
 
-		obj_copy = object_duplicate(obj)
+		obj_copy = obj.copy()
+		obj_copy.data = obj.data.copy()
+		scene.objects.link(obj_copy)
 
 		self.boolean_mod(obj, ob, 'DIFFERENCE', terminate_ob=False)
 		scene.objects.active = obj_copy
 		self.boolean_mod(obj_copy, ob, 'INTERSECT', terminate_ob=False)
 
+		obj_copy.select = True
 		ob.hide = True
 		self.report({'INFO'}, 'Object "%s" is hidden, use "Show Hidden" to make it visible again' % ob.name)
 		self.check_manifold()
@@ -198,52 +224,14 @@ class SUBTRACT(Booleans, Operator):
 	triangulate = _triangulate
 
 	def execute(self, context):
-		obj, ob = get_objects(context, self.triangulate)
+		obj = context.active_object
+		obj.select = False
+		ob = context.selected_objects[0]
+
+		self.mesh_selection(obj, 'DESELECT')
+		self.mesh_selection(ob, 'SELECT')
+
 		self.boolean_mod(obj, ob, 'DIFFERENCE', terminate_ob=False)
 		self.check_manifold()
+
 		return {'FINISHED'}
-
-
-def prepare_objects():
-	bpy.ops.object.make_single_user(object=True, obdata=True)
-	bpy.ops.object.convert(target='MESH')
-
-
-def mesh_selection(ob, select_action, triangulate):
-	scene = bpy.context.scene
-	obj = bpy.context.active_object
-	ops_me = bpy.ops.mesh
-	ops_ob = bpy.ops.object
-
-	def mesh_cleanup():
-		ops_me.select_all(action='SELECT')
-		ops_me.delete_loose()
-		ops_me.select_all(action='SELECT')
-		ops_me.remove_doubles(threshold=0.0001)
-		ops_me.fill_holes(sides=0)
-		ops_me.normals_make_consistent()
-		if triangulate:
-			ops_me.quads_convert_to_tris()
-
-	scene.objects.active = ob
-	ops_ob.mode_set(mode='EDIT')
-
-	mesh_cleanup()
-	ops_me.select_all(action=select_action)
-
-	ops_ob.mode_set(mode='OBJECT')
-	scene.objects.active = obj
-
-
-def get_objects(context, triangulate):
-	obj = context.active_object
-
-	prepare_objects()
-
-	obj.select = False
-	ob = context.selected_objects[0]
-
-	mesh_selection(obj, 'DESELECT', triangulate)
-	mesh_selection(ob, 'SELECT', triangulate)
-
-	return obj, ob
