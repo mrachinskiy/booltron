@@ -2,10 +2,8 @@ import bpy
 from bpy.types import Panel
 
 
-class ToolShelf(Panel):
+class UI:
 	bl_category = 'Booltron'
-	bl_label = 'Booltron'
-	bl_idname = 'booltron_panel'
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
 	bl_context = 'objectmode'
@@ -14,17 +12,34 @@ class ToolShelf(Panel):
 	def poll(cls, context):
 		return context.active_object is not None
 
+
+class Options(UI, Panel):
+	bl_label = 'Options'
+	bl_idname = 'booltron_options'
+	bl_options = {'DEFAULT_CLOSED'}
+
+	def draw(self, context):
+		layout = self.layout
+		prefs = context.user_preferences.addons[__package__].preferences
+
+		layout.prop(prefs, 'solver', text='')
+		layout.prop(prefs, 'triangulate')
+
+
+class Tools(UI, Panel):
+	bl_label = 'Tools'
+	bl_idname = 'booltron_tools'
+
 	def draw(self, context):
 		layout = self.layout
 		layout.enabled = len(context.selected_objects) > 1
 
 		col = layout.column(align=True)
-		col.operator('booltron.union', text='Union')
-		col.operator('booltron.difference', text='Difference')
-		col.operator('booltron.intersect', text='Intersect')
-		col.separator()
+		col.operator('booltron.union')
+		col.operator('booltron.difference')
+		col.operator('booltron.intersect')
 
-		sub = col.column(align=True)
-		sub.enabled = len(context.selected_objects) == 2
-		sub.operator('booltron.slice', text='Slice')
-		sub.operator('booltron.subtract', text='Subtract')
+		col = layout.column(align=True)
+		col.enabled = len(context.selected_objects) == 2
+		col.operator('booltron.slice')
+		col.operator('booltron.subtract')
