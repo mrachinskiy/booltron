@@ -1,10 +1,10 @@
 import bpy
+import bmesh
 from bpy.types import Operator
 from bpy.props import (
 	EnumProperty,
 	BoolProperty,
 	)
-import bmesh
 
 
 """
@@ -16,11 +16,13 @@ _solver = EnumProperty(
 	items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
 	       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
 	description='Specify solver for boolean operation',
-	options={'SKIP_SAVE'})
+	options={'SKIP_SAVE'},
+	)
 _triangulate = BoolProperty(
 	name='Triangulate',
 	description='Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)',
-	options={'SKIP_SAVE'})
+	options={'SKIP_SAVE'},
+	)
 
 
 class Mesh:
@@ -34,7 +36,9 @@ class Mesh:
 			if not edge.is_manifold:
 				bm.free()
 				self.report({'WARNING'}, 'Boolean operation result is non manifold')
-				return
+				return False
+
+		return True
 
 	def mesh_selection(self, ob, select_action):
 		scene = self.context.scene
@@ -141,11 +145,14 @@ class UNION(Booleans, Operator):
 			bpy.ops.object.mode_set(mode='OBJECT')
 
 		self.boolean_optimized()
-		separate_shels()
-		if len(context.selected_objects) != 1:
-			self.boolean_each()
+		is_manifold = self.check_manifold()
 
-		self.check_manifold()
+		if is_manifold:
+			separate_shels()
+			if len(context.selected_objects) != 1:
+				self.boolean_each()
+
+			self.check_manifold()
 
 		return {'FINISHED'}
 
