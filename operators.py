@@ -27,6 +27,10 @@ _triangulate = BoolProperty(
 
 class Mesh:
 
+	def objects_prepare(self):
+		bpy.ops.object.make_single_user(object=True, obdata=True)
+		bpy.ops.object.convert(target='MESH')
+
 	def check_manifold(self):
 		me = self.context.active_object.data
 		bm = bmesh.new()
@@ -52,7 +56,6 @@ class Mesh:
 			ops_me.select_all(action='SELECT')
 			ops_me.remove_doubles(threshold=0.0001)
 			ops_me.fill_holes(sides=0)
-			ops_me.normals_make_consistent()
 			if self.triangulate:
 				ops_me.quads_convert_to_tris()
 
@@ -72,12 +75,8 @@ class Booleans(Mesh):
 	def __init__(self):
 		self.context = bpy.context
 		prefs = self.context.user_preferences.addons[__package__].preferences
-
 		self.solver = prefs.solver
 		self.triangulate = prefs.triangulate
-
-		bpy.ops.object.make_single_user(object=True, obdata=True)
-		bpy.ops.object.convert(target='MESH')
 
 	def boolean_optimized(self):
 		scene = self.context.scene
@@ -144,6 +143,8 @@ class UNION(Booleans, Operator):
 			bpy.ops.mesh.separate(type='LOOSE')
 			bpy.ops.object.mode_set(mode='OBJECT')
 
+		self.objects_prepare()
+
 		self.boolean_optimized()
 		is_manifold = self.check_manifold()
 
@@ -168,8 +169,11 @@ class DIFFERENCE(Booleans, Operator):
 	mode = 'DIFFERENCE'
 
 	def execute(self, context):
+		self.objects_prepare()
+
 		self.boolean_optimized()
 		self.check_manifold()
+
 		return {'FINISHED'}
 
 
@@ -184,8 +188,11 @@ class INTERSECT(Booleans, Operator):
 	mode = 'INTERSECT'
 
 	def execute(self, context):
+		self.objects_prepare()
+
 		self.boolean_each()
 		self.check_manifold()
+
 		return {'FINISHED'}
 
 
@@ -198,6 +205,8 @@ class SLICE(Booleans, Operator):
 	triangulate = _triangulate
 
 	def execute(self, context):
+		self.objects_prepare()
+
 		scene = context.scene
 		obj = context.active_object
 		obj.select = False
@@ -231,6 +240,8 @@ class SUBTRACT(Booleans, Operator):
 	triangulate = _triangulate
 
 	def execute(self, context):
+		self.objects_prepare()
+
 		obj = context.active_object
 		obj.select = False
 		ob = context.selected_objects[0]
