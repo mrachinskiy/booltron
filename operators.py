@@ -128,8 +128,8 @@ class Booleans(Mesh):
 
 class UNION(Booleans, Operator):
 	"""Combine selected objects"""
-	bl_label = 'Union'
-	bl_idname = 'booltron.union'
+	bl_label = 'Booltron Union'
+	bl_idname = 'object.booltron_union'
 
 	solver = _solver
 	triangulate = _triangulate
@@ -160,8 +160,8 @@ class UNION(Booleans, Operator):
 
 class DIFFERENCE(Booleans, Operator):
 	"""Subtract selected objects from active object"""
-	bl_label = 'Difference'
-	bl_idname = 'booltron.difference'
+	bl_label = 'Booltron Difference'
+	bl_idname = 'object.booltron_difference'
 
 	solver = _solver
 	triangulate = _triangulate
@@ -179,8 +179,8 @@ class DIFFERENCE(Booleans, Operator):
 
 class INTERSECT(Booleans, Operator):
 	"""Keep the common part of all selected objects"""
-	bl_label = 'Intersect'
-	bl_idname = 'booltron.intersect'
+	bl_label = 'Booltron Intersect'
+	bl_idname = 'object.booltron_intersect'
 
 	solver = _solver
 	triangulate = _triangulate
@@ -198,8 +198,8 @@ class INTERSECT(Booleans, Operator):
 
 class SLICE(Booleans, Operator):
 	"""Slice active object along the volume of selected object, also hides selected object (can handle only two objects at a time)"""
-	bl_label = 'Slice'
-	bl_idname = 'booltron.slice'
+	bl_label = 'Booltron Slice'
+	bl_idname = 'object.booltron_slice'
 
 	solver = _solver
 	triangulate = _triangulate
@@ -233,8 +233,8 @@ class SLICE(Booleans, Operator):
 
 class SUBTRACT(Booleans, Operator):
 	"""Subtract selected object from active object, subtracted object won't be removed (can handle only two objects at a time)"""
-	bl_label = 'Subtract'
-	bl_idname = 'booltron.subtract'
+	bl_label = 'Booltron Subtract'
+	bl_idname = 'object.booltron_subtract'
 
 	solver = _solver
 	triangulate = _triangulate
