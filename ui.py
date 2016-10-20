@@ -35,11 +35,11 @@ class Tools(UI, Panel):
 		layout.enabled = len(context.selected_objects) > 1
 
 		col = layout.column(align=True)
-		col.operator('booltron.union')
-		col.operator('booltron.difference')
-		col.operator('booltron.intersect')
+		col.operator('object.booltron_union', text='Union')
+		col.operator('object.booltron_difference', text='Difference')
+		col.operator('object.booltron_intersect', text='Intersect')
 
 		col = layout.column(align=True)
 		col.enabled = len(context.selected_objects) == 2
-		col.operator('booltron.slice')
-		col.operator('booltron.subtract')
+		col.operator('object.booltron_slice', text='Slice')
+		col.operator('object.booltron_subtract', text='Subtract')
