@@ -69,7 +69,6 @@ classes = (
 	operators.UNION,
 	operators.DIFFERENCE,
 	operators.INTERSECT,
-	operators.SLICE,
 	operators.SUBTRACT,
 	)
 
