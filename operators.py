@@ -31,7 +31,7 @@ class Mesh:
 		bpy.ops.object.make_single_user(object=True, obdata=True)
 		bpy.ops.object.convert(target='MESH')
 
-	def check_manifold(self):
+	def is_manifold(self):
 		me = self.context.active_object.data
 		bm = bmesh.new()
 		bm.from_mesh(me)
@@ -39,9 +39,10 @@ class Mesh:
 		for edge in bm.edges:
 			if not edge.is_manifold:
 				bm.free()
-				self.report({'WARNING'}, 'Boolean operation result is non manifold')
+				self.report({'WARNING'}, 'Boolean operation result is non-manifold')
 				return False
 
+		bm.free()
 		return True
 
 	def mesh_selection(self, ob, select_action):
@@ -122,7 +123,7 @@ class Booleans(Mesh):
 
 		if not terminate_ob:
 			return
-		self.context.scene.objects.unlink(ob)
+		self.context.scene.objects.unlink(ob) # pre 2.78 compatiblity
 		bpy.data.objects.remove(ob)
 
 
@@ -146,14 +147,13 @@ class UNION(Booleans, Operator):
 		self.objects_prepare()
 
 		self.boolean_optimized()
-		is_manifold = self.check_manifold()
+		is_manifold = self.is_manifold()
 
 		if is_manifold:
 			separate_shels()
 			if len(context.selected_objects) != 1:
 				self.boolean_each()
-
-			self.check_manifold()
+				self.is_manifold()
 
 		return {'FINISHED'}
 
@@ -172,7 +172,7 @@ class DIFFERENCE(Booleans, Operator):
 		self.objects_prepare()
 
 		self.boolean_optimized()
-		self.check_manifold()
+		self.is_manifold()
 
 		return {'FINISHED'}
 
@@ -191,48 +191,13 @@ class INTERSECT(Booleans, Operator):
 		self.objects_prepare()
 
 		self.boolean_each()
-		self.check_manifold()
-
-		return {'FINISHED'}
-
-
-class SLICE(Booleans, Operator):
-	"""Slice active object along the volume of selected object, also hides selected object (can handle only two objects at a time)"""
-	bl_label = 'Booltron Slice'
-	bl_idname = 'object.booltron_slice'
-
-	solver = _solver
-	triangulate = _triangulate
-
-	def execute(self, context):
-		self.objects_prepare()
-
-		scene = context.scene
-		obj = context.active_object
-		obj.select = False
-		ob = context.selected_objects[0]
-
-		self.mesh_selection(obj, 'DESELECT')
-		self.mesh_selection(ob, 'SELECT')
-
-		obj_copy = obj.copy()
-		obj_copy.data = obj.data.copy()
-		scene.objects.link(obj_copy)
-
-		self.boolean_mod(obj, ob, 'DIFFERENCE', terminate_ob=False)
-		scene.objects.active = obj_copy
-		self.boolean_mod(obj_copy, ob, 'INTERSECT', terminate_ob=False)
-
-		obj_copy.select = True
-		ob.hide = True
-		self.report({'INFO'}, 'Object "%s" is hidden, use "Show Hidden" to make it visible again' % ob.name)
-		self.check_manifold()
+		self.is_manifold()
 
 		return {'FINISHED'}
 
 
 class SUBTRACT(Booleans, Operator):
-	"""Subtract selected object from active object, subtracted object won't be removed (can handle only two objects at a time)"""
+	"""Subtract selected object from active object, subtracted object won't be removed (operates only with two objects at a time)"""
 	bl_label = 'Booltron Subtract'
 	bl_idname = 'object.booltron_subtract'
 
@@ -250,6 +215,6 @@ class SUBTRACT(Booleans, Operator):
 		self.mesh_selection(ob, 'SELECT')
 
 		self.boolean_mod(obj, ob, 'DIFFERENCE', terminate_ob=False)
-		self.check_manifold()
+		self.is_manifold()
 
 		return {'FINISHED'}
