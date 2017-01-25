@@ -121,10 +121,9 @@ class Booleans(Mesh):
 		md.object = ob
 		bpy.ops.object.modifier_apply(modifier='Boolean')
 
-		if not terminate_ob:
-			return
-		self.context.scene.objects.unlink(ob) # pre 2.78 compatiblity
-		bpy.data.objects.remove(ob)
+		if terminate_ob:
+			self.context.scene.objects.unlink(ob) # pre 2.78 compatiblity
+			bpy.data.objects.remove(ob)
 
 
 class UNION(Booleans, Operator):
@@ -134,7 +133,6 @@ class UNION(Booleans, Operator):
 
 	solver = _solver
 	triangulate = _triangulate
-
 	mode = 'UNION'
 
 	def execute(self, context):
@@ -165,7 +163,6 @@ class DIFFERENCE(Booleans, Operator):
 
 	solver = _solver
 	triangulate = _triangulate
-
 	mode = 'DIFFERENCE'
 
 	def execute(self, context):
@@ -184,7 +181,6 @@ class INTERSECT(Booleans, Operator):
 
 	solver = _solver
 	triangulate = _triangulate
-
 	mode = 'INTERSECT'
 
 	def execute(self, context):
@@ -196,8 +192,43 @@ class INTERSECT(Booleans, Operator):
 		return {'FINISHED'}
 
 
+class SLICE(Booleans, Operator):
+	"""Slice active object along the volume of selected object"""
+	bl_label = 'Booltron Slice'
+	bl_idname = 'object.booltron_slice'
+
+	solver = _solver
+	triangulate = _triangulate
+
+	def execute(self, context):
+		self.objects_prepare()
+
+		scene = context.scene
+		obj = context.active_object
+		obj.select = False
+		ob = context.selected_objects[0]
+
+		self.mesh_selection(obj, 'DESELECT')
+		self.mesh_selection(ob, 'SELECT')
+
+		obj_copy = obj.copy()
+		obj_copy.data = obj.data.copy()
+		scene.objects.link(obj_copy)
+
+		self.boolean_mod(obj, ob, 'DIFFERENCE', terminate_ob=False)
+		is_manifold = self.is_manifold()
+
+		if is_manifold:
+			scene.objects.active = obj_copy
+			self.boolean_mod(obj_copy, ob, 'INTERSECT')
+			obj_copy.select = True
+			self.is_manifold()
+
+		return {'FINISHED'}
+
+
 class SUBTRACT(Booleans, Operator):
-	"""Subtract selected object from active object, subtracted object won't be removed (operates only with two objects at a time)"""
+	"""Subtract selected object from active object, subtracted object won't be removed"""
 	bl_label = 'Booltron Subtract'
 	bl_idname = 'object.booltron_subtract'
 

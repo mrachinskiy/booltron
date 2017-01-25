@@ -41,4 +41,5 @@ class Tools(UI, Panel):
 
 		col = layout.column(align=True)
 		col.enabled = len(context.selected_objects) == 2
+		col.operator('object.booltron_slice', text='Slice')
 		col.operator('object.booltron_subtract', text='Subtract')
