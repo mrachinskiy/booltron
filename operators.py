@@ -32,59 +32,62 @@ class Mesh:
 		bpy.ops.object.convert(target='MESH')
 
 	def is_manifold(self):
-		me = self.context.active_object.data
+		me = bpy.context.active_object.data
 		bm = bmesh.new()
 		bm.from_mesh(me)
 
 		for edge in bm.edges:
 			if not edge.is_manifold:
 				bm.free()
-				self.report({'WARNING'}, 'Boolean operation result is non-manifold')
+				self.report({'ERROR'}, 'Boolean operation result is non-manifold')
 				return False
 
 		bm.free()
 		return True
 
 	def mesh_selection(self, ob, select_action):
-		scene = self.context.scene
-		obj = self.context.active_object
+		scene = bpy.context.scene
 		ops_me = bpy.ops.mesh
-		ops_ob = bpy.ops.object
 
-		def mesh_cleanup():
-			ops_me.select_all(action='SELECT')
-			ops_me.delete_loose()
-			ops_me.select_all(action='SELECT')
-			ops_me.remove_doubles(threshold=0.0001)
-			ops_me.fill_holes(sides=0)
-			if self.triangulate:
-				ops_me.quads_convert_to_tris()
-
+		active_object = bpy.context.active_object
 		scene.objects.active = ob
-		ops_ob.mode_set(mode='EDIT')
+		bpy.ops.object.mode_set(mode='EDIT')
 
-		mesh_cleanup()
+		ops_me.reveal()
+
+		ops_me.select_all(action='SELECT')
+		ops_me.delete_loose()
+
+		ops_me.select_all(action='SELECT')
+		ops_me.remove_doubles(threshold=0.0001)
+
+		ops_me.select_all(action='SELECT')
+		ops_me.fill_holes(sides=0)
+
+		if self.triangulate:
+			ops_me.select_all(action='SELECT')
+			ops_me.quads_convert_to_tris()
+
 		ops_me.select_all(action=select_action)
 
-		ops_ob.mode_set(mode='OBJECT')
-		scene.objects.active = obj
+		bpy.ops.object.mode_set(mode='OBJECT')
+		scene.objects.active = active_object
 
 
 class Booleans(Mesh):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def __init__(self):
-		self.context = bpy.context
-		prefs = self.context.user_preferences.addons[__package__].preferences
+		prefs = bpy.context.user_preferences.addons[__package__].preferences
 		self.solver = prefs.solver
 		self.triangulate = prefs.triangulate
 
 	def boolean_optimized(self):
-		scene = self.context.scene
-		obj = self.context.active_object
+		scene = bpy.context.scene
 
+		obj = bpy.context.active_object
 		obj.select = False
-		obs = self.context.selected_objects
+		obs = bpy.context.selected_objects
 		ob = obs[0]
 
 		if len(obs) != 1:
@@ -92,21 +95,22 @@ class Booleans(Mesh):
 			bpy.ops.object.join()
 			scene.objects.active = obj
 
-		self.mesh_selection(obj, 'DESELECT')
 		self.mesh_selection(ob, 'SELECT')
+		self.mesh_selection(obj, 'DESELECT')
 		self.boolean_mod(obj, ob, self.mode)
 		obj.select = True
 
 	def boolean_each(self):
-		obj = self.context.active_object
-
+		obj = bpy.context.active_object
 		obj.select = False
-		obs = self.context.selected_objects
+		obs = bpy.context.selected_objects
 
 		self.mesh_selection(obj, 'DESELECT')
+
 		for ob in obs:
 			self.mesh_selection(ob, 'SELECT')
 			self.boolean_mod(obj, ob, self.mode)
+
 		obj.select = True
 
 	def boolean_mod(self, obj, ob, mode, terminate_ob=True):
@@ -122,7 +126,7 @@ class Booleans(Mesh):
 		bpy.ops.object.modifier_apply(modifier='Boolean')
 
 		if terminate_ob:
-			self.context.scene.objects.unlink(ob) # pre 2.78 compatiblity
+			bpy.context.scene.objects.unlink(ob) # pre 2.78 compatiblity
 			bpy.data.objects.remove(ob)
 
 
@@ -136,19 +140,15 @@ class UNION(Booleans, Operator):
 	mode = 'UNION'
 
 	def execute(self, context):
-
-		def separate_shels():
-			bpy.ops.object.mode_set(mode='EDIT')
-			bpy.ops.mesh.separate(type='LOOSE')
-			bpy.ops.object.mode_set(mode='OBJECT')
-
 		self.objects_prepare()
 
 		self.boolean_optimized()
 		is_manifold = self.is_manifold()
 
 		if is_manifold:
-			separate_shels()
+			bpy.ops.object.mode_set(mode='EDIT')
+			bpy.ops.mesh.separate(type='LOOSE')
+			bpy.ops.object.mode_set(mode='OBJECT')
 			if len(context.selected_objects) != 1:
 				self.boolean_each()
 				self.is_manifold()

@@ -1,7 +1,7 @@
 bl_info = {
 	'name': 'Booltron',
 	'author': 'Mikhail Rachinskiy (jewelcourses.com)',
-	'version': (2000,),
+	'version': [2000],
 	'blender': (2, 74, 0),
 	'location': '3D View > Tool Shelf',
 	'description': 'Super add-on for super fast booleans.',
@@ -44,20 +44,19 @@ class Preferences(AddonPreferences):
 		)
 
 	def draw(self, context):
-		layout = self.layout
-		split = layout.split(percentage=0.15)
+		col = self.layout.column()
 
-		col = split.column()
-		col.label('Boolean Solver:')
-		col.label('Triangulate:')
-
-		col = split.column()
-		colrow = col.row()
-		colrow.alignment = 'LEFT'
-		colrow.prop(self, 'solver', text='')
+		split = col.row().split(percentage=0.15)
+		split.label('Boolean Solver:')
+		subrow = split.row()
+		subrow.alignment = 'LEFT'
+		subrow.prop(self, 'solver', text='')
 		if bpy.app.version < (2, 78, 0):
-			colrow.label('BMesh solver works only with Blender 2.78 or later', icon='QUESTION')
-		col.prop(self, 'triangulate', text='')
+			subrow.label('BMesh solver works only with Blender 2.78 or later', icon='QUESTION')
+
+		split = col.row().split(percentage=0.15)
+		split.label('Triangulate:')
+		split.prop(self, 'triangulate', text='')
 
 
 classes = (
