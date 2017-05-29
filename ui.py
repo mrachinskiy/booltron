@@ -20,6 +20,7 @@ class Options(UI, Panel):
 
 	def draw(self, context):
 		layout = self.layout
+
 		prefs = context.user_preferences.addons[__package__].preferences
 
 		layout.prop(prefs, 'solver', text='')
@@ -32,7 +33,10 @@ class Tools(UI, Panel):
 
 	def draw(self, context):
 		layout = self.layout
-		layout.enabled = len(context.selected_objects) > 1
+
+		obs = len(context.selected_objects)
+
+		layout.enabled = obs > 1
 
 		col = layout.column(align=True)
 		col.operator('object.booltron_union', text='Union')
@@ -40,6 +44,6 @@ class Tools(UI, Panel):
 		col.operator('object.booltron_intersect', text='Intersect')
 
 		col = layout.column(align=True)
-		col.enabled = len(context.selected_objects) == 2
+		col.enabled = obs == 2
 		col.operator('object.booltron_slice', text='Slice')
 		col.operator('object.booltron_subtract', text='Subtract')
