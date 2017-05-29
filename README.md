@@ -3,6 +3,12 @@ Booltron—super add-on
 
 Booltron—super add-on for super fast booleans.
 
+Features:
+
+* Faster boolean operations with large number of objects.
+* Works with Curve and Text objects.
+* Checks for non-manifold.
+
 #### Watch [Demo]
 
 

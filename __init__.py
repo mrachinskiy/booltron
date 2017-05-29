@@ -13,19 +13,16 @@ bl_info = {
 
 if 'bpy' in locals():
 	import importlib
-	importlib.reload(ui)
+	importlib.reload(mesh_utils)
+	importlib.reload(boolean_methods)
 	importlib.reload(operators)
+	importlib.reload(ui)
 else:
 	import bpy
 	from bpy.types import AddonPreferences
-	from bpy.props import (
-		EnumProperty,
-		BoolProperty,
-		)
-	from . import (
-		ui,
-		operators,
-		)
+	from bpy.props import EnumProperty, BoolProperty
+
+	from . import ui, operators
 
 
 class Preferences(AddonPreferences):
@@ -48,11 +45,11 @@ class Preferences(AddonPreferences):
 
 		split = col.row().split(percentage=0.15)
 		split.label('Boolean Solver:')
-		subrow = split.row()
-		subrow.alignment = 'LEFT'
-		subrow.prop(self, 'solver', text='')
+		row = split.row()
+		row.alignment = 'LEFT'
+		row.prop(self, 'solver', text='')
 		if bpy.app.version < (2, 78, 0):
-			subrow.label('BMesh solver works only with Blender 2.78 or later', icon='QUESTION')
+			row.label('BMesh solver works only with Blender 2.78 or later', icon='QUESTION')
 
 		split = col.row().split(percentage=0.15)
 		split.label('Triangulate:')
@@ -65,11 +62,11 @@ classes = (
 	ui.Options,
 	ui.Tools,
 
-	operators.UNION,
-	operators.DIFFERENCE,
-	operators.INTERSECT,
-	operators.SLICE,
-	operators.SUBTRACT,
+	operators.Union,
+	operators.Difference,
+	operators.Intersect,
+	operators.Slice,
+	operators.Subtract,
 	)
 
 
