@@ -49,5 +49,5 @@ def boolean_mod(self, obj, ob, mode, terminate_ob=True):
 	bpy.ops.object.modifier_apply(modifier='Boolean')
 
 	if terminate_ob:
-		bpy.context.scene.objects.unlink(ob) # pre 2.78 compatiblity
+		bpy.context.scene.objects.unlink(ob)  # pre 2.78 compatibility
 		bpy.data.objects.remove(ob)
