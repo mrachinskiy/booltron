@@ -1,7 +1,7 @@
 from bpy.types import Panel
 
 
-class UI:
+class Setup:
 	bl_category = 'Booltron'
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'TOOLS'
@@ -12,7 +12,7 @@ class UI:
 		return context.active_object is not None
 
 
-class Options(UI, Panel):
+class Options(Setup, Panel):
 	bl_label = 'Options'
 	bl_idname = 'booltron_options'
 	bl_options = {'DEFAULT_CLOSED'}
@@ -24,9 +24,14 @@ class Options(UI, Panel):
 
 		layout.prop(prefs, 'solver', text='')
 		layout.prop(prefs, 'triangulate')
+		layout.prop(prefs, 'pos_correct')
+
+		row = layout.row()
+		row.enabled = prefs.pos_correct
+		row.prop(prefs, 'pos_ofst')
 
 
-class Tools(UI, Panel):
+class Tools(Setup, Panel):
 	bl_label = 'Tools'
 	bl_idname = 'booltron_tools'
 

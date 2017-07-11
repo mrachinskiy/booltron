@@ -1,6 +1,6 @@
 import bpy
 from bpy.types import Operator
-from bpy.props import EnumProperty, BoolProperty
+from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
 from .boolean_methods import boolean_optimized, boolean_each, boolean_mod
 from .mesh_utils import objects_prepare, is_manifold, mesh_selection
@@ -10,9 +10,9 @@ class Setup:
 
 	solver = EnumProperty(
 		name='Boolean Solver',
+		description='Specify solver for boolean operation',
 		items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
 		       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
-		description='Specify solver for boolean operation',
 		options={'SKIP_SAVE'},
 		)
 	triangulate = BoolProperty(
@@ -20,11 +20,26 @@ class Setup:
 		description='Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)',
 		options={'SKIP_SAVE'},
 		)
+	pos_correct = BoolProperty(
+		name='Correct Position',
+		description='Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)',
+		options={'SKIP_SAVE'},
+		)
+	pos_ofst = FloatProperty(
+		name='Position Offset',
+		description='Position offset is randomly generated for each object in range [-x, +x] input value',
+		min=0.0,
+		step=0.1,
+		precision=3,
+		options={'SKIP_SAVE'},
+		)
 
 	def __init__(self):
 		prefs = bpy.context.user_preferences.addons[__package__].preferences
 		self.solver = prefs.solver
 		self.triangulate = prefs.triangulate
+		self.pos_correct = prefs.pos_correct
+		self.pos_ofst = prefs.pos_ofst
 
 	def draw(self, context):
 		layout = self.layout
@@ -33,9 +48,17 @@ class Setup:
 		split.label('Boolean Solver')
 		split.prop(self, 'solver', text='')
 
+		layout.separator()
+
 		split = layout.row().split()
 		split.label('Triangulate')
 		split.prop(self, 'triangulate', text='')
+
+		layout.separator()
+
+		split = layout.row().split()
+		split.prop(self, 'pos_correct', text='Correct Position')
+		split.prop(self, 'pos_ofst', text='')
 
 
 class Union(Setup, Operator):
@@ -47,7 +70,7 @@ class Union(Setup, Operator):
 	mode = 'UNION'
 
 	def execute(self, context):
-		objects_prepare()
+		objects_prepare(self)
 
 		boolean_optimized(self)
 		manifold = is_manifold(self)
@@ -73,7 +96,7 @@ class Difference(Setup, Operator):
 	mode = 'DIFFERENCE'
 
 	def execute(self, context):
-		objects_prepare()
+		objects_prepare(self)
 
 		boolean_optimized(self)
 		is_manifold(self)
@@ -90,7 +113,7 @@ class Intersect(Setup, Operator):
 	mode = 'INTERSECT'
 
 	def execute(self, context):
-		objects_prepare()
+		objects_prepare(self)
 
 		boolean_each(self)
 		is_manifold(self)
@@ -105,7 +128,7 @@ class Slice(Setup, Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def execute(self, context):
-		objects_prepare()
+		objects_prepare(self)
 
 		scene = context.scene
 		obj = context.active_object
@@ -138,7 +161,7 @@ class Subtract(Setup, Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def execute(self, context):
-		objects_prepare()
+		objects_prepare(self)
 
 		obj = context.active_object
 		obj.select = False

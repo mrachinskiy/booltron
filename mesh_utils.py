@@ -1,10 +1,27 @@
+import random
+
 import bpy
 import bmesh
+from mathutils import Vector
 
 
-def objects_prepare():
+def objects_prepare(self):
 	bpy.ops.object.make_single_user(object=True, obdata=True)
 	bpy.ops.object.convert(target='MESH')
+	bpy.ops.object.transform_apply(scale=True)
+
+	if self.pos_correct:
+		obj = bpy.context.active_object
+		obj.select = False
+
+		for ob in bpy.context.selected_objects:
+			x = random.uniform(-self.pos_ofst, self.pos_ofst)
+			y = random.uniform(-self.pos_ofst, self.pos_ofst)
+			z = random.uniform(-self.pos_ofst, self.pos_ofst)
+
+			ob.location += Vector((x, y, z))
+
+		obj.select = True
 
 
 def is_manifold(self):
