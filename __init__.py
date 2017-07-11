@@ -20,7 +20,7 @@ if 'bpy' in locals():
 else:
 	import bpy
 	from bpy.types import AddonPreferences
-	from bpy.props import EnumProperty, BoolProperty
+	from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
 	from . import ui, operators
 
@@ -30,30 +30,52 @@ class Preferences(AddonPreferences):
 
 	solver = EnumProperty(
 		name='Boolean Solver',
+		description='Specify solver for boolean operations',
 		items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
 		       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
 		default='BMESH',
-		description='Specify solver for boolean operations',
 		)
 	triangulate = BoolProperty(
 		name='Triangulate',
 		description='Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)',
 		)
+	pos_correct = BoolProperty(
+		name='Correct Position',
+		description='Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)',
+		)
+	pos_ofst = FloatProperty(
+		name='Position Offset',
+		description='Position offset is randomly generated for each object in range [-x, +x] input value',
+		default=0.005,
+		min=0.0,
+		step=0.1,
+		precision=3,
+		)
 
 	def draw(self, context):
-		col = self.layout.column()
+		layout = self.layout
 
-		split = col.row().split(percentage=0.15)
+		split = layout.row().split(percentage=0.15)
 		split.label('Boolean Solver:')
-		row = split.row()
-		row.alignment = 'LEFT'
-		row.prop(self, 'solver', text='')
-		if bpy.app.version < (2, 78, 0):
-			row.label('BMesh solver works only with Blender 2.78 or later', icon='QUESTION')
+		split.prop(self, 'solver', text='')
 
-		split = col.row().split(percentage=0.15)
+		if bpy.app.version < (2, 78, 0):
+			split = layout.row().split(percentage=0.15)
+			split.row()
+			split.label('BMesh solver works only with Blender 2.78 or newer', icon='QUESTION')
+
+		split = layout.row().split(percentage=0.15)
 		split.label('Triangulate:')
 		split.prop(self, 'triangulate', text='')
+
+		split = layout.row().split(percentage=0.15)
+		split.label('Correct Position:')
+		split.prop(self, 'pos_correct', text='')
+
+		split = layout.row().split(percentage=0.15)
+		split.enabled = self.pos_correct
+		split.label('Position Offset:')
+		split.prop(self, 'pos_ofst', text='')
 
 
 classes = (
