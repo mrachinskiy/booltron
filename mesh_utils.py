@@ -12,16 +12,15 @@ def objects_prepare(self):
 
 	if self.pos_correct:
 		obj = bpy.context.active_object
-		obj.select = False
+		obs = bpy.context.selected_objects
+		obs.remove(obj)
 
-		for ob in bpy.context.selected_objects:
+		for ob in obs:
 			x = random.uniform(-self.pos_ofst, self.pos_ofst)
 			y = random.uniform(-self.pos_ofst, self.pos_ofst)
 			z = random.uniform(-self.pos_ofst, self.pos_ofst)
 
 			ob.location += Vector((x, y, z))
-
-		obj.select = True
 
 
 def is_manifold(self):
