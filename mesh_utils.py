@@ -8,7 +8,6 @@ from mathutils import Vector
 def objects_prepare(self):
 	bpy.ops.object.make_single_user(object=True, obdata=True)
 	bpy.ops.object.convert(target='MESH')
-	bpy.ops.object.transform_apply(scale=True)
 
 	if self.pos_correct:
 		obj = bpy.context.active_object
