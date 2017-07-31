@@ -10,7 +10,7 @@ class Setup:
 
 	solver = EnumProperty(
 		name='Boolean Solver',
-		description='Specify solver for boolean operation',
+		description='Specify solver for boolean operations',
 		items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
 		       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
 		options={'SKIP_SAVE'},
@@ -51,8 +51,7 @@ class Setup:
 		layout.separator()
 
 		split = layout.row().split()
-		split.label('Triangulate')
-		split.prop(self, 'triangulate', text='')
+		split.prop(self, 'triangulate')
 
 		layout.separator()
 
