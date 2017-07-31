@@ -13,6 +13,7 @@ bl_info = {
 
 if 'bpy' in locals():
 	import importlib
+	importlib.reload(locale)
 	importlib.reload(mesh_utils)
 	importlib.reload(boolean_methods)
 	importlib.reload(operators)
@@ -21,8 +22,9 @@ else:
 	import bpy
 	from bpy.types import AddonPreferences
 	from bpy.props import EnumProperty, BoolProperty, FloatProperty
+	from bpy.app.translations import pgettext_iface as _
 
-	from . import ui, operators
+	from . import ui, operators, locale
 
 
 class Preferences(AddonPreferences):
@@ -55,27 +57,25 @@ class Preferences(AddonPreferences):
 	def draw(self, context):
 		layout = self.layout
 
-		split = layout.row().split(percentage=0.15)
-		split.label('Boolean Solver:')
-		split.prop(self, 'solver', text='')
+		split = layout.split(percentage=0.15)
+		split.label(_('Boolean Solver') + ':')
+
+		col = split.column()
+		col.prop(self, 'solver', text='')
 
 		if bpy.app.version < (2, 78, 0):
-			split = layout.row().split(percentage=0.15)
-			split.row()
-			split.label('BMesh solver works only with Blender 2.78 or newer', icon='QUESTION')
+			col.label('BMesh solver works only with Blender 2.78 or newer', icon='QUESTION')
 
-		split = layout.row().split(percentage=0.15)
-		split.label('Triangulate:')
-		split.prop(self, 'triangulate', text='')
+		split = layout.split(percentage=0.15)
+		split.label(_('Adjustments') + ':')
 
-		split = layout.row().split(percentage=0.15)
-		split.label('Correct Position:')
-		split.prop(self, 'pos_correct', text='')
+		col = split.column()
+		col.prop(self, 'triangulate')
+		col.prop(self, 'pos_correct')
 
-		split = layout.row().split(percentage=0.15)
-		split.enabled = self.pos_correct
-		split.label('Position Offset:')
-		split.prop(self, 'pos_ofst', text='')
+		row = col.row()
+		row.enabled = self.pos_correct
+		row.prop(self, 'pos_ofst')
 
 
 classes = (
@@ -96,10 +96,14 @@ def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
 
+	bpy.app.translations.register(__name__, locale.lc_reg)
+
 
 def unregister():
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
+
+	bpy.app.translations.unregister(__name__)
 
 
 if __name__ == '__main__':
