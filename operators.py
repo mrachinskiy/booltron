@@ -17,7 +17,7 @@ class Setup:
 		)
 	triangulate = BoolProperty(
 		name='Triangulate',
-		description='Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)',
+		description='Triangulate geometry before boolean operation (in certain cases may improve result of a boolean operation)',
 		options={'SKIP_SAVE'},
 		)
 	pos_correct = BoolProperty(
