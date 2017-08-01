@@ -1,15 +1,16 @@
 lc_main = {
 	# Interface
 	'Boolean Solver': 'Солвер',
-	'Adjustments': 'Корректировки',
+	'Boolean Solver:': 'Солвер:',
+	'Adjustments:': 'Корректировки:',
 	'Correct Position': 'Коррекция Позиции',
 	'Position Offset': 'Сдвиг Позиции',
 
 	# Tooltips
 	'Specify solver for boolean operations': 'Укажите солвер для булевских операций',
-	'BMesh solver is faster, but less stable and cannot handle coplanar geometry': 'BMesh солвер быстрее, но менее стабильный и не справляется с coplanar геометрией',
-	'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry': 'Carve солвер медленнее, но более стабильный и работает с простыми случаями coplanar геометрии',
-	'Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)': 'Триангулировать геометрию перед булевской операцией (в некоторых случаях может улучшить результат булевских операций)',
+	'BMesh solver is faster, but less stable and cannot handle coplanar geometry': 'BMesh солвер быстрее, но менее стабилен и не работает с coplanar геометрией',
+	'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry': 'Carve солвер медленнее, но более стабилен и работает с простыми случаями coplanar геометрии',
+	'Triangulate geometry before boolean operation (in certain cases may improve result of a boolean operation)': 'Триангулировать геометрию перед булевской операцией (в некоторых случаях может улучшить результат булевских операций)',
 	'Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)': 'Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевских операций (не влияет на активный объект)',
 	'Position offset is randomly generated for each object in range [-x, +x] input value': 'Сдвиг позиции генерируется в случайном порядке для каждого объекта в диапазоне [-x, +x] указанного значения',
 	'Combine selected objects': 'Объединить выделенные объекты',
@@ -25,10 +26,11 @@ lc_main = {
 
 lc_btn = {
 	'Union': 'Объединение',
-	'Difference': 'Разница',
+	'Difference': 'Разность',
 	'Intersect': 'Пересечение',
 	'Slice': 'Разрезать',
 	}
+
 
 lc_ru = {}
 
@@ -38,4 +40,8 @@ for k, v in lc_main.items():
 for k, v in lc_btn.items():
 	lc_ru[('Operator', k)] = v
 
+
 lc_reg = {'ru_RU': lc_ru}
+
+del lc_main
+del lc_btn

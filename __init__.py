@@ -22,7 +22,6 @@ else:
 	import bpy
 	from bpy.types import AddonPreferences
 	from bpy.props import EnumProperty, BoolProperty, FloatProperty
-	from bpy.app.translations import pgettext_iface as _
 
 	from . import ui, operators, locale
 
@@ -39,7 +38,7 @@ class Preferences(AddonPreferences):
 		)
 	triangulate = BoolProperty(
 		name='Triangulate',
-		description='Triangulate geometry before boolean operation (can sometimes improve result of a boolean operation)',
+		description='Triangulate geometry before boolean operation (in certain cases may improve result of a boolean operation)',
 		)
 	pos_correct = BoolProperty(
 		name='Correct Position',
@@ -58,7 +57,7 @@ class Preferences(AddonPreferences):
 		layout = self.layout
 
 		split = layout.split(percentage=0.15)
-		split.label(_('Boolean Solver') + ':')
+		split.label('Boolean Solver:')
 
 		col = split.column()
 		col.prop(self, 'solver', text='')
@@ -67,7 +66,7 @@ class Preferences(AddonPreferences):
 			col.label('BMesh solver works only with Blender 2.78 or newer', icon='QUESTION')
 
 		split = layout.split(percentage=0.15)
-		split.label(_('Adjustments') + ':')
+		split.label('Adjustments:')
 
 		col = split.column()
 		col.prop(self, 'triangulate')
