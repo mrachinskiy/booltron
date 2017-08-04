@@ -1,11 +1,10 @@
 import bpy
 
-from .mesh_utils import mesh_selection
+from .mesh_utils import mesh_selection, mesh_cleanup
 
 
 def boolean_optimized(self):
 	scene = bpy.context.scene
-
 	obj = bpy.context.active_object
 	obj.select = False
 	obs = bpy.context.selected_objects
@@ -22,10 +21,11 @@ def boolean_optimized(self):
 	obj.select = True
 
 
-def boolean_each(self):
+def boolean_batch(self):
+	cleanup = self.method == 'BATCH_CLEANUP'
 	obj = bpy.context.active_object
-	obj.select = False
 	obs = bpy.context.selected_objects
+	obs.remove(obj)
 
 	mesh_selection(self, obj, 'DESELECT')
 
@@ -33,7 +33,8 @@ def boolean_each(self):
 		mesh_selection(self, ob, 'SELECT')
 		boolean_mod(self, obj, ob, self.mode)
 
-	obj.select = True
+		if cleanup:
+			mesh_cleanup(obj)
 
 
 def boolean_mod(self, obj, ob, mode, terminate_ob=True):

@@ -23,6 +23,7 @@ class Options(Setup, Panel):
 		prefs = context.user_preferences.addons[__package__].preferences
 
 		layout.prop(prefs, 'solver', text='')
+		layout.prop(prefs, 'method', text='')
 		layout.prop(prefs, 'triangulate')
 		layout.prop(prefs, 'pos_correct')
 

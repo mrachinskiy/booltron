@@ -7,6 +7,7 @@ Features:
 
 * Faster boolean operations with large number of objects.
 * Works with Curve and Text objects.
+* Various adjustment options to get better results from boolean operations.
 * Checks for non-manifold.
 
 #### Watch [Demo][2]

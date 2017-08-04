@@ -64,3 +64,12 @@ def mesh_selection(self, ob, select_action):
 
 	bpy.ops.object.mode_set(mode='OBJECT')
 	scene.objects.active = active_object
+
+
+def mesh_cleanup(ob):
+	me = ob.data
+	bm = bmesh.new()
+	bm.from_mesh(me)
+	bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
+	bm.to_mesh(me)
+	bm.free()
