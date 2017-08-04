@@ -14,71 +14,19 @@ bl_info = {
 if 'bpy' in locals():
 	import importlib
 	importlib.reload(locale)
+	importlib.reload(preferences)
 	importlib.reload(mesh_utils)
 	importlib.reload(boolean_methods)
 	importlib.reload(operators)
 	importlib.reload(ui)
 else:
 	import bpy
-	from bpy.types import AddonPreferences
-	from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
-	from . import ui, operators, locale
-
-
-class Preferences(AddonPreferences):
-	bl_idname = __package__
-
-	solver = EnumProperty(
-		name='Boolean Solver',
-		description='Specify solver for boolean operations',
-		items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
-		       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
-		default='BMESH',
-		)
-	triangulate = BoolProperty(
-		name='Triangulate',
-		description='Triangulate geometry before boolean operation (in certain cases may improve result of a boolean operation)',
-		)
-	pos_correct = BoolProperty(
-		name='Correct Position',
-		description='Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)',
-		)
-	pos_ofst = FloatProperty(
-		name='Position Offset',
-		description='Position offset is randomly generated for each object in range [-x, +x] input value',
-		default=0.005,
-		min=0.0,
-		step=0.1,
-		precision=3,
-		)
-
-	def draw(self, context):
-		layout = self.layout
-
-		split = layout.split(percentage=0.15)
-		split.label('Boolean Solver:')
-
-		col = split.column()
-		col.prop(self, 'solver', text='')
-
-		if bpy.app.version < (2, 78, 0):
-			col.label('BMesh solver works only with Blender 2.78 or newer', icon='QUESTION')
-
-		split = layout.split(percentage=0.15)
-		split.label('Adjustments:')
-
-		col = split.column()
-		col.prop(self, 'triangulate')
-		col.prop(self, 'pos_correct')
-
-		row = col.row()
-		row.enabled = self.pos_correct
-		row.prop(self, 'pos_ofst')
+	from . import ui, operators, locale, preferences
 
 
 classes = (
-	Preferences,
+	preferences.Preferences,
 
 	ui.Options,
 	ui.Tools,

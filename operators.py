@@ -1,42 +1,17 @@
 import bpy
 from bpy.types import Operator
-from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
-from .boolean_methods import boolean_optimized, boolean_each, boolean_mod
+from .preferences import Properties
+from .boolean_methods import boolean_optimized, boolean_batch, boolean_mod
 from .mesh_utils import objects_prepare, is_manifold, mesh_selection
 
 
-class Setup:
-
-	solver = EnumProperty(
-		name='Boolean Solver',
-		description='Specify solver for boolean operations',
-		items=(('BMESH', 'BMesh', 'BMesh solver is faster, but less stable and cannot handle coplanar geometry'),
-		       ('CARVE', 'Carve', 'Carve solver is slower, but more stable and can handle simple cases of coplanar geometry')),
-		options={'SKIP_SAVE'},
-		)
-	triangulate = BoolProperty(
-		name='Triangulate',
-		description='Triangulate geometry before boolean operation (in certain cases may improve result of a boolean operation)',
-		options={'SKIP_SAVE'},
-		)
-	pos_correct = BoolProperty(
-		name='Correct Position',
-		description='Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)',
-		options={'SKIP_SAVE'},
-		)
-	pos_ofst = FloatProperty(
-		name='Position Offset',
-		description='Position offset is randomly generated for each object in range [-x, +x] input value',
-		min=0.0,
-		step=0.1,
-		precision=3,
-		options={'SKIP_SAVE'},
-		)
+class Setup(Properties):
 
 	def __init__(self):
 		prefs = bpy.context.user_preferences.addons[__package__].preferences
 		self.solver = prefs.solver
+		self.method = prefs.method
 		self.triangulate = prefs.triangulate
 		self.pos_correct = prefs.pos_correct
 		self.pos_ofst = prefs.pos_ofst
@@ -44,18 +19,18 @@ class Setup:
 	def draw(self, context):
 		layout = self.layout
 
-		split = layout.row().split()
+		split = layout.split()
 		split.label('Boolean Solver')
 		split.prop(self, 'solver', text='')
 
-		layout.separator()
+		if hasattr(self, 'mode'):
+			split = layout.split()
+			split.label('Boolean Method')
+			split.prop(self, 'method', text='')
 
-		split = layout.row().split()
-		split.prop(self, 'triangulate')
+		layout.prop(self, 'triangulate')
 
-		layout.separator()
-
-		split = layout.row().split()
+		split = layout.split()
 		split.prop(self, 'pos_correct', text='Correct Position')
 		split.prop(self, 'pos_ofst', text='')
 
@@ -71,17 +46,22 @@ class Union(Setup, Operator):
 	def execute(self, context):
 		objects_prepare(self)
 
-		boolean_optimized(self)
-		manifold = is_manifold(self)
+		if self.method == 'OPTIMIZED':
+			boolean_optimized(self)
+			manifold = is_manifold(self)
 
-		if manifold:
-			bpy.ops.object.mode_set(mode='EDIT')
-			bpy.ops.mesh.separate(type='LOOSE')
-			bpy.ops.object.mode_set(mode='OBJECT')
+			if manifold:
+				bpy.ops.object.mode_set(mode='EDIT')
+				bpy.ops.mesh.separate(type='LOOSE')
+				bpy.ops.object.mode_set(mode='OBJECT')
 
-			if len(context.selected_objects) != 1:
-				boolean_each(self)
-				is_manifold(self)
+				if len(context.selected_objects) != 1:
+					boolean_batch(self)
+					is_manifold(self)
+
+		else:
+			boolean_batch(self)
+			is_manifold(self)
 
 		return {'FINISHED'}
 
@@ -97,7 +77,11 @@ class Difference(Setup, Operator):
 	def execute(self, context):
 		objects_prepare(self)
 
-		boolean_optimized(self)
+		if self.method == 'OPTIMIZED':
+			boolean_optimized(self)
+		else:
+			boolean_batch(self)
+
 		is_manifold(self)
 
 		return {'FINISHED'}
@@ -114,7 +98,7 @@ class Intersect(Setup, Operator):
 	def execute(self, context):
 		objects_prepare(self)
 
-		boolean_each(self)
+		boolean_batch(self)
 		is_manifold(self)
 
 		return {'FINISHED'}
