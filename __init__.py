@@ -1,7 +1,7 @@
 bl_info = {
 	'name': 'Booltron',
 	'author': 'Mikhail Rachinskiy (jewelcourses.com)',
-	'version': [2000],
+	'version': (2, 0, 0),
 	'blender': (2, 74, 0),
 	'location': '3D View > Tool Shelf',
 	'description': 'Super add-on for super fast booleans.',
@@ -24,6 +24,9 @@ else:
 
 	from . import ui, operators, locale, preferences
 
+	# Extern
+	from . import addon_updater_ops
+
 
 classes = (
 	preferences.Preferences,
@@ -40,6 +43,8 @@ classes = (
 
 
 def register():
+	addon_updater_ops.register(bl_info)
+
 	for cls in classes:
 		bpy.utils.register_class(cls)
 
@@ -47,6 +52,8 @@ def register():
 
 
 def unregister():
+	addon_updater_ops.unregister()
+
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
 

@@ -1,5 +1,8 @@
 from bpy.types import Panel
 
+# Extern
+from . import addon_updater_ops
+
 
 class Setup:
 	bl_category = 'Booltron'
@@ -39,11 +42,13 @@ class Tools(Setup, Panel):
 	def draw(self, context):
 		layout = self.layout
 
+		addon_updater_ops.check_for_update_background(context)
+		addon_updater_ops.update_notice_box_ui(self, context)
+
 		obs = len(context.selected_objects)
 
-		layout.enabled = obs > 1
-
 		col = layout.column(align=True)
+		col.enabled = obs > 1
 		col.operator('object.booltron_union', text='Union')
 		col.operator('object.booltron_difference', text='Difference')
 		col.operator('object.booltron_intersect', text='Intersect')
