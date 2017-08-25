@@ -1,6 +1,3 @@
-Booltron—super add-on
-==========================
-
 Booltron—super add-on for super fast booleans.
 
 Features:
@@ -10,7 +7,14 @@ Features:
 * Various adjustment options to get better results from boolean operations.
 * Checks for non-manifold.
 
-#### Watch [Demo][2]
+#### [Watch demo video][2]
+
+
+Table of contents
+--------------------------
+
+* [How to install](#how-to-install)
+* [Установка](#Установка)
 
 
 How to install
