@@ -1,12 +1,12 @@
 import bpy
 from bpy.types import Operator
 
-from .preferences import Properties
+from .preferences import Operator_Props
 from .boolean_methods import boolean_optimized, boolean_batch, boolean_mod
 from .mesh_utils import objects_prepare, is_manifold, mesh_selection
 
 
-class Setup(Properties):
+class Setup(Operator_Props):
 
 	def __init__(self):
 		prefs = bpy.context.user_preferences.addons[__package__].preferences

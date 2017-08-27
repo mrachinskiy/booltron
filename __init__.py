@@ -29,7 +29,7 @@ else:
 
 
 classes = (
-	preferences.Preferences,
+	preferences.Addon_Prefs,
 
 	ui.Options,
 	ui.Tools,

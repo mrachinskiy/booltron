@@ -6,12 +6,8 @@ from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from . import addon_updater_ops
 
 
-"""
-Unified scene and add-on settings
-"""
-
-
-class Properties:
+class Operator_Props:
+	"""Unified operator and add-on settings"""
 
 	solver = EnumProperty(
 		name='Boolean Solver',
@@ -46,12 +42,7 @@ class Properties:
 		)
 
 
-"""
-Add-on settings
-"""
-
-
-class Preferences(AddonPreferences, Properties):
+class Addon_Prefs(AddonPreferences, Operator_Props):
 	bl_idname = __package__
 
 	"""
