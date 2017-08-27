@@ -15,9 +15,9 @@ class Setup:
 		return context.active_object is not None
 
 
-class Options(Setup, Panel):
+class OBJECT_PT_Booltron_Options(Panel, Setup):
 	bl_label = 'Options'
-	bl_idname = 'booltron_options'
+	bl_idname = 'OBJECT_PT_booltron_options'
 	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, context):
@@ -35,9 +35,9 @@ class Options(Setup, Panel):
 		row.prop(prefs, 'pos_ofst')
 
 
-class Tools(Setup, Panel):
+class OBJECT_PT_Booltron_Tools(Panel, Setup):
 	bl_label = 'Tools'
-	bl_idname = 'booltron_tools'
+	bl_idname = 'OBJECT_PT_booltron_tools'
 
 	def draw(self, context):
 		layout = self.layout

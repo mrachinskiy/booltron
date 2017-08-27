@@ -29,16 +29,16 @@ else:
 
 
 classes = (
-	preferences.Addon_Prefs,
+	preferences.Booltron_Preferences,
 
-	ui.Options,
-	ui.Tools,
+	ui.OBJECT_PT_Booltron_Options,
+	ui.OBJECT_PT_Booltron_Tools,
 
-	operators.Union,
-	operators.Difference,
-	operators.Intersect,
-	operators.Slice,
-	operators.Subtract,
+	operators.OBJECT_OT_Booltron_Union,
+	operators.OBJECT_OT_Booltron_Difference,
+	operators.OBJECT_OT_Booltron_Intersect,
+	operators.OBJECT_OT_Booltron_Slice,
+	operators.OBJECT_OT_Booltron_Subtract,
 	)
 
 

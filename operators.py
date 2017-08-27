@@ -35,7 +35,7 @@ class Setup(Operator_Props):
 		split.prop(self, 'pos_ofst', text='')
 
 
-class Union(Setup, Operator):
+class OBJECT_OT_Booltron_Union(Operator, Setup):
 	"""Combine selected objects"""
 	bl_label = 'Booltron Union'
 	bl_idname = 'object.booltron_union'
@@ -66,7 +66,7 @@ class Union(Setup, Operator):
 		return {'FINISHED'}
 
 
-class Difference(Setup, Operator):
+class OBJECT_OT_Booltron_Difference(Operator, Setup):
 	"""Subtract selected objects from active object"""
 	bl_label = 'Booltron Difference'
 	bl_idname = 'object.booltron_difference'
@@ -87,7 +87,7 @@ class Difference(Setup, Operator):
 		return {'FINISHED'}
 
 
-class Intersect(Setup, Operator):
+class OBJECT_OT_Booltron_Intersect(Operator, Setup):
 	"""Keep the common part of all selected objects"""
 	bl_label = 'Booltron Intersect'
 	bl_idname = 'object.booltron_intersect'
@@ -104,7 +104,7 @@ class Intersect(Setup, Operator):
 		return {'FINISHED'}
 
 
-class Slice(Setup, Operator):
+class OBJECT_OT_Booltron_Slice(Operator, Setup):
 	"""Slice active object along the volume of selected object"""
 	bl_label = 'Booltron Slice'
 	bl_idname = 'object.booltron_slice'
@@ -137,7 +137,7 @@ class Slice(Setup, Operator):
 		return {'FINISHED'}
 
 
-class Subtract(Setup, Operator):
+class OBJECT_OT_Booltron_Subtract(Operator, Setup):
 	"""Subtract selected object from active object, subtracted object won't be removed"""
 	bl_label = 'Booltron Subtract'
 	bl_idname = 'object.booltron_subtract'
