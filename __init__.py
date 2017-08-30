@@ -31,8 +31,8 @@ else:
 classes = (
 	preferences.Booltron_Preferences,
 
-	ui.OBJECT_PT_Booltron_Options,
-	ui.OBJECT_PT_Booltron_Tools,
+	ui.VIEW3D_PT_Booltron_Options,
+	ui.VIEW3D_PT_Booltron_Tools,
 
 	operators.OBJECT_OT_Booltron_Union,
 	operators.OBJECT_OT_Booltron_Difference,
