@@ -7,40 +7,29 @@ Features:
 * Various adjustment options to get better results from boolean operations.
 * Checks for non-manifold.
 
-#### [Watch demo video][2]
-
-
-Table of contents
---------------------------
-
-* [How to install](#how-to-install)
-* [Установка](#Установка)
+**[Watch demo video.][2]**
 
 
 How to install
---------------------------
+==========================
 
-1. Blender 2.74 is a minimum required version.
-2. [Download][1] the add-on.
+1. Blender 2.74 or newer is required to install the add-on.
+2. [Download the add-on.][1]<sup>1</sup>
 3. Go to Blender `User Preferences` → `Add-ons` category.
-4. Use `Install from File…` to install add-on from downloaded zip archive.
+4. Use `Install Add-on from File` to install add-on from downloaded zip archive.
 
-Note for mac users:
-
-* Safari browser will automatically unpack downloaded zip archive, so in order to install the add-on, you have to pack folder with add-on files back into zip archive. Or use a different browser to download add-on.
+<sup>1</sup> Note for mac users: Safari browser will automatically unpack downloaded zip archive, so in order to install the add-on, you have to pack folder with add-on files back into zip archive. Or use a different browser to download add-on.
 
 
 Установка
---------------------------
+==========================
 
-1. Blender 2.74 минимально требуемая версия.
-2. [Загрузите][1] аддон.
+1. Для установки аддона требуется Blender 2.74 или новее.
+2. [Загрузите аддон.][1]<sup>1</sup>
 3. Зайдите в настройки Blender `User Preferences` → `Add-ons`.
-4. Воспользуйтесь `Install from File…` чтобы установить аддон из загруженного архива.
+4. Воспользуйтесь `Install Add-on from File` чтобы установить аддон из загруженного архива.
 
-Примечание для пользователей mac:
-
-* Браузер Safari автоматически распаковывает скачиваемые zip архивы, поэтому, чтобы установить аддон, необходимо запаковать директорию с файлами аддона обратно в zip архив. Или используйте другой браузер для скачивания аддона.
+<sup>1</sup> Примечание для пользователей mac: браузер Safari автоматически распаковывает скачиваемые zip архивы, поэтому, чтобы установить аддон, необходимо запаковать папку с файлами аддона обратно в zip архив. Или используйте другой браузер для скачивания аддона.
 
 
 [1]: https://github.com/mrachinskiy/booltron/archive/master.zip
