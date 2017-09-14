@@ -17,7 +17,6 @@ class Setup:
 
 class VIEW3D_PT_Booltron_Options(Panel, Setup):
 	bl_label = 'Options'
-	bl_idname = 'VIEW3D_PT_booltron_options'
 	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, context):
@@ -37,13 +36,15 @@ class VIEW3D_PT_Booltron_Options(Panel, Setup):
 
 class VIEW3D_PT_Booltron_Tools(Panel, Setup):
 	bl_label = 'Tools'
-	bl_idname = 'VIEW3D_PT_booltron_tools'
 
 	def draw(self, context):
 		layout = self.layout
 
+		# Updater
+		# ----------------
 		addon_updater_ops.check_for_update_background(context)
 		addon_updater_ops.update_notice_box_ui(self, context)
+		# ----------------
 
 		obs = len(context.selected_objects)
 
