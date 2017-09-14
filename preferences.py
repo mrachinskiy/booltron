@@ -45,9 +45,8 @@ class Operator_Props:
 class Booltron_Preferences(AddonPreferences, Operator_Props):
 	bl_idname = __package__
 
-	"""
-	Updater settings
-	"""
+	# Updater settings
+	# ---------------------------
 
 	auto_check_update = BoolProperty(
 		name='Auto-check for Update',
