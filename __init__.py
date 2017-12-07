@@ -29,7 +29,7 @@ else:
 
 
 classes = (
-	preferences.Booltron_Preferences,
+	preferences.PREFS_Booltron_Props,
 
 	ui.VIEW3D_PT_Booltron_Options,
 	ui.VIEW3D_PT_Booltron_Tools,
