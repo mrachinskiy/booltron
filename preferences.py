@@ -42,7 +42,7 @@ class Operator_Props:
 		)
 
 
-class Booltron_Preferences(AddonPreferences, Operator_Props):
+class PREFS_Booltron_Props(AddonPreferences, Operator_Props):
 	bl_idname = __package__
 
 	# Updater settings
