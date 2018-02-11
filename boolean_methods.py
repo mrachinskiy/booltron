@@ -42,10 +42,8 @@ def boolean_mod(self, obj, ob, mode, terminate_ob=True):
 	md.show_viewport = False
 	md.show_render = False
 	md.operation = mode
-	try:
+	if self.solver_option:
 		md.solver = self.solver
-	except:
-		pass
 	md.object = ob
 	bpy.ops.object.modifier_apply(modifier='Boolean')
 

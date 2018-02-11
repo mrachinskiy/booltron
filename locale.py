@@ -29,7 +29,7 @@ lc_main = {
 	"Subtract selected object from active object, subtracted object won't be removed": 'Вычесть выделенный объект из активного объекта, вычитаемый объект не будет удалён',
 
 	# Reports
-	'BMesh solver works only with Blender 2.78 or newer': 'BMesh солвер работает только с Blender 2.78 или новее',
+	'Not available on this version of Blender': 'Недоступно в этой версии Blender',
 	'Boolean operation result is non-manifold': 'Результат булевской операции non-manifold',
 	}
 

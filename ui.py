@@ -1,5 +1,7 @@
 from bpy.types import Panel
 
+from .versioning import solver_option
+
 # Extern
 from . import addon_updater_ops
 
@@ -24,7 +26,8 @@ class VIEW3D_PT_Booltron_Options(Panel, Setup):
 
 		prefs = context.user_preferences.addons[__package__].preferences
 
-		layout.prop(prefs, 'solver', text='')
+		if solver_option:
+			layout.prop(prefs, 'solver', text='')
 		layout.prop(prefs, 'method', text='')
 		layout.prop(prefs, 'triangulate')
 		layout.prop(prefs, 'pos_correct')

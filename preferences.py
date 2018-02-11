@@ -1,6 +1,7 @@
-import bpy
 from bpy.types import AddonPreferences
 from bpy.props import EnumProperty, BoolProperty, FloatProperty, IntProperty
+
+from .versioning import solver_option
 
 # Extern
 from . import addon_updater_ops
@@ -45,6 +46,12 @@ class Operator_Props:
 class PREFS_Booltron_Props(AddonPreferences, Operator_Props):
 	bl_idname = __package__
 
+	active_section = EnumProperty(
+		items=(('TOOLS',   'Tools',   ''),
+		       ('UPDATER', 'Updater', '')),
+		options={'SKIP_SAVE'},
+		)
+
 	# Updater settings
 	# ---------------------------
 
@@ -83,30 +90,34 @@ class PREFS_Booltron_Props(AddonPreferences, Operator_Props):
 	def draw(self, context):
 		layout = self.layout
 
-		split = layout.split(percentage=0.2)
-		split.label('Boolean Solver:')
+		col = layout.column()
+		col.row().prop(self, 'active_section', expand=True)
+		col.separator()
 
-		col = split.column()
-		col.prop(self, 'solver', text='')
+		if self.active_section == 'TOOLS':
+			split = layout.split(percentage=0.2)
+			split.label('Boolean Solver:')
 
-		if bpy.app.version < (2, 78, 0):
-			col.label('BMesh solver works only with Blender 2.78 or newer', icon='QUESTION')
+			col = split.column()
+			if solver_option:
+				col.prop(self, 'solver', text='')
+			else:
+				col.label('Not available on this version of Blender', icon='INFO')
 
-		split = layout.split(percentage=0.2)
-		split.label('Boolean Method:')
-		split.prop(self, 'method', text='')
+			split = layout.split(percentage=0.2)
+			split.label('Boolean Method:')
+			split.prop(self, 'method', text='')
 
-		split = layout.split(percentage=0.2)
-		split.label('Adjustments:')
+			split = layout.split(percentage=0.2)
+			split.label('Adjustments:')
 
-		col = split.column()
-		col.prop(self, 'triangulate')
-		col.prop(self, 'pos_correct')
+			col = split.column()
+			col.prop(self, 'triangulate')
+			col.prop(self, 'pos_correct')
 
-		row = col.row()
-		row.enabled = self.pos_correct
-		row.prop(self, 'pos_ofst')
+			row = col.row()
+			row.enabled = self.pos_correct
+			row.prop(self, 'pos_ofst')
 
-		layout.separator()
-
-		addon_updater_ops.update_settings_ui(self, context)
+		elif self.active_section == 'UPDATER':
+			addon_updater_ops.update_settings_ui(self, context)
