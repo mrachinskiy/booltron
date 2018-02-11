@@ -4,12 +4,14 @@ from bpy.types import Operator
 from .preferences import Operator_Props
 from .boolean_methods import boolean_optimized, boolean_batch, boolean_mod
 from .mesh_utils import objects_prepare, is_manifold, mesh_selection
+from .versioning import solver_option
 
 
 class Setup(Operator_Props):
 
 	def __init__(self):
 		prefs = bpy.context.user_preferences.addons[__package__].preferences
+		self.solver_option = solver_option
 		self.solver = prefs.solver
 		self.method = prefs.method
 		self.triangulate = prefs.triangulate
@@ -19,9 +21,10 @@ class Setup(Operator_Props):
 	def draw(self, context):
 		layout = self.layout
 
-		split = layout.split()
-		split.label('Boolean Solver')
-		split.prop(self, 'solver', text='')
+		if self.solver_option:
+			split = layout.split()
+			split.label('Boolean Solver')
+			split.prop(self, 'solver', text='')
 
 		if hasattr(self, 'mode'):
 			split = layout.split()

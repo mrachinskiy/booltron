@@ -13,6 +13,7 @@ bl_info = {
 
 if 'bpy' in locals():
 	import importlib
+	importlib.reload(versioning)
 	importlib.reload(locale)
 	importlib.reload(preferences)
 	importlib.reload(mesh_utils)
