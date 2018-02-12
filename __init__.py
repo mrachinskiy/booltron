@@ -1,7 +1,7 @@
 bl_info = {
 	'name': 'Booltron',
 	'author': 'Mikhail Rachinskiy (jewelcourses.com)',
-	'version': (2, 0, 0),
+	'version': (2, 0, 1),
 	'blender': (2, 74, 0),
 	'location': '3D View > Tool Shelf',
 	'description': 'Super add-on for super fast booleans.',
