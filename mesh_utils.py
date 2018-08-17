@@ -1,3 +1,24 @@
+# ##### BEGIN GPL LICENSE BLOCK #####
+#
+#  JewelCraft jewelry design toolkit for Blender.
+#  Copyright (C) 2014-2018  Mikhail Rachinskiy
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# ##### END GPL LICENSE BLOCK #####
+
+
 import random
 
 import bpy
@@ -5,71 +26,68 @@ import bmesh
 from mathutils import Vector
 
 
-def objects_prepare(self):
-	bpy.ops.object.make_single_user(object=True, obdata=True)
-	bpy.ops.object.convert(target='MESH')
+class MeshUtils:
 
-	if self.pos_correct:
-		obj = bpy.context.active_object
-		obs = bpy.context.selected_objects
-		obs.remove(obj)
+    def prepare_selected(self):
+        bpy.ops.object.make_single_user(object=True, obdata=True)
+        bpy.ops.object.convert(target="MESH")
 
-		for ob in obs:
-			x = random.uniform(-self.pos_ofst, self.pos_ofst)
-			y = random.uniform(-self.pos_ofst, self.pos_ofst)
-			z = random.uniform(-self.pos_ofst, self.pos_ofst)
+        if self.pos_correct:
+            obs = bpy.context.selected_objects
+            obs.remove(bpy.context.active_object)
 
-			ob.location += Vector((x, y, z))
+            for ob in obs:
+                x = random.uniform(-self.pos_offset, self.pos_offset)
+                y = random.uniform(-self.pos_offset, self.pos_offset)
+                z = random.uniform(-self.pos_offset, self.pos_offset)
 
+                ob.location += Vector((x, y, z))
 
-def is_manifold(self):
-	me = bpy.context.active_object.data
-	bm = bmesh.new()
-	bm.from_mesh(me)
+    def mesh_selection(self, ob, select_action):
+        scene = bpy.context.scene
+        ops_me = bpy.ops.mesh
 
-	for edge in bm.edges:
-		if not edge.is_manifold:
-			bm.free()
-			self.report({'ERROR'}, 'Boolean operation result is non-manifold')
-			return False
+        active_object = bpy.context.active_object
+        scene.objects.active = ob
+        bpy.ops.object.mode_set(mode="EDIT")
 
-	bm.free()
-	return True
+        ops_me.reveal()
 
+        ops_me.select_all(action="SELECT")
+        ops_me.delete_loose()
 
-def mesh_selection(self, ob, select_action):
-	scene = bpy.context.scene
-	ops_me = bpy.ops.mesh
+        ops_me.select_all(action="SELECT")
+        ops_me.remove_doubles(threshold=0.0001)
 
-	active_object = bpy.context.active_object
-	scene.objects.active = ob
-	bpy.ops.object.mode_set(mode='EDIT')
+        ops_me.select_all(action="SELECT")
+        ops_me.fill_holes(sides=0)
 
-	ops_me.reveal()
+        if self.triangulate:
+            ops_me.select_all(action="SELECT")
+            ops_me.quads_convert_to_tris()
 
-	ops_me.select_all(action='SELECT')
-	ops_me.delete_loose()
+        ops_me.select_all(action=select_action)
 
-	ops_me.select_all(action='SELECT')
-	ops_me.remove_doubles(threshold=0.0001)
+        bpy.ops.object.mode_set(mode="OBJECT")
+        scene.objects.active = active_object
 
-	ops_me.select_all(action='SELECT')
-	ops_me.fill_holes(sides=0)
+    def is_manifold(self, ob):
+        bm = bmesh.new()
+        bm.from_mesh(ob.data)
 
-	if self.triangulate:
-		ops_me.select_all(action='SELECT')
-		ops_me.quads_convert_to_tris()
+        for edge in bm.edges:
+            if not edge.is_manifold:
+                bm.free()
+                self.report({"ERROR"}, "Boolean operation result is non-manifold")
+                return False
 
-	ops_me.select_all(action=select_action)
+        bm.free()
+        return True
 
-	bpy.ops.object.mode_set(mode='OBJECT')
-	scene.objects.active = active_object
-
-
-def mesh_cleanup(ob):
-	me = ob.data
-	bm = bmesh.new()
-	bm.from_mesh(me)
-	bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
-	bm.to_mesh(me)
-	bm.free()
+    def mesh_cleanup(self, ob):
+        me = ob.data
+        bm = bmesh.new()
+        bm.from_mesh(me)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
+        bm.to_mesh(me)
+        bm.free()
