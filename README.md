@@ -13,7 +13,7 @@ Features:
 How to install
 ==========================
 
-1. Blender 2.74 or newer is required to install the add-on.
+1. Blender 2.76 or newer is required to install the add-on.
 2. [Download the add-on.][1]<sup>1</sup>
 3. Go to Blender `User Preferences` → `Add-ons` category.
 4. Use `Install Add-on from File` to install add-on from downloaded zip archive.
@@ -24,7 +24,7 @@ How to install
 Установка
 ==========================
 
-1. Для установки аддона требуется Blender 2.74 или новее.
+1. Для установки аддона требуется Blender 2.76 или новее.
 2. [Загрузите аддон.][1]<sup>1</sup>
 3. Зайдите в настройки Blender `User Preferences` → `Add-ons`.
 4. Воспользуйтесь `Install Add-on from File` чтобы установить аддон из загруженного архива.
