@@ -28,28 +28,22 @@ from . import versioning, addon_updater_ops
 class OperatorProps:
     """Unified add-on and operator settings"""
 
-    solver = EnumProperty(
-        name="Boolean Solver",
-        description="Specify solver for boolean operations",
-        items=(
-            ("BMESH", "BMesh", "BMesh solver is faster, but less stable and cannot handle coplanar geometry"),
-            ("CARVE", "Carve", "Carve solver is slower, but more stable and can handle simple cases of coplanar geometry"),
-        ),
-        default="BMESH",
-    )
-    method = EnumProperty(
-        name="Boolean Method",
-        description="Specify boolean method for Union, Difference and Intersect tools (Intersect tool does not support optimized method and will use batch method instead)",
-        items=(
-            ("OPTIMIZED",     "Optimized",            "A single boolean operation with all objects at once, fastest, but in certain cases gives unpredictable result"),
-            ("BATCH",         "Batch",                "Boolean operation for each selected object one by one, much slower, but overall gives more predictable result than optimized method"),
-            ("BATCH_CLEANUP", "Batch + Mesh Cleanup", "Perform mesh cleanup operation in between boolean operations, slowest, but gives better result in cases where simple batch method fails"),
-        ),
-        default="OPTIMIZED",
-    )
-    triangulate = BoolProperty(name="Triangulate", description="Triangulate geometry before boolean operation (in certain cases may improve result of a boolean operation)")
+    if versioning.SOLVER_OPTION:
+
+        solver = EnumProperty(
+            name="Boolean Solver",
+            description="Specify solver for boolean operations",
+            items=(
+                ("BMESH", "BMesh", "BMesh solver is faster, but less stable and cannot handle coplanar geometry"),
+                ("CARVE", "Carve", "Carve solver is slower, but more stable and can handle simple cases of coplanar geometry"),
+            ),
+        )
+
+    cleanup = BoolProperty(name="Mesh Cleanup", description="Perform mesh cleanup in between boolean operations, enabling this option will greatly affect performance of a boolean operation")
+    triangulate = BoolProperty(name="Triangulate", description="Triangulate geometry before boolean operation, in some cases may improve result of a boolean operation")
     pos_correct = BoolProperty(name="Correct Position", description="Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)")
-    pos_offset = FloatProperty(name="Position Offset", description="Position offset is randomly generated for each object in range [-x, +x] input value", default=0.005, min=0.0, step=0.1, precision=3)
+    pos_offset = FloatProperty(name="Position Offset", description="Position offset is randomly generated for each object in range [-x, +x] input value", default=0.005, min=0.0, step=0.1, precision=3, unit="LENGTH")
+    keep_objects = BoolProperty(name="Keep Objects", description="Do not remove selected objects after boolean operation (Shortcut: hold Alt when using the tool)", options={"SKIP_SAVE"})
 
 
 class BooltronPreferences(AddonPreferences, OperatorProps):
@@ -62,7 +56,6 @@ class BooltronPreferences(AddonPreferences, OperatorProps):
         ),
         options={"SKIP_SAVE"},
     )
-
     update_auto_check = BoolProperty(name="Automatically check for updates", description="Automatically check for updates with specified interval", default=True)
     update_interval = EnumProperty(
         name="Interval",
@@ -80,37 +73,33 @@ class BooltronPreferences(AddonPreferences, OperatorProps):
 
         col = layout.column()
         col.row().prop(self, "active_section", expand=True)
-
         col.separator()
 
         if self.active_section == "TOOLS":
-            split = layout.split(percentage=1 / 3)
-            split.enabled = versioning.SOLVER_OPTION
-            split.alignment = "RIGHT"
-            split.label("Boolean Solver")
+            col = layout.column()
 
             if versioning.SOLVER_OPTION:
+                split = col.split(percentage=1 / 3)
+                split.alignment = "RIGHT"
+                split.label("Boolean Solver")
                 split.prop(self, "solver", text="")
-            else:
-                split.alignment = "LEFT"
-                split.label("(!) Not available on this version of Blender")
 
-            split = layout.split(percentage=1 / 3)
+            split = col.split(percentage=1 / 3)
             split.alignment = "RIGHT"
-            split.label("Boolean Method")
-            split.prop(self, "method", text="")
+            split.label("Mesh Cleanup")
+            split.prop(self, "cleanup", text="")
 
-            split = layout.split(percentage=1 / 3)
+            split = col.split(percentage=1 / 3)
             split.alignment = "RIGHT"
             split.label("Triangulate")
             split.prop(self, "triangulate", text="")
 
-            split = layout.split(percentage=1 / 3)
+            split = col.split(percentage=1 / 3)
             split.alignment = "RIGHT"
             split.label("Correct Position")
             split.prop(self, "pos_correct", text="")
 
-            split = layout.split(percentage=1 / 3)
+            split = col.split(percentage=1 / 3)
             split.active = self.pos_correct
             split.alignment = "RIGHT"
             split.label("Position Offset")

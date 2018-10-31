@@ -24,6 +24,9 @@ from bpy.types import Panel
 from . import versioning, addon_updater_ops
 
 
+preview_collections = {}
+
+
 class Setup:
     bl_category = "Booltron"
     bl_space_type = "VIEW_3D"
@@ -57,9 +60,8 @@ class VIEW3D_PT_booltron_options(Panel, Setup):
         if versioning.SOLVER_OPTION:
             layout.prop(prefs, "solver", text="")
 
-        layout.prop(prefs, "method", text="")
-
         col = layout.column()
+        col.prop(prefs, "cleanup")
         col.prop(prefs, "triangulate")
         col.prop(prefs, "pos_correct")
 
@@ -75,12 +77,11 @@ class VIEW3D_PT_booltron_tools(Panel, Setup):
         addon_updater_ops.check_for_update_background()
 
         layout = self.layout
+        pcoll = preview_collections["icons"]
 
         col = layout.column(align=True)
-        col.operator("object.booltron_union", text="Union")
-        col.operator("object.booltron_difference", text="Difference")
-        col.operator("object.booltron_intersect", text="Intersect")
+        col.operator("object.booltron_union", text="Union", icon_value=pcoll["union"].icon_id)
+        col.operator("object.booltron_difference", text="Difference", icon_value=pcoll["difference"].icon_id)
+        col.operator("object.booltron_intersect", text="Intersect", icon_value=pcoll["intersect"].icon_id)
 
-        col = layout.column(align=True)
-        col.operator("object.booltron_slice", text="Slice")
-        col.operator("object.booltron_subtract", text="Subtract")
+        layout.operator("object.booltron_slice", text="Slice", icon_value=pcoll["slice"].icon_id)

@@ -26,40 +26,44 @@ from . import versioning
 
 class BooleanMethods:
 
-    def boolean_optimized(self):
-        scene = bpy.context.scene
+    def boolean_adaptive(self):
+        carve_difference = versioning.SOLVER_OPTION and self.solver == "CARVE" and self.mode == "DIFFERENCE"
+        batch = self.is_overlap and not carve_difference
+
+        print(bpy.context.selected_objects)
 
         ob1 = bpy.context.active_object
         ob1.select = False
 
         obs = bpy.context.selected_objects
-        ob2 = obs[0]
+        ob2 = obs.pop()
 
-        if len(obs) != 1:
+        if obs:
+            scene = bpy.context.scene
             scene.objects.active = ob2
-            bpy.ops.object.join()
+
+            if batch:
+                self.mesh_prepare(ob2, select=True)
+
+                for ob3 in obs:
+                    self.mesh_prepare(ob3, select=True)
+                    self.boolean_mod(ob2, ob3, "UNION")
+
+                    if self.cleanup:
+                        self.mesh_cleanup(ob2)
+            else:
+                bpy.ops.object.join()
+
             scene.objects.active = ob1
 
-        self.mesh_selection(ob2, "SELECT")
-        self.mesh_selection(ob1, "DESELECT")
+        if not batch:
+            self.mesh_prepare(ob2, select=True)
+
+        self.mesh_prepare(ob1, select=False)
         self.boolean_mod(ob1, ob2, self.mode)
 
-        ob1.select = True
-
-    def boolean_batch(self):
-        cleanup = self.method == "BATCH_CLEANUP"
-
-        ob1 = bpy.context.active_object
-        ob1.select = False
-
-        self.mesh_selection(ob1, "DESELECT")
-
-        for ob2 in bpy.context.selected_objects:
-            self.mesh_selection(ob2, "SELECT")
-            self.boolean_mod(ob1, ob2, self.mode)
-
-            if cleanup:
-                self.mesh_cleanup(ob1)
+        if self.cleanup:
+            self.mesh_cleanup(ob1)
 
         ob1.select = True
 
