@@ -23,12 +23,54 @@ import random
 
 import bpy
 import bmesh
-from mathutils import Vector
+from mathutils import Vector, bvhtree
+
+
+def delete_loose(bm):
+    for v in bm.verts:
+        if v.is_wire or not v.link_edges:
+            bm.verts.remove(v)
 
 
 class MeshUtils:
 
-    def prepare_selected(self):
+    def object_overlap(self, obs):
+        scene = bpy.context.scene
+        bm = bmesh.new()
+
+        for ob in obs:
+            me = ob.to_mesh(scene, True, "PREVIEW", calc_tessface=False)
+            me.transform(ob.matrix_world)
+
+            bm.from_mesh(me)
+
+            bpy.data.meshes.remove(me)
+
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
+
+        tree = bvhtree.BVHTree.FromBMesh(bm, epsilon=0.00001)
+        overlap = tree.overlap(tree)
+
+        bm.free()
+        return bool(overlap)
+
+    def object_prepare(self):
+        if self.keep_objects:
+            space_data = bpy.context.space_data
+            scene = bpy.context.scene
+            obs = bpy.context.selected_objects
+            obs.remove(bpy.context.active_object)
+
+            for ob in obs:
+                ob_copy = ob.copy()
+                ob_copy.data = ob.data.copy()
+                base = scene.objects.link(ob_copy)
+
+                if self.local_view:
+                    base.layers_from_view(space_data)
+
+                ob.select = False
+
         bpy.ops.object.make_single_user(object=True, obdata=True)
         bpy.ops.object.convert(target="MESH")
 
@@ -43,51 +85,44 @@ class MeshUtils:
 
                 ob.location += Vector((x, y, z))
 
-    def mesh_selection(self, ob, select_action):
-        scene = bpy.context.scene
-        ops_me = bpy.ops.mesh
+    def mesh_prepare(self, ob, select=False):
+        me = ob.data
+        bm = bmesh.new()
+        bm.from_mesh(me)
 
-        active_object = bpy.context.active_object
-        scene.objects.active = ob
-        bpy.ops.object.mode_set(mode="EDIT")
-
-        ops_me.reveal()
-
-        ops_me.select_all(action="SELECT")
-        ops_me.delete_loose()
-
-        ops_me.select_all(action="SELECT")
-        ops_me.remove_doubles(threshold=0.0001)
-
-        ops_me.select_all(action="SELECT")
-        ops_me.fill_holes(sides=0)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
+        delete_loose(bm)
+        bmesh.ops.holes_fill(bm, edges=bm.edges)
 
         if self.triangulate:
-            ops_me.select_all(action="SELECT")
-            ops_me.quads_convert_to_tris()
+            bmesh.ops.triangulate(bm, faces=bm.faces, quad_method=3)
 
-        ops_me.select_all(action=select_action)
+        for f in bm.faces:
+            f.select = select
 
-        bpy.ops.object.mode_set(mode="OBJECT")
-        scene.objects.active = active_object
-
-    def is_manifold(self, ob):
-        bm = bmesh.new()
-        bm.from_mesh(ob.data)
-
-        for edge in bm.edges:
-            if not edge.is_manifold:
-                bm.free()
-                self.report({"ERROR"}, "Boolean operation result is non-manifold")
-                return False
-
+        bm.to_mesh(me)
         bm.free()
-        return True
 
     def mesh_cleanup(self, ob):
         me = ob.data
         bm = bmesh.new()
         bm.from_mesh(me)
+
         bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
+        delete_loose(bm)
+
         bm.to_mesh(me)
         bm.free()
+
+    def mesh_check(self, ob):
+        bm = bmesh.new()
+        bm.from_mesh(ob.data)
+
+        for e in bm.edges:
+            if not e.is_manifold:
+                self.report({"ERROR"}, "Boolean operation result is non-manifold")
+                bm.free()
+                return True
+
+        bm.free()
+        return False

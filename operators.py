@@ -19,7 +19,6 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-import bpy
 from bpy.types import Operator
 
 from .preferences import OperatorProps
@@ -38,27 +37,43 @@ class Setup(OperatorProps, BooleanMethods, MeshUtils):
             split.label("Boolean Solver")
             split.prop(self, "solver", text="")
 
-        split = layout.split()
-        split.label("Boolean Method")
-        split.prop(self, "method", text="")
-
+        layout.prop(self, "cleanup")
         layout.prop(self, "triangulate")
 
         split = layout.split()
         split.prop(self, "pos_correct", text="Correct Position")
         split.prop(self, "pos_offset", text="")
 
+        layout.prop(self, "keep_objects")
+
+    def execute(self, context):
+        self.object_prepare()
+        self.boolean_adaptive()
+        self.mesh_check(context.active_object)
+        return {"FINISHED"}
+
     def invoke(self, context, event):
-        if len(context.selected_objects) < 2:
+        obs = context.selected_objects
+
+        if len(obs) < 2:
             self.report({"ERROR"}, "At least two objects must be selected")
             return {"CANCELLED"}
 
         prefs = context.user_preferences.addons[__package__].preferences
-        self.solver = prefs.solver
-        self.method = prefs.method
+        self.cleanup = prefs.cleanup
         self.triangulate = prefs.triangulate
         self.pos_correct = prefs.pos_correct
         self.pos_offset = prefs.pos_offset
+        self.is_overlap = False
+        self.keep_objects = event.alt
+        self.local_view = bool(context.space_data.local_view)
+
+        if versioning.SOLVER_OPTION:
+            self.solver = prefs.solver
+
+        if len(obs) > 2 and self.mode != "NONE":
+            obs.remove(context.active_object)
+            self.is_overlap = self.object_overlap(obs)
 
         return self.execute(context)
 
@@ -71,33 +86,6 @@ class OBJECT_OT_booltron_union(Operator, Setup):
 
     mode = "UNION"
 
-    def execute(self, context):
-        self.prepare_selected()
-
-        if self.method == "OPTIMIZED":
-            self.boolean_optimized()
-
-            if not self.is_manifold(context.active_object):
-                return {"FINISHED"}
-
-            bpy.ops.object.mode_set(mode="EDIT")
-            bpy.ops.mesh.separate(type="LOOSE")
-            bpy.ops.object.mode_set(mode="OBJECT")
-
-            if len(context.selected_objects) != 1:
-                self.boolean_batch()
-
-                if not self.is_manifold(context.active_object):
-                    return {"FINISHED"}
-
-        else:
-            self.boolean_batch()
-
-            if not self.is_manifold(context.active_object):
-                return {"FINISHED"}
-
-        return {"FINISHED"}
-
 
 class OBJECT_OT_booltron_difference(Operator, Setup):
     bl_label = "Booltron Difference"
@@ -106,19 +94,6 @@ class OBJECT_OT_booltron_difference(Operator, Setup):
     bl_options = {"REGISTER", "UNDO"}
 
     mode = "DIFFERENCE"
-
-    def execute(self, context):
-        self.prepare_selected()
-
-        if self.method == "OPTIMIZED":
-            self.boolean_optimized()
-        else:
-            self.boolean_batch()
-
-        if not self.is_manifold(context.active_object):
-            return {"FINISHED"}
-
-        return {"FINISHED"}
 
 
 class OBJECT_OT_booltron_intersect(Operator, Setup):
@@ -129,15 +104,6 @@ class OBJECT_OT_booltron_intersect(Operator, Setup):
 
     mode = "INTERSECT"
 
-    def execute(self, context):
-        self.prepare_selected()
-        self.boolean_batch()
-
-        if not self.is_manifold(context.active_object):
-            return {"FINISHED"}
-
-        return {"FINISHED"}
-
 
 class OBJECT_OT_booltron_slice(Operator, Setup):
     bl_label = "Booltron Slice"
@@ -145,25 +111,31 @@ class OBJECT_OT_booltron_slice(Operator, Setup):
     bl_idname = "object.booltron_slice"
     bl_options = {"REGISTER", "UNDO"}
 
+    mode = "NONE"
+
     def execute(self, context):
-        cleanup = self.method == "BATCH_CLEANUP"
+        space_data = context.space_data
         scene = context.scene
-        self.prepare_selected()
+        self.object_prepare()
 
         ob1 = context.active_object
         ob1.select = False
-        self.mesh_selection(ob1, "DESELECT")
+        self.mesh_prepare(ob1, select=False)
 
         for ob2 in context.selected_objects:
 
-            self.mesh_selection(ob2, "SELECT")
+            self.mesh_prepare(ob2, select=True)
 
             # Create copy of main object
             # ---------------------------------
 
             ob1_copy = ob1.copy()
             ob1_copy.data = ob1.data.copy()
-            scene.objects.link(ob1_copy)
+            base = scene.objects.link(ob1_copy)
+
+            if self.local_view:
+                base.layers_from_view(space_data)
+
             ob1_copy.layers = ob1.layers
             ob1_copy.select = True
 
@@ -173,7 +145,7 @@ class OBJECT_OT_booltron_slice(Operator, Setup):
             scene.objects.active = ob1
             self.boolean_mod(ob1, ob2, "DIFFERENCE", terminate=False)
 
-            if not self.is_manifold(ob1):
+            if self.mesh_check(ob1):
                 return {"FINISHED"}
 
             # Copy object intersect
@@ -182,61 +154,10 @@ class OBJECT_OT_booltron_slice(Operator, Setup):
             scene.objects.active = ob1_copy
             self.boolean_mod(ob1_copy, ob2, "INTERSECT")
 
-            if not self.is_manifold(ob1_copy):
+            if self.mesh_check(ob1_copy):
                 return {"FINISHED"}
 
-            if cleanup:
+            if self.cleanup:
                 self.mesh_cleanup(ob1)
-
-        return {"FINISHED"}
-
-
-class OBJECT_OT_booltron_subtract(Operator, Setup):
-    bl_label = "Booltron Subtract"
-    bl_description = "Subtract selected objects from active object, subtracted objects will not be removed"
-    bl_idname = "object.booltron_subtract"
-    bl_options = {"REGISTER", "UNDO"}
-
-    mode = "DIFFERENCE"
-
-    def execute(self, context):
-        scene = context.scene
-
-        # Create subtract object copies
-        # ---------------------------------
-
-        oba = context.active_object
-        oba.select = False
-
-        obs = context.selected_objects
-        obs_copy = []
-        oba.select = True
-
-        for ob in obs:
-            ob_copy = ob.copy()
-            ob_copy.data = ob.data.copy()
-            scene.objects.link(ob_copy)
-
-            obs_copy.append(ob_copy)
-
-            ob.select = False
-
-        # Boolean operations
-        # ---------------------------------
-
-        self.prepare_selected()
-
-        if self.method == "OPTIMIZED":
-            self.boolean_optimized()
-        else:
-            self.boolean_batch()
-
-        # Restore selection
-        # ---------------------------------
-
-        for ob in obs:
-            ob.select = True
-
-        oba.select = False
 
         return {"FINISHED"}

@@ -22,8 +22,8 @@
 bl_info = {
     "name": "Booltron",
     "author": "Mikhail Rachinskiy",
-    "version": (2, 1, 0),
-    "blender": (2, 74, 0),
+    "version": (2, 2, 0),
+    "blender": (2, 76, 0),
     "location": "3D View > Tool Shelf",
     "description": "Super add-on for super fast booleans.",
     "wiki_url": "https://github.com/mrachinskiy/booltron#readme",
@@ -43,7 +43,10 @@ if "bpy" in locals():
     importlib.reload(operators)
     importlib.reload(ui)
 else:
+    import os
+
     import bpy
+    import bpy.utils.previews
 
     from . import translations, preferences, operators, ui, addon_updater_ops
 
@@ -57,7 +60,6 @@ classes = (
     operators.OBJECT_OT_booltron_difference,
     operators.OBJECT_OT_booltron_intersect,
     operators.OBJECT_OT_booltron_slice,
-    operators.OBJECT_OT_booltron_subtract,
 )
 
 
@@ -69,6 +71,22 @@ def register():
 
     bpy.app.translations.register(__name__, translations.DICTIONARY)
 
+    # Previews
+    # ---------------------------
+
+    ADDON_DIR = os.path.dirname(__file__)
+    ICONS_DIR = os.path.join(ADDON_DIR, "icons")
+
+    pcoll = bpy.utils.previews.new()
+
+    for entry in os.scandir(ICONS_DIR):
+
+        if entry.name.endswith(".png"):
+            name = os.path.splitext(entry.name)[0]
+            pcoll.load(name, entry.path, "IMAGE")
+
+    ui.preview_collections["icons"] = pcoll
+
 
 def unregister():
     addon_updater_ops.unregister()
@@ -77,6 +95,14 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
     bpy.app.translations.unregister(__name__)
+
+    # Previews
+    # ---------------------------
+
+    for pcoll in ui.preview_collections.values():
+        bpy.utils.previews.remove(pcoll)
+
+    ui.preview_collections.clear()
 
 
 if __name__ == "__main__":
