@@ -67,18 +67,16 @@ class BooleanMethods:
 
         ob1.select = True
 
-    def boolean_mod(self, ob1, ob2, mode, terminate=True):
-        md = ob1.modifiers.new("Boolean", "BOOLEAN")
-        md.show_viewport = False
-        md.show_render = False
+    def boolean_mod(self, ob1, ob2, mode, md_name="Boolean", md_apply=True, terminate=True):
+        md = ob1.modifiers.new(md_name, "BOOLEAN")
+        md.show_viewport = not md_apply
         md.operation = mode
         if versioning.SOLVER_OPTION:
             md.solver = self.solver
         md.object = ob2
-        bpy.ops.object.modifier_apply(modifier="Boolean")
+
+        if md_apply:
+            bpy.ops.object.modifier_apply(modifier=md.name)
 
         if terminate:
-            me = ob2.data
-            bpy.context.scene.objects.unlink(ob2)  # pre 2.78 compatibility
-            bpy.data.objects.remove(ob2)
-            bpy.data.meshes.remove(me)
+            self.object_remove(ob2)

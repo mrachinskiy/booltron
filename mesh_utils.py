@@ -19,11 +19,9 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-import random
-
 import bpy
 import bmesh
-from mathutils import Vector, bvhtree
+from mathutils import bvhtree
 
 
 def delete_loose(bm):
@@ -55,11 +53,14 @@ class MeshUtils:
         return bool(overlap)
 
     def object_prepare(self):
+        ob1 = bpy.context.active_object
+        obs = bpy.context.selected_objects
+        if ob1.select:
+            obs.remove(ob1)
+
         if self.keep_objects:
             space_data = bpy.context.space_data
             scene = bpy.context.scene
-            obs = bpy.context.selected_objects
-            obs.remove(bpy.context.active_object)
 
             for ob in obs:
                 ob_copy = ob.copy()
@@ -75,15 +76,7 @@ class MeshUtils:
         bpy.ops.object.convert(target="MESH")
 
         if self.pos_correct:
-            obs = bpy.context.selected_objects
-            obs.remove(bpy.context.active_object)
-
-            for ob in obs:
-                x = random.uniform(-self.pos_offset, self.pos_offset)
-                y = random.uniform(-self.pos_offset, self.pos_offset)
-                z = random.uniform(-self.pos_offset, self.pos_offset)
-
-                ob.location += Vector((x, y, z))
+            self.object_pos_correct(obs)
 
     def mesh_prepare(self, ob, select=False):
         me = ob.data

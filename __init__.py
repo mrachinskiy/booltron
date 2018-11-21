@@ -22,8 +22,8 @@
 bl_info = {
     "name": "Booltron",
     "author": "Mikhail Rachinskiy",
-    "version": (2, 2, 0),
-    "blender": (2, 76, 0),
+    "version": (2, 3, 0),
+    "blender": (2, 77, 0),
     "location": "3D View > Tool Shelf",
     "description": "Super add-on for super fast booleans.",
     "wiki_url": "https://github.com/mrachinskiy/booltron#readme",
@@ -40,7 +40,8 @@ if "bpy" in locals():
     importlib.reload(preferences)
     importlib.reload(mesh_utils)
     importlib.reload(boolean_methods)
-    importlib.reload(operators)
+    importlib.reload(operators_destructive)
+    importlib.reload(operators_nondestructive)
     importlib.reload(ui)
 else:
     import os
@@ -48,18 +49,29 @@ else:
     import bpy
     import bpy.utils.previews
 
-    from . import translations, preferences, operators, ui, addon_updater_ops
+    from . import (
+        translations,
+        preferences,
+        operators_destructive,
+        operators_nondestructive,
+        ui,
+        addon_updater_ops,
+    )
 
 
 classes = (
     preferences.BooltronPreferences,
     ui.VIEW3D_PT_booltron_update,
-    ui.VIEW3D_PT_booltron_options,
-    ui.VIEW3D_PT_booltron_tools,
-    operators.OBJECT_OT_booltron_union,
-    operators.OBJECT_OT_booltron_difference,
-    operators.OBJECT_OT_booltron_intersect,
-    operators.OBJECT_OT_booltron_slice,
+    ui.VIEW3D_PT_booltron_destructive,
+    ui.VIEW3D_PT_booltron_nondestructive,
+    operators_destructive.OBJECT_OT_booltron_destructive_union,
+    operators_destructive.OBJECT_OT_booltron_destructive_difference,
+    operators_destructive.OBJECT_OT_booltron_destructive_intersect,
+    operators_destructive.OBJECT_OT_booltron_destructive_slice,
+    operators_nondestructive.OBJECT_OT_booltron_nondestructive_union,
+    operators_nondestructive.OBJECT_OT_booltron_nondestructive_difference,
+    operators_nondestructive.OBJECT_OT_booltron_nondestructive_intersect,
+    operators_nondestructive.OBJECT_OT_booltron_nondestructive_remove,
 )
 
 
@@ -69,18 +81,19 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
+    bpy.types.WindowManager.booltron_mod_disable = preferences.mod_disable
+
     bpy.app.translations.register(__name__, translations.DICTIONARY)
 
     # Previews
     # ---------------------------
 
-    ADDON_DIR = os.path.dirname(__file__)
-    ICONS_DIR = os.path.join(ADDON_DIR, "icons")
+    addon_dir = os.path.dirname(__file__)
+    icons_dir = os.path.join(addon_dir, "icons")
 
     pcoll = bpy.utils.previews.new()
 
-    for entry in os.scandir(ICONS_DIR):
-
+    for entry in os.scandir(icons_dir):
         if entry.name.endswith(".png"):
             name = os.path.splitext(entry.name)[0]
             pcoll.load(name, entry.path, "IMAGE")
@@ -93,6 +106,8 @@ def unregister():
 
     for cls in classes:
         bpy.utils.unregister_class(cls)
+
+    del bpy.types.WindowManager.booltron_mod_disable
 
     bpy.app.translations.unregister(__name__)
 
