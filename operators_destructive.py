@@ -20,14 +20,23 @@
 
 
 from bpy.types import Operator
+from bpy.props import BoolProperty
 
-from .preferences import OperatorProps
+from .preferences import BooltronPreferences
 from .boolean_methods import BooleanMethods
 from .mesh_utils import MeshUtils
+from .object_utils import ObjectUtils
 from . import versioning
 
 
-class Setup(OperatorProps, BooleanMethods, MeshUtils):
+class Setup(BooleanMethods, MeshUtils, ObjectUtils):
+    if versioning.SOLVER_OPTION:
+        solver = BooltronPreferences.destr_solver
+    cleanup = BooltronPreferences.cleanup
+    triangulate = BooltronPreferences.triangulate
+    pos_correct = BooltronPreferences.destr_pos_correct
+    pos_offset = BooltronPreferences.destr_pos_offset
+    keep_objects = BoolProperty(name="Keep Objects", description="Do not remove selected objects after boolean operation (Shortcut: hold Alt when using the tool)", options={"SKIP_SAVE"})
 
     def draw(self, context):
         layout = self.layout
@@ -41,7 +50,7 @@ class Setup(OperatorProps, BooleanMethods, MeshUtils):
         layout.prop(self, "triangulate")
 
         split = layout.split()
-        split.prop(self, "pos_correct", text="Correct Position")
+        split.prop(self, "pos_correct")
         split.prop(self, "pos_offset", text="")
 
         layout.prop(self, "keep_objects")
@@ -62,53 +71,57 @@ class Setup(OperatorProps, BooleanMethods, MeshUtils):
         prefs = context.user_preferences.addons[__package__].preferences
         self.cleanup = prefs.cleanup
         self.triangulate = prefs.triangulate
-        self.pos_correct = prefs.pos_correct
-        self.pos_offset = prefs.pos_offset
+        self.pos_correct = prefs.destr_pos_correct
+        self.pos_offset = prefs.destr_pos_offset
         self.is_overlap = False
         self.keep_objects = event.alt
         self.local_view = bool(context.space_data.local_view)
 
         if versioning.SOLVER_OPTION:
-            self.solver = prefs.solver
+            self.solver = prefs.destr_solver
 
         if len(obs) > 2 and self.mode != "NONE":
             obs.remove(context.active_object)
             self.is_overlap = self.object_overlap(obs)
 
+        if event.ctrl:
+            wm = context.window_manager
+            return wm.invoke_props_dialog(self, width=300 * context.user_preferences.view.ui_scale)
+
         return self.execute(context)
 
 
-class OBJECT_OT_booltron_union(Operator, Setup):
-    bl_label = "Booltron Union"
+class OBJECT_OT_booltron_destructive_union(Operator, Setup):
+    bl_label = "Booltron Destructive Union"
     bl_description = "Combine selected objects"
-    bl_idname = "object.booltron_union"
+    bl_idname = "object.booltron_destructive_union"
     bl_options = {"REGISTER", "UNDO"}
 
     mode = "UNION"
 
 
-class OBJECT_OT_booltron_difference(Operator, Setup):
-    bl_label = "Booltron Difference"
+class OBJECT_OT_booltron_destructive_difference(Operator, Setup):
+    bl_label = "Booltron Destructive Difference"
     bl_description = "Subtract selected objects from active object"
-    bl_idname = "object.booltron_difference"
+    bl_idname = "object.booltron_destructive_difference"
     bl_options = {"REGISTER", "UNDO"}
 
     mode = "DIFFERENCE"
 
 
-class OBJECT_OT_booltron_intersect(Operator, Setup):
-    bl_label = "Booltron Intersect"
-    bl_description = "Keep the common part of all selected objects"
-    bl_idname = "object.booltron_intersect"
+class OBJECT_OT_booltron_destructive_intersect(Operator, Setup):
+    bl_label = "Booltron Destructive Intersect"
+    bl_description = "Keep the common part between active and selected objects"
+    bl_idname = "object.booltron_destructive_intersect"
     bl_options = {"REGISTER", "UNDO"}
 
     mode = "INTERSECT"
 
 
-class OBJECT_OT_booltron_slice(Operator, Setup):
-    bl_label = "Booltron Slice"
+class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
+    bl_label = "Booltron Destructive Slice"
     bl_description = "Slice active object along the volume of selected objects"
-    bl_idname = "object.booltron_slice"
+    bl_idname = "object.booltron_destructive_slice"
     bl_options = {"REGISTER", "UNDO"}
 
     mode = "NONE"

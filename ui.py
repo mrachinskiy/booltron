@@ -21,7 +21,7 @@
 
 from bpy.types import Panel
 
-from . import versioning, addon_updater_ops
+from . import addon_updater_ops
 
 
 preview_collections = {}
@@ -49,29 +49,8 @@ class VIEW3D_PT_booltron_update(Panel, Setup):
         addon_updater_ops.update_notice_box_ui(self, context)
 
 
-class VIEW3D_PT_booltron_options(Panel, Setup):
-    bl_label = "Options"
-    bl_options = {"DEFAULT_CLOSED"}
-
-    def draw(self, context):
-        layout = self.layout
-        prefs = context.user_preferences.addons[__package__].preferences
-
-        if versioning.SOLVER_OPTION:
-            layout.prop(prefs, "solver", text="")
-
-        col = layout.column()
-        col.prop(prefs, "cleanup")
-        col.prop(prefs, "triangulate")
-        col.prop(prefs, "pos_correct")
-
-        row = layout.row()
-        row.active = prefs.pos_correct
-        row.prop(prefs, "pos_offset")
-
-
-class VIEW3D_PT_booltron_tools(Panel, Setup):
-    bl_label = "Tools"
+class VIEW3D_PT_booltron_destructive(Panel, Setup):
+    bl_label = "Destructive"
 
     def draw(self, context):
         addon_updater_ops.check_for_update_background()
@@ -80,8 +59,30 @@ class VIEW3D_PT_booltron_tools(Panel, Setup):
         pcoll = preview_collections["icons"]
 
         col = layout.column(align=True)
-        col.operator("object.booltron_union", text="Union", icon_value=pcoll["union"].icon_id)
-        col.operator("object.booltron_difference", text="Difference", icon_value=pcoll["difference"].icon_id)
-        col.operator("object.booltron_intersect", text="Intersect", icon_value=pcoll["intersect"].icon_id)
+        col.operator("object.booltron_destructive_difference", text="Difference", icon_value=pcoll["destr_difference"].icon_id)
+        col.operator("object.booltron_destructive_union", text="Union", icon_value=pcoll["destr_union"].icon_id)
+        col.operator("object.booltron_destructive_intersect", text="Intersect", icon_value=pcoll["destr_intersect"].icon_id)
 
-        layout.operator("object.booltron_slice", text="Slice", icon_value=pcoll["slice"].icon_id)
+        layout.operator("object.booltron_destructive_slice", text="Slice", icon_value=pcoll["destr_slice"].icon_id)
+
+
+class VIEW3D_PT_booltron_nondestructive(Panel, Setup):
+    bl_label = "Non-destructive"
+
+    def draw_header(self, context):
+        layout = self.layout
+        layout.prop(context.window_manager, "booltron_mod_disable", text="")
+
+    def draw(self, context):
+        addon_updater_ops.check_for_update_background()
+
+        layout = self.layout
+        layout.active = context.window_manager.booltron_mod_disable
+        pcoll = preview_collections["icons"]
+
+        col = layout.column(align=True)
+        col.operator("object.booltron_nondestructive_difference", text="Difference", icon_value=pcoll["nondestr_difference"].icon_id)
+        col.operator("object.booltron_nondestructive_union", text="Union", icon_value=pcoll["nondestr_union"].icon_id)
+        col.operator("object.booltron_nondestructive_intersect", text="Intersect", icon_value=pcoll["nondestr_intersect"].icon_id)
+
+        layout.operator("object.booltron_nondestructive_remove", text="Dismiss", icon_value=pcoll["nondestr_remove"].icon_id)
