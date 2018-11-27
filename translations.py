@@ -1,6 +1,6 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
-#  JewelCraft jewelry design toolkit for Blender.
+#  Booltron super add-on for super fast booleans.
 #  Copyright (C) 2014-2018  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
