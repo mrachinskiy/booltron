@@ -73,6 +73,7 @@ class BooleanMethods:
         md.operation = mode
         if versioning.SOLVER_OPTION:
             md.solver = self.solver
+        md.double_threshold = self.double_threshold
         md.object = ob2
 
         if md_apply:
