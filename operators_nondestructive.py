@@ -30,6 +30,7 @@ from . import versioning
 class Setup(BooleanMethods, ObjectUtils):
     if versioning.SOLVER_OPTION:
         solver = BooltronPreferences.nondestr_solver
+    double_threshold = BooltronPreferences.nondestr_double_threshold
     display_secondary = BooltronPreferences.display_secondary
     display_combined = BooltronPreferences.display_combined
     pos_correct = BooltronPreferences.nondestr_pos_correct
@@ -42,6 +43,10 @@ class Setup(BooleanMethods, ObjectUtils):
             split = layout.split()
             split.label("Boolean Solver")
             split.prop(self, "solver", text="")
+
+        split = layout.split()
+        split.label("Overlap Threshold")
+        split.prop(self, "double_threshold", text="")
 
         split = layout.split()
         split.prop(self, "pos_correct")
@@ -102,6 +107,7 @@ class Setup(BooleanMethods, ObjectUtils):
         self.display_secondary = prefs.display_secondary
         self.pos_correct = prefs.nondestr_pos_correct
         self.pos_offset = prefs.nondestr_pos_offset
+        self.double_threshold = prefs.nondestr_double_threshold
 
         self.view_layers = [False for x in range(20)]
         self.view_layers[context.scene.active_layer] = True

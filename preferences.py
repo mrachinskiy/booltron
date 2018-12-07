@@ -62,8 +62,10 @@ class BooltronPreferences(AddonPreferences):
     triangulate = BoolProperty(name="Triangulate", description="Triangulate geometry before boolean operation, in some cases may improve result of a boolean operation")
     destr_pos_correct = BoolProperty(name="Correct Position", description="Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)")
     destr_pos_offset = FloatProperty(name="Position Offset", description="Position offset is randomly generated for each object in range [-x, +x] input value", default=0.005, min=0.0, step=0.1, precision=3, unit="LENGTH")
+    destr_double_threshold = FloatProperty(name="Overlap Threshold", description="Threshold for checking overlapping geometry", default=0.000001, min=0.0, step=0.0001, precision=6)
     nondestr_pos_correct = destr_pos_correct
     nondestr_pos_offset = destr_pos_offset
+    nondestr_double_threshold = destr_double_threshold
     display_secondary = EnumProperty(
         name="Display As",
         description="Maximum draw type to display object with in viewport",
@@ -110,6 +112,8 @@ class BooltronPreferences(AddonPreferences):
             col = layout.column()
             if versioning.SOLVER_OPTION:
                 property_split(self, col, "Boolean Solver", "destr_solver", ratio=1 / 3)
+            if not versioning.SOLVER_OPTION or self.destr_solver == "BMESH":
+                property_split(self, col, "Overlap Threshold", "destr_double_threshold", ratio=1 / 3)
             property_split(self, col, "Mesh Cleanup", "cleanup", ratio=1 / 3)
             property_split(self, col, "Triangulate", "triangulate", ratio=1 / 3)
             property_split(self, col, "Correct Position", "destr_pos_correct", ratio=1 / 3)
@@ -121,10 +125,13 @@ class BooltronPreferences(AddonPreferences):
             col = layout.column()
             if versioning.SOLVER_OPTION:
                 property_split(self, col, "Boolean Solver", "nondestr_solver", ratio=1 / 3)
+            if not versioning.SOLVER_OPTION or self.destr_solver == "BMESH":
+                property_split(self, col, "Overlap Threshold", "nondestr_double_threshold", ratio=1 / 3)
             property_split(self, col, "Correct Position", "nondestr_pos_correct", ratio=1 / 3)
             sub = col.column()
             sub.active = self.nondestr_pos_correct
             property_split(self, sub, "Position Offset", "nondestr_pos_offset", ratio=1 / 3)
+
             layout.label("Viewport Display")
             col = layout.column()
             property_split(self, col, "Secondary Object", "display_secondary", ratio=1 / 3)

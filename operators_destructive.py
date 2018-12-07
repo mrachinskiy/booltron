@@ -32,6 +32,7 @@ from . import versioning
 class Setup(BooleanMethods, MeshUtils, ObjectUtils):
     if versioning.SOLVER_OPTION:
         solver = BooltronPreferences.destr_solver
+    double_threshold = BooltronPreferences.destr_double_threshold
     cleanup = BooltronPreferences.cleanup
     triangulate = BooltronPreferences.triangulate
     pos_correct = BooltronPreferences.destr_pos_correct
@@ -45,6 +46,10 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
             split = layout.split()
             split.label("Boolean Solver")
             split.prop(self, "solver", text="")
+
+        split = layout.split()
+        split.label("Overlap Threshold")
+        split.prop(self, "double_threshold", text="")
 
         layout.prop(self, "cleanup")
         layout.prop(self, "triangulate")
@@ -69,6 +74,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
             return {"CANCELLED"}
 
         prefs = context.user_preferences.addons[__package__].preferences
+        self.double_threshold = prefs.destr_double_threshold
         self.cleanup = prefs.cleanup
         self.triangulate = prefs.triangulate
         self.pos_correct = prefs.destr_pos_correct
