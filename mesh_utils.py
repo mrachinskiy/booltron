@@ -1,7 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  Booltron super add-on for super fast booleans.
-#  Copyright (C) 2014-2018  Mikhail Rachinskiy
+#  Copyright (C) 2014-2019  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@ def delete_loose(bm):
 class MeshUtils:
 
     def object_overlap(self, obs):
-        scene = bpy.context.scene
+        depsgraph = bpy.context.depsgraph
         bm = bmesh.new()
 
         for ob in obs:
-            me = ob.to_mesh(scene, True, "PREVIEW", calc_tessface=False)
+            me = ob.to_mesh(depsgraph, True)
             me.transform(ob.matrix_world)
 
             bm.from_mesh(me)
@@ -55,22 +55,25 @@ class MeshUtils:
     def object_prepare(self):
         ob1 = bpy.context.active_object
         obs = bpy.context.selected_objects
-        if ob1.select:
+        if ob1.select_get():
             obs.remove(ob1)
 
         if self.keep_objects:
-            space_data = bpy.context.space_data
-            scene = bpy.context.scene
+            # TODO local view
+            # space_data = bpy.context.space_data
 
             for ob in obs:
                 ob_copy = ob.copy()
                 ob_copy.data = ob.data.copy()
-                base = scene.objects.link(ob_copy)
 
-                if self.local_view:
-                    base.layers_from_view(space_data)
+                for coll in ob.users_collection:
+                    coll.objects.link(ob_copy)
 
-                ob.select = False
+                # if self.local_view:
+                #     base.layers_from_view(space_data)
+
+                ob_copy.select_set(True)
+                ob.select_set(False)
 
         bpy.ops.object.make_single_user(object=True, obdata=True)
         bpy.ops.object.convert(target="MESH")

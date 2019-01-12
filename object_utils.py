@@ -1,7 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  Booltron super add-on for super fast booleans.
-#  Copyright (C) 2014-2018  Mikhail Rachinskiy
+#  Copyright (C) 2014-2019  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -30,12 +30,11 @@ class ObjectUtils:
     def object_add(self, name):
         me = bpy.data.meshes.new(name)
         ob = bpy.data.objects.new(name, me)
-        bpy.context.scene.objects.link(ob)
+        bpy.context.collection.objects.link(ob)
         return ob
 
     def object_remove(self, ob):
         me = ob.data
-        bpy.context.scene.objects.unlink(ob)  # pre 2.78 compatibility
         bpy.data.objects.remove(ob)
         bpy.data.meshes.remove(me)
 

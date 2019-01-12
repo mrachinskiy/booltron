@@ -1,7 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  Booltron super add-on for super fast booleans.
-#  Copyright (C) 2014-2018  Mikhail Rachinskiy
+#  Copyright (C) 2014-2019  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,45 +20,78 @@
 
 
 from bpy.types import Operator
-from bpy.props import BoolProperty
+from bpy.props import BoolProperty, FloatProperty
 
-from .preferences import BooltronPreferences
 from .boolean_methods import BooleanMethods
 from .mesh_utils import MeshUtils
 from .object_utils import ObjectUtils
-from . import versioning
 
 
 class Setup(BooleanMethods, MeshUtils, ObjectUtils):
-    if versioning.SOLVER_OPTION:
-        solver = BooltronPreferences.destr_solver
-    double_threshold = BooltronPreferences.destr_double_threshold
-    cleanup = BooltronPreferences.cleanup
-    triangulate = BooltronPreferences.triangulate
-    pos_correct = BooltronPreferences.destr_pos_correct
-    pos_offset = BooltronPreferences.destr_pos_offset
-    keep_objects = BoolProperty(name="Keep Objects", description="Do not remove selected objects after boolean operation (Shortcut: hold Alt when using the tool)", options={"SKIP_SAVE"})
+    pos_correct: BoolProperty(
+        name="Correct Position",
+        description=(
+            "Shift objects position for a very small amount to avoid coplanar "
+            "geometry errors during boolean operation (does not affect active object)"
+        ),
+    )
+    pos_offset: FloatProperty(
+        name="Position Offset",
+        description="Position offset is randomly generated for each object in range [-x, +x] input value",
+        default=0.005,
+        min=0.0,
+        step=0.01,
+        precision=3,
+        unit="LENGTH",
+    )
+    double_threshold: FloatProperty(
+        name="Overlap Threshold",
+        description="Threshold for checking overlapping geometry",
+        default=0.000001,
+        min=0.0,
+        step=0.0001,
+        precision=6,
+    )
+    cleanup: BoolProperty(
+        name="Mesh Cleanup",
+        description=(
+            "Perform mesh cleanup in between boolean operations, "
+            "enabling this option will greatly affect performance of a boolean operation"
+        ),
+    )
+    triangulate: BoolProperty(
+        name="Triangulate",
+        description=(
+            "Triangulate geometry before boolean operation, "
+            "in some cases may improve result of a boolean operation"
+        ),
+    )
+    keep_objects: BoolProperty(
+        name="Keep Objects",
+        description=(
+            "Do not remove selected objects after boolean operation "
+            "(Shortcut: hold Alt when using the tool)"
+        ),
+        options={"SKIP_SAVE"},
+    )
 
     def draw(self, context):
         layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False
 
-        if versioning.SOLVER_OPTION:
-            split = layout.split()
-            split.label("Boolean Solver")
-            split.prop(self, "solver", text="")
+        col = layout.column()
+        col.prop(self, "double_threshold")
 
-        split = layout.split()
-        split.label("Overlap Threshold")
-        split.prop(self, "double_threshold", text="")
-
-        layout.prop(self, "cleanup")
-        layout.prop(self, "triangulate")
-
-        split = layout.split()
+        split = col.split(factor=0.49)
         split.prop(self, "pos_correct")
-        split.prop(self, "pos_offset", text="")
+        sub = split.row()
+        sub.enabled = self.pos_correct
+        sub.prop(self, "pos_offset", text="")
 
-        layout.prop(self, "keep_objects")
+        col.prop(self, "cleanup")
+        col.prop(self, "triangulate")
+        col.prop(self, "keep_objects")
 
     def execute(self, context):
         self.object_prepare()
@@ -73,18 +106,16 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
             self.report({"ERROR"}, "At least two objects must be selected")
             return {"CANCELLED"}
 
-        prefs = context.user_preferences.addons[__package__].preferences
+        prefs = context.preferences.addons[__package__].preferences
         self.double_threshold = prefs.destr_double_threshold
-        self.cleanup = prefs.cleanup
-        self.triangulate = prefs.triangulate
         self.pos_correct = prefs.destr_pos_correct
         self.pos_offset = prefs.destr_pos_offset
-        self.is_overlap = False
+        self.cleanup = prefs.cleanup
+        self.triangulate = prefs.triangulate
         self.keep_objects = event.alt
-        self.local_view = bool(context.space_data.local_view)
 
-        if versioning.SOLVER_OPTION:
-            self.solver = prefs.destr_solver
+        self.is_overlap = False
+        self.local_view = bool(context.space_data.local_view)
 
         if len(obs) > 2 and self.mode != "NONE":
             obs.remove(context.active_object)
@@ -92,7 +123,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
 
         if event.ctrl:
             wm = context.window_manager
-            return wm.invoke_props_dialog(self, width=300 * context.user_preferences.view.ui_scale)
+            return wm.invoke_props_dialog(self)
 
         return self.execute(context)
 
@@ -133,12 +164,13 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
     mode = "NONE"
 
     def execute(self, context):
-        space_data = context.space_data
-        scene = context.scene
+        # TODO local view
+        # space_data = context.space_data
+        view_layer = context.view_layer
         self.object_prepare()
 
         ob1 = context.active_object
-        ob1.select = False
+        ob1.select_set(False)
         self.mesh_prepare(ob1, select=False)
 
         for ob2 in context.selected_objects:
@@ -150,18 +182,19 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
 
             ob1_copy = ob1.copy()
             ob1_copy.data = ob1.data.copy()
-            base = scene.objects.link(ob1_copy)
 
-            if self.local_view:
-                base.layers_from_view(space_data)
+            for coll in ob1.users_collection:
+                coll.objects.link(ob1_copy)
 
-            ob1_copy.layers = ob1.layers
-            ob1_copy.select = True
+            # if self.local_view:
+            #     base.layers_from_view(space_data)
+
+            ob1_copy.select_set(True)
 
             # Main object difference
             # ---------------------------------
 
-            scene.objects.active = ob1
+            view_layer.objects.active = ob1
             self.boolean_mod(ob1, ob2, "DIFFERENCE", terminate=False)
 
             if self.mesh_check(ob1):
@@ -170,7 +203,7 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
             # Copy object intersect
             # ---------------------------------
 
-            scene.objects.active = ob1_copy
+            view_layer.objects.active = ob1_copy
             self.boolean_mod(ob1_copy, ob2, "INTERSECT")
 
             if self.mesh_check(ob1_copy):

@@ -1,7 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  Booltron super add-on for super fast booleans.
-#  Copyright (C) 2014-2018  Mikhail Rachinskiy
+#  Copyright (C) 2014-2019  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,43 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-import bpy
+import os
 
 
-SOLVER_OPTION = (2, 78, 0) <= bpy.app.version <= (2, 79, 1)
+preview_collections = {}  # Store icons
+
+
+ADDON_ID = __package__
+ADDON_DIR = os.path.dirname(__file__)
+
+ICONS_DIR = os.path.join(ADDON_DIR, "icons")
+
+
+# Updater
+# ------------------------------------
+
+
+engine = "Github"
+private_token = None
+include_branches = True
+use_releases = False
+include_branch_list = None
+
+user = "mrachinskiy"
+repo = "booltron"
+website = "https://github.com/mrachinskiy/booltron#how-to-install"
+
+subfolder_path = ""
+
+version_min_update = None
+version_max_update = None
+
+manual_only = False
+fake_install = False
+verbose = False
+showpopups = True
+
+backup_current = True
+backup_ignore_patterns = ["__pycache__"]
+overwrite_patterns = ["*"]
+remove_pre_update_patterns = ["*"]

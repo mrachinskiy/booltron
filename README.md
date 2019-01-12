@@ -8,17 +8,25 @@ Features:
 * Various adjustment options to get better results from boolean operations.
 * Checks for non-manifold.
 
-**[Watch demo video.][2]**
+**[Watch demo video.](https://youtu.be/KxbJSUQpw7I)**
 
 
 How to install
 ==========================
 
-1. Blender 2.78 or newer is required to install the add-on.
-2. [Download the add-on.][1]<sup>1</sup>
-3. Go to Blender `User Preferences` → `Add-ons` category.
-4. Use `Install Add-on from File` to install add-on from downloaded zip archive.
-5. Read [quick tips](#quick-tips).
+### Blender 2.80
+
+1. [Download Booltron v2.4.0 (pre-release).][v_master]<sup>1</sup>
+2. Open `Edit` → `Preferences` → `Add-ons` category.
+3. Use `Install` to install add-on from downloaded zip archive.
+4. Read [quick tips](#quick-tips).
+
+### Blender 2.79
+
+1. [Download Booltron v2.3.1.][v2_3_1]<sup>1</sup>
+2. Open `File` → `User Preferences` → `Add-ons` category.
+3. Use `Install Add-on from File` to install add-on from downloaded zip archive.
+4. Read [quick tips](#quick-tips).
 
 <sup>1</sup> Note for mac users: Safari browser will automatically unpack downloaded zip archive, so in order to install the add-on, you have to pack folder with add-on files back into zip archive. Or use a different browser to download add-on.
 
@@ -26,11 +34,19 @@ How to install
 Установка
 ==========================
 
-1. Для установки аддона требуется Blender 2.78 или новее.
-2. [Загрузите аддон.][1]<sup>1</sup>
-3. Зайдите в настройки Blender `User Preferences` → `Add-ons`.
-4. Воспользуйтесь `Install Add-on from File` чтобы установить аддон из загруженного архива.
-5. Ознакомьтесь с [советами](#советы).
+### Blender 2.80
+
+1. [Загрузите Booltron v2.4.0 (пре-релиз).][v_master]<sup>1</sup>
+2. Откройте `Edit` → `Preferences` → `Add-ons`.
+3. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.
+4. Ознакомьтесь с [советами](#советы).
+
+### Blender 2.79
+
+1. [Загрузите Booltron v2.3.1.][v2_3_1]<sup>1</sup>
+2. Откройте `File` → `User Preferences` → `Add-ons`.
+3. Воспользуйтесь `Install Add-on from File` чтобы установить аддон из загруженного архива.
+4. Ознакомьтесь с [советами](#советы).
 
 <sup>1</sup> Примечание для пользователей mac: браузер Safari автоматически распаковывает скачиваемые zip архивы, поэтому, чтобы установить аддон, необходимо запаковать папку с файлами аддона обратно в zip архив. Или используйте другой браузер для скачивания аддона.
 
@@ -55,15 +71,15 @@ Non-destructive:
 
 Деструктивные:
 
-* Поддерживает Text и Curve объекты.
+* Поддерживают Text и Curve объекты.
 * `Ctrl + инструмент`: вызвать всплывающее меню настроек инструмента перед его использованием.
 * `Alt + инструмент`: использовать инструмент с настройкой `Сохранить объекты`.
 
 Недеструктивные:
 
-* Поддерживает только Mesh объекты.
-* Объединяет вспомогательные булевские объекты в один комбинированный объект для более быстрых булевых операций.
+* Поддерживают только Mesh объекты.
+* Объединяют вспомогательные булевские объекты в один комбинированный объект для более быстрых булевых операций.
 
 
-[1]: https://github.com/mrachinskiy/booltron/archive/master.zip
-[2]: https://youtu.be/KxbJSUQpw7I
+[v_master]: https://github.com/mrachinskiy/booltron/archive/master.zip
+[v2_3_1]: https://github.com/mrachinskiy/booltron/releases/download/v2.3.1/booltron-2_3_1.zip

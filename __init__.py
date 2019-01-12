@@ -1,7 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  Booltron super add-on for super fast booleans.
-#  Copyright (C) 2014-2018  Mikhail Rachinskiy
+#  Copyright (C) 2014-2019  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ bl_info = {
     "name": "Booltron",
     "author": "Mikhail Rachinskiy",
     "version": (2, 3, 1),
-    "blender": (2, 78, 0),
-    "location": "3D View > Tool Shelf",
+    "blender": (2, 80, 0),
+    "location": "3D View > Sidebar",
     "description": "Super add-on for super fast booleans.",
     "wiki_url": "https://github.com/mrachinskiy/booltron#readme",
     "tracker_url": "https://github.com/mrachinskiy/booltron/issues",
@@ -35,14 +35,17 @@ bl_info = {
 if "bpy" in locals():
     import importlib
 
-    importlib.reload(versioning)
-    importlib.reload(translations)
-    importlib.reload(preferences)
-    importlib.reload(mesh_utils)
-    importlib.reload(boolean_methods)
-    importlib.reload(operators_destructive)
-    importlib.reload(operators_nondestructive)
-    importlib.reload(ui)
+    for entry in os.scandir(var.ADDON_DIR):
+
+        if entry.is_file() and entry.name.endswith(".py") and not entry.name.startswith("__"):
+            module = os.path.splitext(entry.name)[0]
+            importlib.reload(eval(module))
+
+        elif entry.is_dir() and not (entry.name.startswith((".", "__")) or entry.name.endswith("updater")):
+            for subentry in os.scandir(entry.path):
+                if subentry.is_file() and subentry.name.endswith(".py"):
+                    module = entry.name + "." + os.path.splitext(subentry.name)[0]
+                    importlib.reload(eval(module))
 else:
     import os
 
@@ -50,12 +53,13 @@ else:
     import bpy.utils.previews
 
     from . import (
+        addon_updater_ops,
         translations,
         preferences,
-        operators_destructive,
-        operators_nondestructive,
+        ops_destructive,
+        ops_nondestructive,
         ui,
-        addon_updater_ops,
+        var,
     )
 
 
@@ -64,14 +68,14 @@ classes = (
     ui.VIEW3D_PT_booltron_update,
     ui.VIEW3D_PT_booltron_destructive,
     ui.VIEW3D_PT_booltron_nondestructive,
-    operators_destructive.OBJECT_OT_booltron_destructive_union,
-    operators_destructive.OBJECT_OT_booltron_destructive_difference,
-    operators_destructive.OBJECT_OT_booltron_destructive_intersect,
-    operators_destructive.OBJECT_OT_booltron_destructive_slice,
-    operators_nondestructive.OBJECT_OT_booltron_nondestructive_union,
-    operators_nondestructive.OBJECT_OT_booltron_nondestructive_difference,
-    operators_nondestructive.OBJECT_OT_booltron_nondestructive_intersect,
-    operators_nondestructive.OBJECT_OT_booltron_nondestructive_remove,
+    ops_destructive.OBJECT_OT_booltron_destructive_union,
+    ops_destructive.OBJECT_OT_booltron_destructive_difference,
+    ops_destructive.OBJECT_OT_booltron_destructive_intersect,
+    ops_destructive.OBJECT_OT_booltron_destructive_slice,
+    ops_nondestructive.OBJECT_OT_booltron_nondestructive_union,
+    ops_nondestructive.OBJECT_OT_booltron_nondestructive_difference,
+    ops_nondestructive.OBJECT_OT_booltron_nondestructive_intersect,
+    ops_nondestructive.OBJECT_OT_booltron_nondestructive_remove,
 )
 
 
@@ -82,23 +86,23 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.WindowManager.booltron_mod_disable = preferences.mod_disable
-
     bpy.app.translations.register(__name__, translations.DICTIONARY)
 
     # Previews
     # ---------------------------
 
-    addon_dir = os.path.dirname(__file__)
-    icons_dir = os.path.join(addon_dir, "icons")
-
     pcoll = bpy.utils.previews.new()
 
-    for entry in os.scandir(icons_dir):
-        if entry.name.endswith(".png"):
-            name = os.path.splitext(entry.name)[0]
-            pcoll.load(name, entry.path, "IMAGE")
+    for entry in os.scandir(var.ICONS_DIR):
+        if entry.is_dir():
+            for subentry in os.scandir(entry.path):
+                if subentry.is_file() and subentry.name.endswith(".png"):
+                    name = entry.name + os.path.splitext(subentry.name)[0]
+                    pcoll.load(name.upper(), subentry.path, "IMAGE")
 
-    ui.preview_collections["icons"] = pcoll
+    var.preview_collections["icons"] = pcoll
+
+    addon_updater_ops.check_for_update_background()
 
 
 def unregister():
@@ -108,16 +112,15 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
     del bpy.types.WindowManager.booltron_mod_disable
-
     bpy.app.translations.unregister(__name__)
 
     # Previews
     # ---------------------------
 
-    for pcoll in ui.preview_collections.values():
+    for pcoll in var.preview_collections.values():
         bpy.utils.previews.remove(pcoll)
 
-    ui.preview_collections.clear()
+    var.preview_collections.clear()
 
 
 if __name__ == "__main__":

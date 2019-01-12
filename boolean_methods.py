@@ -1,7 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  Booltron super add-on for super fast booleans.
-#  Copyright (C) 2014-2018  Mikhail Rachinskiy
+#  Copyright (C) 2014-2019  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,28 +21,21 @@
 
 import bpy
 
-from . import versioning
-
 
 class BooleanMethods:
 
     def boolean_adaptive(self):
-        carve_difference = versioning.SOLVER_OPTION and self.solver == "CARVE" and self.mode == "DIFFERENCE"
-        batch = self.is_overlap and not carve_difference
-
-        print(bpy.context.selected_objects)
-
         ob1 = bpy.context.active_object
-        ob1.select = False
+        ob1.select_set(False)
 
-        obs = bpy.context.selected_objects
+        obs = list(bpy.context.selected_objects)
         ob2 = obs.pop()
 
         if obs:
-            scene = bpy.context.scene
-            scene.objects.active = ob2
+            view_layer = bpy.context.view_layer
+            view_layer.objects.active = ob2
 
-            if batch:
+            if self.is_overlap:
                 self.mesh_prepare(ob2, select=True)
 
                 for ob3 in obs:
@@ -54,9 +47,9 @@ class BooleanMethods:
             else:
                 bpy.ops.object.join()
 
-            scene.objects.active = ob1
+            view_layer.objects.active = ob1
 
-        if not batch:
+        if not self.is_overlap:
             self.mesh_prepare(ob2, select=True)
 
         self.mesh_prepare(ob1, select=False)
@@ -65,14 +58,12 @@ class BooleanMethods:
         if self.cleanup:
             self.mesh_cleanup(ob1)
 
-        ob1.select = True
+        ob1.select_set(True)
 
     def boolean_mod(self, ob1, ob2, mode, md_name="Boolean", md_apply=True, terminate=True):
         md = ob1.modifiers.new(md_name, "BOOLEAN")
         md.show_viewport = not md_apply
         md.operation = mode
-        if versioning.SOLVER_OPTION:
-            md.solver = self.solver
         md.double_threshold = self.double_threshold
         md.object = ob2
 
