@@ -1,7 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  Booltron super add-on for super fast booleans.
-#  Copyright (C) 2014-2018  Mikhail Rachinskiy
+#  Copyright (C) 2014-2019  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,50 +20,81 @@
 
 
 from bpy.types import Operator
+from bpy.props import BoolProperty, FloatProperty, EnumProperty
 
-from .preferences import BooltronPreferences
 from .boolean_methods import BooleanMethods
 from .object_utils import ObjectUtils
-from . import versioning
 
 
 class Setup(BooleanMethods, ObjectUtils):
-    if versioning.SOLVER_OPTION:
-        solver = BooltronPreferences.nondestr_solver
-    double_threshold = BooltronPreferences.nondestr_double_threshold
-    display_secondary = BooltronPreferences.display_secondary
-    display_combined = BooltronPreferences.display_combined
-    pos_correct = BooltronPreferences.nondestr_pos_correct
-    pos_offset = BooltronPreferences.nondestr_pos_offset
+    pos_correct: BoolProperty(
+        name="Correct Position",
+        description=(
+            "Shift objects position for a very small amount to avoid coplanar "
+            "geometry errors during boolean operation (does not affect active object)"
+        ),
+    )
+    pos_offset: FloatProperty(
+        name="Position Offset",
+        description="Position offset is randomly generated for each object in range [-x, +x] input value",
+        default=0.005,
+        min=0.0,
+        step=0.01,
+        precision=3,
+        unit="LENGTH",
+    )
+    double_threshold: FloatProperty(
+        name="Overlap Threshold",
+        description="Threshold for checking overlapping geometry",
+        default=0.000001,
+        min=0.0,
+        step=0.0001,
+        precision=6,
+    )
+    display_secondary: EnumProperty(
+        name="Secondary Object",
+        description="How to display object in viewport",
+        items=(
+            ("BOUNDS", "Bounds", ""),
+            ("WIRE", "Wire", ""),
+            ("SOLID", "Solid", ""),
+            ("TEXTURED", "Textured", ""),
+        ),
+        default="WIRE",
+    )
+    display_combined: EnumProperty(
+        name="Combined Object",
+        description="How to display object in viewport",
+        items=(
+            ("BOUNDS", "Bounds", ""),
+            ("WIRE", "Wire", ""),
+            ("SOLID", "Solid", ""),
+            ("TEXTURED", "Textured", ""),
+        ),
+        default="BOUNDS",
+    )
 
     def draw(self, context):
         layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False
 
-        if versioning.SOLVER_OPTION:
-            split = layout.split()
-            split.label("Boolean Solver")
-            split.prop(self, "solver", text="")
+        col = layout.column()
+        col.prop(self, "double_threshold")
 
-        split = layout.split()
-        split.label("Overlap Threshold")
-        split.prop(self, "double_threshold", text="")
-
-        split = layout.split()
+        split = col.split(factor=0.49)
         split.prop(self, "pos_correct")
-        split.prop(self, "pos_offset", text="")
+        sub = split.row()
+        sub.enabled = self.pos_correct
+        sub.prop(self, "pos_offset", text="")
 
-        split = layout.split()
-        split.label("Secondary Object")
-        split.prop(self, "display_secondary", text="")
-
-        split = layout.split()
-        split.label("Combined Object")
-        split.prop(self, "display_combined", text="")
+        col.prop(self, "display_secondary")
+        col.prop(self, "display_combined")
 
     def execute(self, context):
         ob1 = context.active_object
         obs = context.selected_objects
-        if ob1.select:
+        if ob1.select_get():
             obs.remove(ob1)
 
         for md in ob1.modifiers:
@@ -71,11 +102,9 @@ class Setup(BooleanMethods, ObjectUtils):
                 ob2 = md.object
                 break
         else:
-            name = "{} COMBINED {}".format(ob1.name, self.mode[:3])
+            name = f"{ob1.name} COMBINED {self.mode[:3]}"
             ob2 = self.object_add(name)
-            ob2.layers = self.view_layers
-            ob2.show_all_edges = True
-            ob2.draw_type = self.display_combined
+            ob2.display_type = self.display_combined
             ob2["booltron_combined"] = self.mode
             self.boolean_mod(ob1, ob2, self.mode, md_name=self.mode[:3] + " COMBINED", md_apply=False, terminate=False)
 
@@ -87,7 +116,7 @@ class Setup(BooleanMethods, ObjectUtils):
         for ob in obs:
             if ob.type == "MESH":
                 self.boolean_mod(ob2, ob, "UNION", md_apply=False, terminate=False)
-                ob.draw_type = self.display_secondary
+                ob.display_type = self.display_secondary
                 for mat in ob.data.materials:
                     if mat.name not in ob2_mats:
                         ob2_mats.append(mat)
@@ -101,23 +130,18 @@ class Setup(BooleanMethods, ObjectUtils):
             self.report({"ERROR"}, "At least two Mesh objects must be selected")
             return {"CANCELLED"}
 
-        prefs = context.user_preferences.addons[__package__].preferences
-        self.local_view = bool(context.space_data.local_view)
-        self.display_combined = prefs.display_combined
-        self.display_secondary = prefs.display_secondary
+        prefs = context.preferences.addons[__package__].preferences
+        self.double_threshold = prefs.nondestr_double_threshold
         self.pos_correct = prefs.nondestr_pos_correct
         self.pos_offset = prefs.nondestr_pos_offset
-        self.double_threshold = prefs.nondestr_double_threshold
+        self.display_secondary = prefs.display_secondary
+        self.display_combined = prefs.display_combined
 
-        self.view_layers = [False for x in range(20)]
-        self.view_layers[context.scene.active_layer] = True
-
-        if versioning.SOLVER_OPTION:
-            self.solver = prefs.nondestr_solver
+        self.local_view = bool(context.space_data.local_view)
 
         if event.ctrl:
             wm = context.window_manager
-            return wm.invoke_props_dialog(self, width=300 * context.user_preferences.view.ui_scale)
+            return wm.invoke_props_dialog(self)
 
         return self.execute(context)
 
@@ -184,6 +208,6 @@ class OBJECT_OT_booltron_nondestructive_remove(Operator, ObjectUtils):
                             ob.modifiers.remove(md)
 
         for ob in obs:
-            ob.draw_type = "TEXTURED"
+            ob.display_type = "TEXTURED"
 
         return {"FINISHED"}
