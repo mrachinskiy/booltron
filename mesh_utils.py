@@ -69,6 +69,7 @@ class MeshUtils:
                 for coll in ob.users_collection:
                     coll.objects.link(ob_copy)
 
+                # TODO local view
                 # if self.local_view:
                 #     base.layers_from_view(space_data)
 

@@ -32,9 +32,6 @@ class BooleanMethods:
         ob2 = obs.pop()
 
         if obs:
-            view_layer = bpy.context.view_layer
-            view_layer.objects.active = ob2
-
             if self.is_overlap:
                 self.mesh_prepare(ob2, select=True)
 
@@ -45,9 +42,8 @@ class BooleanMethods:
                     if self.cleanup:
                         self.mesh_cleanup(ob2)
             else:
-                bpy.ops.object.join()
-
-            view_layer.objects.active = ob1
+                override = {"active_object": ob2}
+                bpy.ops.object.join(override)
 
         if not self.is_overlap:
             self.mesh_prepare(ob2, select=True)
@@ -68,7 +64,8 @@ class BooleanMethods:
         md.object = ob2
 
         if md_apply:
-            bpy.ops.object.modifier_apply(modifier=md.name)
+            override = {"object": ob1}
+            bpy.ops.object.modifier_apply(override, modifier=md.name)
 
         if terminate:
             self.object_remove(ob2)
