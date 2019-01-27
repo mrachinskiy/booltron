@@ -166,7 +166,6 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
     def execute(self, context):
         # TODO local view
         # space_data = context.space_data
-        view_layer = context.view_layer
         self.object_prepare()
 
         ob1 = context.active_object
@@ -186,6 +185,7 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
             for coll in ob1.users_collection:
                 coll.objects.link(ob1_copy)
 
+            # TODO local view
             # if self.local_view:
             #     base.layers_from_view(space_data)
 
@@ -194,7 +194,6 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
             # Main object difference
             # ---------------------------------
 
-            view_layer.objects.active = ob1
             self.boolean_mod(ob1, ob2, "DIFFERENCE", terminate=False)
 
             if self.mesh_check(ob1):
@@ -203,7 +202,6 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
             # Copy object intersect
             # ---------------------------------
 
-            view_layer.objects.active = ob1_copy
             self.boolean_mod(ob1_copy, ob2, "INTERSECT")
 
             if self.mesh_check(ob1_copy):
@@ -211,5 +209,7 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
 
             if self.cleanup:
                 self.mesh_cleanup(ob1)
+
+        context.view_layer.objects.active = ob1_copy
 
         return {"FINISHED"}

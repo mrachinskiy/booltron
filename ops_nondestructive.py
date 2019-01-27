@@ -98,7 +98,12 @@ class Setup(BooleanMethods, ObjectUtils):
             obs.remove(ob1)
 
         for md in ob1.modifiers:
-            if md.type == "BOOLEAN" and md.operation == self.mode and md.object and "booltron_combined" in md.object:
+            if (
+                md.type == "BOOLEAN" and
+                md.operation == self.mode and
+                md.object and
+                "booltron_combined" in md.object
+            ):
                 ob2 = md.object
                 break
         else:
