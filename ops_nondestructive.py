@@ -92,7 +92,7 @@ class Setup(BooleanMethods, ObjectUtils):
         col.prop(self, "display_combined")
 
     def execute(self, context):
-        ob1 = context.active_object
+        ob1 = context.object
         obs = context.selected_objects
         if ob1.select_get():
             obs.remove(ob1)
@@ -131,7 +131,7 @@ class Setup(BooleanMethods, ObjectUtils):
     def invoke(self, context, event):
         obs = [ob for ob in context.selected_objects if ob.type == "MESH"]
 
-        if len(obs) < 2 or context.active_object.type != "MESH":
+        if len(obs) < 2 or context.object.type != "MESH":
             self.report({"ERROR"}, "At least two Mesh objects must be selected")
             return {"CANCELLED"}
 

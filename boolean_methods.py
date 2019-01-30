@@ -25,7 +25,7 @@ import bpy
 class BooleanMethods:
 
     def boolean_adaptive(self):
-        ob1 = bpy.context.active_object
+        ob1 = bpy.context.object
         ob1.select_set(False)
 
         obs = list(bpy.context.selected_objects)
