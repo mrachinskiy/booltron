@@ -53,7 +53,7 @@ class MeshUtils:
         return bool(overlap)
 
     def object_prepare(self):
-        ob1 = bpy.context.active_object
+        ob1 = bpy.context.object
         obs = bpy.context.selected_objects
         if ob1.select_get():
             obs.remove(ob1)

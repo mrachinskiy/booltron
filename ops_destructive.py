@@ -96,7 +96,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
     def execute(self, context):
         self.object_prepare()
         self.boolean_adaptive()
-        self.mesh_check(context.active_object)
+        self.mesh_check(context.object)
         return {"FINISHED"}
 
     def invoke(self, context, event):
@@ -118,7 +118,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         self.local_view = bool(context.space_data.local_view)
 
         if len(obs) > 2 and self.mode != "NONE":
-            obs.remove(context.active_object)
+            obs.remove(context.object)
             self.is_overlap = self.object_overlap(obs)
 
         if event.ctrl:
@@ -168,7 +168,7 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
         # space_data = context.space_data
         self.object_prepare()
 
-        ob1 = context.active_object
+        ob1 = context.object
         ob1.select_set(False)
         self.mesh_prepare(ob1, select=False)
 
