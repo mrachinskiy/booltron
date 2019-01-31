@@ -92,7 +92,7 @@ class MeshUtils:
         bmesh.ops.holes_fill(bm, edges=bm.edges)
 
         if self.triangulate:
-            bmesh.ops.triangulate(bm, faces=bm.faces, quad_method=3)
+            bmesh.ops.triangulate(bm, faces=bm.faces, quad_method="SHORT_EDGE")
 
         for f in bm.faces:
             f.select = select
