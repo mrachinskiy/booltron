@@ -54,13 +54,15 @@ class MeshUtils:
 
     def object_prepare(self):
         ob1 = bpy.context.object
-        obs = bpy.context.selected_objects
+        obs = list(bpy.context.selected_objects)
         if ob1.select_get():
             obs.remove(ob1)
 
         if self.keep_objects:
             # TODO local view
             # space_data = bpy.context.space_data
+            obs_copy = []
+            app = obs_copy.append
 
             for ob in obs:
                 ob_copy = ob.copy()
@@ -75,6 +77,9 @@ class MeshUtils:
 
                 ob_copy.select_set(True)
                 ob.select_set(False)
+                app(ob_copy)
+
+            obs = obs_copy
 
         bpy.ops.object.make_single_user(object=True, obdata=True)
         bpy.ops.object.convert(target="MESH")
