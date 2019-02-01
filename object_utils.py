@@ -22,7 +22,6 @@
 import random
 
 import bpy
-from mathutils import Vector
 
 
 class ObjectUtils:
@@ -44,4 +43,6 @@ class ObjectUtils:
             y = random.uniform(-self.pos_offset, self.pos_offset)
             z = random.uniform(-self.pos_offset, self.pos_offset)
 
-            ob.location += Vector((x, y, z))
+            ob.matrix_world[0][3] += x
+            ob.matrix_world[1][3] += y
+            ob.matrix_world[2][3] += z
