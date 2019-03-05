@@ -115,7 +115,8 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         self.keep_objects = event.alt
 
         self.is_overlap = False
-        self.local_view = bool(context.space_data.local_view)
+        # TODO local view
+        # self.local_view = bool(context.space_data.local_view)
 
         if len(obs) > 2 and self.mode != "NONE":
             obs.remove(context.object)

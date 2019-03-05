@@ -31,6 +31,7 @@ _ru = {
         "Secondary Object": "Вспомогательный объект",
         "Combined Object": "Объединённый объект",
         "Viewport Display": "Отображение во вьюпорте",
+        "Icons": "Иконки",
 
         # Tooltips
         (

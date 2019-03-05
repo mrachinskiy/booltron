@@ -22,7 +22,7 @@
 bl_info = {
     "name": "Booltron",
     "author": "Mikhail Rachinskiy",
-    "version": (2, 3, 1),
+    "version": (2, 4, 0),
     "blender": (2, 80, 0),
     "location": "3D View > Sidebar",
     "description": "Super add-on for super fast booleans.",
@@ -53,7 +53,6 @@ else:
     import bpy.utils.previews
 
     from . import (
-        addon_updater_ops,
         translations,
         preferences,
         ops_destructive,
@@ -61,8 +60,10 @@ else:
         ui,
         var,
     )
+    from .mod_update import update_lib, update_ops, update_translations
 
 
+var.UPDATE_CURRENT_VERSION = bl_info["version"]
 classes = (
     preferences.BooltronPreferences,
     ui.VIEW3D_PT_booltron_update,
@@ -76,17 +77,20 @@ classes = (
     ops_nondestructive.OBJECT_OT_booltron_nondestructive_difference,
     ops_nondestructive.OBJECT_OT_booltron_nondestructive_intersect,
     ops_nondestructive.OBJECT_OT_booltron_nondestructive_remove,
+    update_ops.WM_OT_booltron_update_check,
+    update_ops.WM_OT_booltron_update_download,
+    update_ops.WM_OT_booltron_update_whats_new,
 )
 
 
 def register():
-    addon_updater_ops.register(bl_info)
-
     for cls in classes:
         bpy.utils.register_class(cls)
 
     bpy.types.WindowManager.booltron_mod_disable = preferences.mod_disable
+
     bpy.app.translations.register(__name__, translations.DICTIONARY)
+    bpy.app.translations.register(__name__ + "mod_update", update_translations.DICTIONARY)
 
     # Previews
     # ---------------------------
@@ -102,17 +106,17 @@ def register():
 
     var.preview_collections["icons"] = pcoll
 
-    addon_updater_ops.check_for_update_background()
+    update_lib.update_init_check()
 
 
 def unregister():
-    addon_updater_ops.unregister()
-
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
     del bpy.types.WindowManager.booltron_mod_disable
+
     bpy.app.translations.unregister(__name__)
+    bpy.app.translations.unregister(__name__ + "mod_update")
 
     # Previews
     # ---------------------------
