@@ -22,7 +22,7 @@
 from bpy.types import AddonPreferences
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
-from . import addon_updater_ops
+from .mod_update import update_ui
 
 
 # Add-on preferences
@@ -37,8 +37,27 @@ class BooltronPreferences(AddonPreferences):
             ("DESTRUCTIVE", "Destructive", ""),
             ("NONDESTRUCTIVE", "Non-destructive", ""),
             ("UI", "Themes", ""),
-            ("UPDATER", "Update", ""),
+            ("UPDATES", "Updates", ""),
         ),
+    )
+    update_use_auto_check: BoolProperty(
+        name="Automatically check for updates",
+        description="Automatically check for updates with specified interval",
+        default=True,
+    )
+    update_interval: EnumProperty(
+        name="Auto-check Interval",
+        description="Auto-check interval",
+        items=(
+            ("1", "Once a day", ""),
+            ("7", "Once a week", ""),
+            ("30", "Once a month", ""),
+        ),
+        default="7",
+    )
+    update_use_prerelease: BoolProperty(
+        name="Update to pre-release",
+        description="Update add-on to pre-release version if available",
     )
     theme_icon: EnumProperty(
         name="Icons",
@@ -46,21 +65,6 @@ class BooltronPreferences(AddonPreferences):
             ("LIGHT", "Light", ""),
             ("DARK", "Dark", ""),
         ),
-    )
-    update_auto_check: BoolProperty(
-        name="Automatically check for updates",
-        description="Automatically check for updates with specified interval",
-        default=True,
-    )
-    update_interval: EnumProperty(
-        name="Interval",
-        description="Interval",
-        items=(
-            ("1", "Once a day", ""),
-            ("7", "Once a week", ""),
-            ("30", "Once a month", ""),
-        ),
-        default="7",
     )
     cleanup: BoolProperty(
         name="Mesh Cleanup",
@@ -158,9 +162,10 @@ class BooltronPreferences(AddonPreferences):
         col.scale_y = 1.3
         col.prop(self, "active_section", expand=True)
 
-        col = split.box().column()
+        box = split.box()
 
         if self.active_section == "DESTRUCTIVE":
+            col = box.column()
             col.prop(self, "destr_double_threshold")
 
             split = col.split(factor=0.49)
@@ -173,6 +178,7 @@ class BooltronPreferences(AddonPreferences):
             col.prop(self, "triangulate")
 
         elif self.active_section == "NONDESTRUCTIVE":
+            col = box.column()
             col.prop(self, "nondestr_double_threshold")
 
             split = col.split(factor=0.49)
@@ -185,11 +191,11 @@ class BooltronPreferences(AddonPreferences):
             col.prop(self, "display_combined")
 
         elif self.active_section == "UI":
+            col = box.column()
             col.prop(self, "theme_icon")
 
-        elif self.active_section == "UPDATER":
-            col.use_property_split = False
-            addon_updater_ops.update_settings_ui(self, context, element=col)
+        elif self.active_section == "UPDATES":
+            update_ui.prefs_ui(self, box)
 
 
 # Window manager properties
