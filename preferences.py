@@ -22,7 +22,7 @@
 from bpy.types import AddonPreferences
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
-from .mod_update import update_ui
+from . import mod_update
 
 
 # Add-on preferences
@@ -195,7 +195,7 @@ class BooltronPreferences(AddonPreferences):
             col.prop(self, "theme_icon")
 
         elif self.active_section == "UPDATES":
-            update_ui.prefs_ui(self, box)
+            mod_update.prefs_ui(self, box)
 
 
 # Window manager properties

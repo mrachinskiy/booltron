@@ -113,10 +113,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         self.cleanup = prefs.cleanup
         self.triangulate = prefs.triangulate
         self.keep_objects = event.alt
-
         self.is_overlap = False
-        # TODO local view
-        # self.local_view = bool(context.space_data.local_view)
 
         if len(obs) > 2 and self.mode != "NONE":
             obs.remove(context.object)
@@ -165,8 +162,8 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
     mode = "NONE"
 
     def execute(self, context):
-        # TODO local view
-        # space_data = context.space_data
+        space_data = context.space_data
+        use_local_view = bool(space_data.local_view)
         self.object_prepare()
 
         ob1 = context.object
@@ -186,9 +183,8 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
             for coll in ob1.users_collection:
                 coll.objects.link(ob1_copy)
 
-            # TODO local view
-            # if self.local_view:
-            #     base.layers_from_view(space_data)
+            if use_local_view:
+                ob1_copy.local_view_set(space_data, True)
 
             ob1_copy.select_set(True)
 
