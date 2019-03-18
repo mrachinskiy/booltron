@@ -142,9 +142,6 @@ class Setup(BooleanMethods, ObjectUtils):
         self.display_secondary = prefs.display_secondary
         self.display_combined = prefs.display_combined
 
-        # TODO local view
-        # self.local_view = bool(context.space_data.local_view)
-
         if event.ctrl:
             wm = context.window_manager
             return wm.invoke_props_dialog(self)

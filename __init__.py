@@ -42,9 +42,13 @@ if "bpy" in locals():
             importlib.reload(eval(module))
 
         elif entry.is_dir() and not entry.name.startswith((".", "__")):
+
             for subentry in os.scandir(entry.path):
                 if subentry.is_file() and subentry.name.endswith(".py"):
-                    module = entry.name + "." + os.path.splitext(subentry.name)[0]
+                    if subentry.name == "__init__.py":
+                        module = os.path.splitext(entry.name)[0]
+                    else:
+                        module = entry.name + "." + os.path.splitext(subentry.name)[0]
                     importlib.reload(eval(module))
 else:
     import os
@@ -53,17 +57,18 @@ else:
     import bpy.utils.previews
 
     from . import (
-        translations,
+        localization,
         preferences,
         ops_destructive,
         ops_nondestructive,
         ui,
         var,
+        mod_update,
     )
-    from .mod_update import update_lib, update_ops, update_translations
 
 
 var.UPDATE_CURRENT_VERSION = bl_info["version"]
+
 classes = (
     preferences.BooltronPreferences,
     ui.VIEW3D_PT_booltron_update,
@@ -77,9 +82,9 @@ classes = (
     ops_nondestructive.OBJECT_OT_booltron_nondestructive_difference,
     ops_nondestructive.OBJECT_OT_booltron_nondestructive_intersect,
     ops_nondestructive.OBJECT_OT_booltron_nondestructive_remove,
-    update_ops.WM_OT_booltron_update_check,
-    update_ops.WM_OT_booltron_update_download,
-    update_ops.WM_OT_booltron_update_whats_new,
+    mod_update.WM_OT_booltron_update_check,
+    mod_update.WM_OT_booltron_update_download,
+    mod_update.WM_OT_booltron_update_whats_new,
 )
 
 
@@ -89,8 +94,8 @@ def register():
 
     bpy.types.WindowManager.booltron_mod_disable = preferences.mod_disable
 
-    bpy.app.translations.register(__name__, translations.DICTIONARY)
-    bpy.app.translations.register(__name__ + "mod_update", update_translations.DICTIONARY)
+    bpy.app.translations.register(__name__, localization.DICTIONARY)
+    bpy.app.translations.register(__name__ + "mod_update", mod_update.DICTIONARY)
 
     # Previews
     # ---------------------------
@@ -106,7 +111,7 @@ def register():
 
     var.preview_collections["icons"] = pcoll
 
-    update_lib.update_init_check()
+    mod_update.update_init_check()
 
 
 def unregister():

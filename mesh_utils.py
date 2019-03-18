@@ -59,8 +59,8 @@ class MeshUtils:
             obs.remove(ob1)
 
         if self.keep_objects:
-            # TODO local view
-            # space_data = bpy.context.space_data
+            space_data = bpy.context.space_data
+            use_local_view = bool(space_data.local_view)
             obs_copy = []
             app = obs_copy.append
 
@@ -71,9 +71,8 @@ class MeshUtils:
                 for coll in ob.users_collection:
                     coll.objects.link(ob_copy)
 
-                # TODO local view
-                # if self.local_view:
-                #     base.layers_from_view(space_data)
+                if use_local_view:
+                    ob_copy.local_view_set(space_data, True)
 
                 ob_copy.select_set(True)
                 ob.select_set(False)

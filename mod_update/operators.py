@@ -22,7 +22,7 @@
 from bpy.types import Operator
 
 from .. import var
-from . import update_lib
+from . import lib
 
 
 class WM_OT_booltron_update_check(Operator):
