@@ -16,7 +16,7 @@ How to install
 
 ### Blender 2.80
 
-1. [Download Booltron v2.4.0 (pre-release).][v2_4_0]<sup>1</sup>
+1. [Download Booltron v2.4.0 (March 18 pre-release).][v2_4_0]<sup>1</sup>
 2. Open `Edit` → `Preferences` → `Add-ons` category.
 3. Use `Install` to install add-on from downloaded zip archive.
 4. Read [quick tips](#quick-tips).
@@ -36,7 +36,7 @@ How to install
 
 ### Blender 2.80
 
-1. [Загрузите Booltron v2.4.0 (пре-релиз).][v2_4_0]<sup>1</sup>
+1. [Загрузите Booltron v2.4.0 (пре-релиз от 18-03).][v2_4_0]<sup>1</sup>
 2. Откройте `Edit` → `Preferences` → `Add-ons`.
 3. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.
 4. Ознакомьтесь с [советами](#советы).
@@ -81,5 +81,17 @@ Non-destructive:
 * Объединяют вспомогательные булевские объекты в один комбинированный объект для более быстрых булевых операций.
 
 
+Contributing
+==========================
+
+### Did you find a bug?
+
+* Ensure the bug can be reproduced in the latest add-on version.
+* If error occurs on add-on installation or activation, check [how to install][install_guide] guide.
+* [Open new issue][new_issue], be sure to include Blender and add-on versions, and screenshot showing the error message.
+
+
 [v2_4_0]: https://github.com/mrachinskiy/booltron/releases/download/v2.4.0/booltron-2_4_0.zip
 [v2_3_1]: https://github.com/mrachinskiy/booltron/releases/download/v2.3.1/booltron-2_3_1.zip
+[install_guide]: https://github.com/mrachinskiy/booltron#how-to-install
+[new_issue]: https://github.com/mrachinskiy/booltron/issues/new
