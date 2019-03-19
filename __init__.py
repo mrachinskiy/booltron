@@ -94,8 +94,16 @@ def register():
 
     bpy.types.WindowManager.booltron_mod_disable = preferences.mod_disable
 
+    # Translations
+    # ---------------------------
+
+    for k, v in localization.DICTIONARY.items():
+        if k in mod_update.DICTIONARY.keys():
+            v.update(mod_update.DICTIONARY[k])
+
     bpy.app.translations.register(__name__, localization.DICTIONARY)
-    bpy.app.translations.register(__name__ + "mod_update", mod_update.DICTIONARY)
+
+    mod_update.DICTIONARY.clear()
 
     # Previews
     # ---------------------------
@@ -121,7 +129,6 @@ def unregister():
     del bpy.types.WindowManager.booltron_mod_disable
 
     bpy.app.translations.unregister(__name__)
-    bpy.app.translations.unregister(__name__ + "mod_update")
 
     # Previews
     # ---------------------------
