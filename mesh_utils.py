@@ -44,7 +44,7 @@ class MeshUtils:
 
             bpy.data.meshes.remove(me)
 
-        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.00001)
 
         tree = bvhtree.BVHTree.FromBMesh(bm, epsilon=0.00001)
         overlap = tree.overlap(tree)
@@ -91,7 +91,7 @@ class MeshUtils:
         bm = bmesh.new()
         bm.from_mesh(me)
 
-        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.00001)
         delete_loose(bm)
         bmesh.ops.holes_fill(bm, edges=bm.edges)
 
@@ -109,7 +109,7 @@ class MeshUtils:
         bm = bmesh.new()
         bm.from_mesh(me)
 
-        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0001)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.00001)
         delete_loose(bm)
 
         bm.to_mesh(me)

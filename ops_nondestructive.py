@@ -111,7 +111,7 @@ class Setup(BooleanMethods, ObjectUtils):
             ob2 = self.object_add(name)
             ob2.display_type = self.display_combined
             ob2["booltron_combined"] = self.mode
-            self.boolean_mod(ob1, ob2, self.mode, md_name=self.mode[:3] + " COMBINED", md_apply=False, terminate=False)
+            self.boolean_mod(ob1, ob2, self.mode, name=self.mode[:3] + " COMBINED", md_apply=False, terminate=False)
 
         if self.pos_correct:
             self.object_pos_correct(obs)

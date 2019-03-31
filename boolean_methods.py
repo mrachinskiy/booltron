@@ -56,8 +56,8 @@ class BooleanMethods:
 
         ob1.select_set(True)
 
-    def boolean_mod(self, ob1, ob2, mode, md_name="Boolean", md_apply=True, terminate=True):
-        md = ob1.modifiers.new(md_name, "BOOLEAN")
+    def boolean_mod(self, ob1, ob2, mode, name="Boolean", md_apply=True, terminate=True):
+        md = ob1.modifiers.new(name, "BOOLEAN")
         md.show_viewport = not md_apply
         md.operation = mode
         md.double_threshold = self.double_threshold

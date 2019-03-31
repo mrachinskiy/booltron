@@ -24,7 +24,7 @@ _ru = {
         # Interface
         "Automatically check for updates": "Автоматически проверять наличие обновлений",
         "Update to pre-release": "Обновление до пре-релиза",
-        "Auto-check Interval": "Интервал автопроверки",
+        "Auto-check interval": "Интервал автопроверки",
         "Once a day": "Раз в день",
         "Once a week": "Раз в неделю",
         "Once a month": "Раз в месяц",
@@ -44,7 +44,6 @@ _ru = {
         "Open release notes in web browser": "Открыть страницу изменений в веб-браузере",
         "Automatically check for updates with specified interval":
             "Автоматически проверять наличие обновлений с указанным интервалом",
-        "Auto-check interval": "Интервал автопроверки",
         "Update add-on to pre-release version if available":
             "Обновить до пре-релизной версии (если доступно)",
     },
@@ -66,6 +65,8 @@ def _translation_dict(dictionary):
     return d
 
 
-DICTIONARY = {"ru_RU": _translation_dict(_ru)}
+DICTIONARY = {
+    "ru_RU": _translation_dict(_ru),
+}
 
 _ru.clear()
