@@ -46,7 +46,7 @@ class BooltronPreferences(AddonPreferences):
         default=True,
     )
     update_interval: EnumProperty(
-        name="Auto-check Interval",
+        name="Auto-check interval",
         description="Auto-check interval",
         items=(
             ("1", "Once a day", ""),
