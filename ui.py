@@ -31,9 +31,6 @@ class Setup:
     bl_region_type = "UI"
     bl_context = "objectmode"
 
-
-class Icons:
-
     def __init__(self):
         prefs = bpy.context.preferences.addons[__package__].preferences
         self.pcoll = var.preview_collections["icons"]
@@ -54,7 +51,7 @@ class VIEW3D_PT_booltron_update(Panel, Setup):
         mod_update.sidebar_ui(self, context)
 
 
-class VIEW3D_PT_booltron_destructive(Panel, Setup, Icons):
+class VIEW3D_PT_booltron_destructive(Panel, Setup):
     bl_label = "Destructive"
 
     def draw(self, context):
@@ -68,7 +65,7 @@ class VIEW3D_PT_booltron_destructive(Panel, Setup, Icons):
         layout.operator("object.booltron_destructive_slice", text="Slice", icon_value=self.icon_get("DESTR_SLICE"))
 
 
-class VIEW3D_PT_booltron_nondestructive(Panel, Setup, Icons):
+class VIEW3D_PT_booltron_nondestructive(Panel, Setup):
     bl_label = "Non-destructive"
 
     def draw_header(self, context):
