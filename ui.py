@@ -19,6 +19,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+import bpy
 from bpy.types import Panel
 
 from . import var, mod_update
@@ -29,6 +30,17 @@ class Setup:
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_context = "objectmode"
+
+
+class Icons:
+
+    def __init__(self):
+        prefs = bpy.context.preferences.addons[__package__].preferences
+        self.pcoll = var.preview_collections["icons"]
+        self.theme = prefs.theme_icon
+
+    def icon_get(self, name):
+        return self.pcoll[self.theme + name].icon_id
 
 
 class VIEW3D_PT_booltron_update(Panel, Setup):
@@ -42,25 +54,21 @@ class VIEW3D_PT_booltron_update(Panel, Setup):
         mod_update.sidebar_ui(self, context)
 
 
-class VIEW3D_PT_booltron_destructive(Panel, Setup):
+class VIEW3D_PT_booltron_destructive(Panel, Setup, Icons):
     bl_label = "Destructive"
 
     def draw(self, context):
         layout = self.layout
-        prefs = context.preferences.addons[__package__].preferences
-        theme = prefs.theme_icon
-        icon_pfx = theme + "DESTR_"
-        pcoll = var.preview_collections["icons"]
 
         col = layout.column(align=True)
-        col.operator("object.booltron_destructive_difference", text="Difference", icon_value=pcoll[icon_pfx + "DIFFERENCE"].icon_id)
-        col.operator("object.booltron_destructive_union", text="Union", icon_value=pcoll[icon_pfx + "UNION"].icon_id)
-        col.operator("object.booltron_destructive_intersect", text="Intersect", icon_value=pcoll[icon_pfx + "INTERSECT"].icon_id)
+        col.operator("object.booltron_destructive_difference", text="Difference", icon_value=self.icon_get("DESTR_DIFFERENCE"))
+        col.operator("object.booltron_destructive_union", text="Union", icon_value=self.icon_get("DESTR_UNION"))
+        col.operator("object.booltron_destructive_intersect", text="Intersect", icon_value=self.icon_get("DESTR_INTERSECT"))
 
-        layout.operator("object.booltron_destructive_slice", text="Slice", icon_value=pcoll[icon_pfx + "SLICE"].icon_id)
+        layout.operator("object.booltron_destructive_slice", text="Slice", icon_value=self.icon_get("DESTR_SLICE"))
 
 
-class VIEW3D_PT_booltron_nondestructive(Panel, Setup):
+class VIEW3D_PT_booltron_nondestructive(Panel, Setup, Icons):
     bl_label = "Non-destructive"
 
     def draw_header(self, context):
@@ -70,14 +78,10 @@ class VIEW3D_PT_booltron_nondestructive(Panel, Setup):
     def draw(self, context):
         layout = self.layout
         layout.active = context.window_manager.booltron_mod_disable
-        prefs = context.preferences.addons[__package__].preferences
-        theme = prefs.theme_icon
-        icon_pfx = theme + "NONDESTR_"
-        pcoll = var.preview_collections["icons"]
 
         col = layout.column(align=True)
-        col.operator("object.booltron_nondestructive_difference", text="Difference", icon_value=pcoll[icon_pfx + "DIFFERENCE"].icon_id)
-        col.operator("object.booltron_nondestructive_union", text="Union", icon_value=pcoll[icon_pfx + "UNION"].icon_id)
-        col.operator("object.booltron_nondestructive_intersect", text="Intersect", icon_value=pcoll[icon_pfx + "INTERSECT"].icon_id)
+        col.operator("object.booltron_nondestructive_difference", text="Difference", icon_value=self.icon_get("NONDESTR_DIFFERENCE"))
+        col.operator("object.booltron_nondestructive_union", text="Union", icon_value=self.icon_get("NONDESTR_UNION"))
+        col.operator("object.booltron_nondestructive_intersect", text="Intersect", icon_value=self.icon_get("NONDESTR_INTERSECT"))
 
-        layout.operator("object.booltron_nondestructive_remove", text="Dismiss", icon_value=pcoll[icon_pfx + "REMOVE"].icon_id)
+        layout.operator("object.booltron_nondestructive_remove", text="Dismiss", icon_value=self.icon_get("NONDESTR_REMOVE"))
