@@ -108,7 +108,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
 
         prefs = context.preferences.addons[__package__].preferences
         unit = context.scene.unit_settings
-        scale_thold = unit.system == "METRIC" and unit.scale_length > 0.1
+        use_scale_adjust = unit.system == "METRIC" and round(unit.scale_length, 4) != 0.001
         self.double_threshold = prefs.destr_double_threshold
         self.pos_correct = prefs.destr_pos_correct
         self.pos_offset = prefs.destr_pos_offset
@@ -116,7 +116,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         self.triangulate = prefs.triangulate
         self.keep_objects = event.alt
         self.is_overlap = False
-        self.merge_distance = 0.00001 if scale_thold else 0.0001
+        self.merge_distance = 0.00001 if use_scale_adjust else 0.0001
 
         if len(obs) > 2 and self.mode != "NONE":
             obs.remove(context.object)
