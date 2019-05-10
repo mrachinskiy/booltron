@@ -52,6 +52,15 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         step=0.0001,
         precision=6,
     )
+    merge_distance: FloatProperty(
+        name="Merge Distance",
+        description="Minimum distance between elements to merge",
+        default=0.0002,
+        min=0.00001,
+        step=0.01,
+        precision=5,
+        unit="LENGTH",
+    )
     cleanup: BoolProperty(
         name="Mesh Cleanup",
         description=(
@@ -89,6 +98,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         sub.enabled = self.pos_correct
         sub.prop(self, "pos_offset", text="")
 
+        col.prop(self, "merge_distance")
         col.prop(self, "cleanup")
         col.prop(self, "triangulate")
         col.prop(self, "keep_objects")
@@ -107,16 +117,14 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
             return {"CANCELLED"}
 
         prefs = context.preferences.addons[__package__].preferences
-        unit = context.scene.unit_settings
-        use_scale_adjust = unit.system == "METRIC" and round(unit.scale_length, 4) > 0.1
         self.double_threshold = prefs.destr_double_threshold
         self.pos_correct = prefs.destr_pos_correct
         self.pos_offset = prefs.destr_pos_offset
+        self.merge_distance = prefs.merge_distance
         self.cleanup = prefs.cleanup
         self.triangulate = prefs.triangulate
         self.keep_objects = event.alt
         self.is_overlap = False
-        self.merge_distance = 0.000019 if use_scale_adjust else 0.0001
 
         if len(obs) > 2 and self.mode != "NONE":
             obs.remove(context.object)

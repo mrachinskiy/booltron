@@ -80,6 +80,15 @@ class BooltronPreferences(AddonPreferences):
             "in some cases may improve result of a boolean operation"
         ),
     )
+    merge_distance: FloatProperty(
+        name="Merge Distance",
+        description="Minimum distance between elements to merge",
+        default=0.0002,
+        min=0.00001,
+        step=0.01,
+        precision=5,
+        unit="LENGTH",
+    )
     destr_pos_correct: BoolProperty(
         name="Correct Position",
         description=(
@@ -174,6 +183,7 @@ class BooltronPreferences(AddonPreferences):
             sub.active = self.destr_pos_correct
             sub.prop(self, "destr_pos_offset", text="")
 
+            col.prop(self, "merge_distance")
             col.prop(self, "cleanup")
             col.prop(self, "triangulate")
 
