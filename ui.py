@@ -70,11 +70,11 @@ class VIEW3D_PT_booltron_nondestructive(Panel, Setup):
 
     def draw_header(self, context):
         layout = self.layout
-        layout.prop(context.window_manager, "booltron_mod_disable", text="")
+        layout.prop(context.window_manager.booltron, "mod_disable", text="")
 
     def draw(self, context):
         layout = self.layout
-        layout.active = context.window_manager.booltron_mod_disable
+        layout.active = context.window_manager.booltron.mod_disable
 
         col = layout.column(align=True)
         col.operator("object.booltron_nondestructive_difference", text="Difference", icon_value=self.icon_get("NONDESTR_DIFFERENCE"))

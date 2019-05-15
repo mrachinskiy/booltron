@@ -19,7 +19,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-from bpy.types import AddonPreferences
+from bpy.types import AddonPreferences, PropertyGroup
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
 from . import mod_update
@@ -32,14 +32,9 @@ from . import mod_update
 class BooltronPreferences(AddonPreferences):
     bl_idname = __package__
 
-    active_section: EnumProperty(
-        items=(
-            ("DESTRUCTIVE", "Destructive", ""),
-            ("NONDESTRUCTIVE", "Non-destructive", ""),
-            ("UI", "Themes", ""),
-            ("UPDATES", "Updates", ""),
-        ),
-    )
+    # Updates
+    # ------------------------
+
     update_use_auto_check: BoolProperty(
         name="Automatically check for updates",
         description="Automatically check for updates with specified interval",
@@ -59,6 +54,10 @@ class BooltronPreferences(AddonPreferences):
         name="Update to pre-release",
         description="Update add-on to pre-release version if available",
     )
+
+    # Themes
+    # ------------------------
+
     theme_icon: EnumProperty(
         name="Icons",
         items=(
@@ -66,6 +65,10 @@ class BooltronPreferences(AddonPreferences):
             ("DARK", "Dark", ""),
         ),
     )
+
+    # Destructive
+    # ------------------------
+
     cleanup: BoolProperty(
         name="Mesh Cleanup",
         description=(
@@ -89,7 +92,7 @@ class BooltronPreferences(AddonPreferences):
         precision=5,
         unit="LENGTH",
     )
-    destr_pos_correct: BoolProperty(
+    destr_use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
             "Shift objects position for a very small amount to avoid coplanar "
@@ -113,7 +116,11 @@ class BooltronPreferences(AddonPreferences):
         step=0.0001,
         precision=6,
     )
-    nondestr_pos_correct: BoolProperty(
+
+    # Non-destructive
+    # ------------------------
+
+    nondestr_use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
             "Shift objects position for a very small amount to avoid coplanar "
@@ -161,6 +168,9 @@ class BooltronPreferences(AddonPreferences):
     )
 
     def draw(self, context):
+        props_wm = context.window_manager.booltron
+        active_tab = props_wm.prefs_active_tab
+
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
@@ -169,42 +179,44 @@ class BooltronPreferences(AddonPreferences):
         col = split.column()
         col.use_property_split = False
         col.scale_y = 1.3
-        col.prop(self, "active_section", expand=True)
+        col.prop(props_wm, "prefs_active_tab", expand=True)
 
         box = split.box()
 
-        if self.active_section == "DESTRUCTIVE":
+        if active_tab == "DESTRUCTIVE":
             col = box.column()
             col.prop(self, "destr_double_threshold")
 
             split = col.split(factor=0.49)
-            split.prop(self, "destr_pos_correct")
+            split.prop(self, "destr_use_pos_offset")
             sub = split.row()
-            sub.active = self.destr_pos_correct
+            sub.active = self.destr_use_pos_offset
             sub.prop(self, "destr_pos_offset", text="")
 
             col.prop(self, "merge_distance")
             col.prop(self, "cleanup")
             col.prop(self, "triangulate")
 
-        elif self.active_section == "NONDESTRUCTIVE":
+        elif active_tab == "NONDESTRUCTIVE":
             col = box.column()
             col.prop(self, "nondestr_double_threshold")
 
             split = col.split(factor=0.49)
-            split.prop(self, "nondestr_pos_correct")
+            split.prop(self, "nondestr_use_pos_offset")
             sub = split.row()
-            sub.active = self.nondestr_pos_correct
+            sub.active = self.nondestr_use_pos_offset
             sub.prop(self, "nondestr_pos_offset", text="")
 
+            box.label(text="Viewport Display")
+            col = box.column()
             col.prop(self, "display_secondary")
             col.prop(self, "display_combined")
 
-        elif self.active_section == "UI":
+        elif active_tab == "UI":
             col = box.column()
             col.prop(self, "theme_icon")
 
-        elif self.active_section == "UPDATES":
+        elif active_tab == "UPDATES":
             mod_update.prefs_ui(self, box)
 
 
@@ -213,7 +225,7 @@ class BooltronPreferences(AddonPreferences):
 
 
 def update_mod_disable(self, context):
-    show = self.booltron_mod_disable
+    show = self.mod_disable
 
     for ob in context.scene.objects:
         if ob.type == "MESH":
@@ -222,8 +234,17 @@ def update_mod_disable(self, context):
                     md.show_viewport = show
 
 
-mod_disable = BoolProperty(
-    description="Disable boolean modifiers on all objects",
-    default=True,
-    update=update_mod_disable,
-)
+class BooltronPropertiesWm(PropertyGroup):
+    prefs_active_tab: EnumProperty(
+        items=(
+            ("DESTRUCTIVE", "Destructive", ""),
+            ("NONDESTRUCTIVE", "Non-destructive", ""),
+            ("UI", "Themes", ""),
+            ("UPDATES", "Updates", ""),
+        ),
+    )
+    mod_disable: BoolProperty(
+        description="Disable boolean modifiers on all objects",
+        default=True,
+        update=update_mod_disable,
+    )

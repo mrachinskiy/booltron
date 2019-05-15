@@ -37,7 +37,7 @@ class ObjectUtils:
         bpy.data.objects.remove(ob)
         bpy.data.meshes.remove(me)
 
-    def object_pos_correct(self, obs):
+    def object_pos_offset(self, obs):
         for ob in obs:
             x = random.uniform(-self.pos_offset, self.pos_offset)
             y = random.uniform(-self.pos_offset, self.pos_offset)

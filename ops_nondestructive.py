@@ -27,7 +27,7 @@ from .object_utils import ObjectUtils
 
 
 class Setup(BooleanMethods, ObjectUtils):
-    pos_correct: BoolProperty(
+    use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
             "Shift objects position for a very small amount to avoid coplanar "
@@ -83,11 +83,13 @@ class Setup(BooleanMethods, ObjectUtils):
         col.prop(self, "double_threshold")
 
         split = col.split(factor=0.49)
-        split.prop(self, "pos_correct")
+        split.prop(self, "use_pos_offset")
         sub = split.row()
-        sub.enabled = self.pos_correct
+        sub.enabled = self.use_pos_offset
         sub.prop(self, "pos_offset", text="")
 
+        layout.label(text="Viewport Display")
+        col = layout.column()
         col.prop(self, "display_secondary")
         col.prop(self, "display_combined")
 
@@ -113,8 +115,8 @@ class Setup(BooleanMethods, ObjectUtils):
             ob2["booltron_combined"] = self.mode
             self.boolean_mod(ob1, ob2, self.mode, name=self.mode[:3] + " COMBINED", md_apply=False, terminate=False)
 
-        if self.pos_correct:
-            self.object_pos_correct(obs)
+        if self.use_pos_offset:
+            self.object_pos_offset(obs)
 
         ob2_mats = ob2.data.materials
 
@@ -137,7 +139,7 @@ class Setup(BooleanMethods, ObjectUtils):
 
         prefs = context.preferences.addons[__package__].preferences
         self.double_threshold = prefs.nondestr_double_threshold
-        self.pos_correct = prefs.nondestr_pos_correct
+        self.use_pos_offset = prefs.nondestr_use_pos_offset
         self.pos_offset = prefs.nondestr_pos_offset
         self.display_secondary = prefs.display_secondary
         self.display_combined = prefs.display_combined

@@ -28,7 +28,7 @@ from .object_utils import ObjectUtils
 
 
 class Setup(BooleanMethods, MeshUtils, ObjectUtils):
-    pos_correct: BoolProperty(
+    use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
             "Shift objects position for a very small amount to avoid coplanar "
@@ -93,9 +93,9 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         col.prop(self, "double_threshold")
 
         split = col.split(factor=0.49)
-        split.prop(self, "pos_correct")
+        split.prop(self, "use_pos_offset")
         sub = split.row()
-        sub.enabled = self.pos_correct
+        sub.enabled = self.use_pos_offset
         sub.prop(self, "pos_offset", text="")
 
         col.prop(self, "merge_distance")
@@ -104,8 +104,8 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         col.prop(self, "keep_objects")
 
     def execute(self, context):
-        self.object_prepare()
-        self.boolean_adaptive()
+        self.object_prepare(context)
+        self.boolean_adaptive(context)
         self.mesh_check(context.object)
         return {"FINISHED"}
 
@@ -118,7 +118,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
 
         prefs = context.preferences.addons[__package__].preferences
         self.double_threshold = prefs.destr_double_threshold
-        self.pos_correct = prefs.destr_pos_correct
+        self.use_pos_offset = prefs.destr_use_pos_offset
         self.pos_offset = prefs.destr_pos_offset
         self.merge_distance = prefs.merge_distance
         self.cleanup = prefs.cleanup
@@ -128,7 +128,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
 
         if len(obs) > 2 and self.mode != "NONE":
             obs.remove(context.object)
-            self.is_overlap = self.object_overlap(obs)
+            self.is_overlap = self.object_overlap(context, obs)
 
         if event.ctrl:
             wm = context.window_manager
@@ -175,7 +175,7 @@ class OBJECT_OT_booltron_destructive_slice(Operator, Setup):
     def execute(self, context):
         space_data = context.space_data
         use_local_view = bool(space_data.local_view)
-        self.object_prepare()
+        self.object_prepare(context)
 
         ob1 = context.object
         ob1.select_set(False)
