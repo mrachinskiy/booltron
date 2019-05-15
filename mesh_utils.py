@@ -32,8 +32,8 @@ def delete_loose(bm):
 
 class MeshUtils:
 
-    def object_overlap(self, obs):
-        depsgraph = bpy.context.depsgraph
+    def object_overlap(self, context, obs):
+        depsgraph = context.depsgraph
         bm = bmesh.new()
 
         for ob in obs:
@@ -52,14 +52,14 @@ class MeshUtils:
         bm.free()
         return bool(overlap)
 
-    def object_prepare(self):
-        ob1 = bpy.context.object
-        obs = list(bpy.context.selected_objects)
+    def object_prepare(self, context):
+        ob1 = context.object
+        obs = list(context.selected_objects)
         if ob1.select_get():
             obs.remove(ob1)
 
         if self.keep_objects:
-            space_data = bpy.context.space_data
+            space_data = context.space_data
             use_local_view = bool(space_data.local_view)
             obs_copy = []
             app = obs_copy.append
@@ -83,8 +83,8 @@ class MeshUtils:
         bpy.ops.object.make_single_user(object=True, obdata=True)
         bpy.ops.object.convert(target="MESH")
 
-        if self.pos_correct:
-            self.object_pos_correct(obs)
+        if self.use_pos_offset:
+            self.object_pos_offset(obs)
 
     def mesh_prepare(self, ob, select=False):
         me = ob.data

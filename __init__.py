@@ -55,6 +55,7 @@ else:
 
     import bpy
     import bpy.utils.previews
+    from bpy.props import PointerProperty
 
     from . import (
         localization,
@@ -71,6 +72,7 @@ var.UPDATE_CURRENT_VERSION = bl_info["version"]
 
 classes = (
     preferences.BooltronPreferences,
+    preferences.BooltronPropertiesWm,
     ui.VIEW3D_PT_booltron_update,
     ui.VIEW3D_PT_booltron_destructive,
     ui.VIEW3D_PT_booltron_nondestructive,
@@ -92,7 +94,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.WindowManager.booltron_mod_disable = preferences.mod_disable
+    bpy.types.WindowManager.booltron = PointerProperty(type=preferences.BooltronPropertiesWm)
 
     # Translations
     # ---------------------------
@@ -121,6 +123,9 @@ def register():
 
     var.preview_collections["icons"] = pcoll
 
+    # mod_update
+    # ---------------------------
+
     mod_update.update_init_check()
 
 
@@ -128,7 +133,7 @@ def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.WindowManager.booltron_mod_disable
+    del bpy.types.WindowManager.booltron
 
     bpy.app.translations.unregister(__name__)
 

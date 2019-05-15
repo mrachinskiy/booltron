@@ -24,11 +24,11 @@ import bpy
 
 class BooleanMethods:
 
-    def boolean_adaptive(self):
-        ob1 = bpy.context.object
+    def boolean_adaptive(self, context):
+        ob1 = context.object
         ob1.select_set(False)
 
-        obs = list(bpy.context.selected_objects)
+        obs = list(context.selected_objects)
         ob2 = obs.pop()
 
         if obs:
