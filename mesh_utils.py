@@ -33,16 +33,17 @@ def delete_loose(bm):
 class MeshUtils:
 
     def object_overlap(self, context, obs):
-        depsgraph = context.depsgraph
+        depsgraph = context.evaluated_depsgraph_get()
         bm = bmesh.new()
 
         for ob in obs:
-            me = ob.to_mesh(depsgraph, True)
+            ob_eval = ob.evaluated_get(depsgraph)
+            me = ob_eval.to_mesh()
             me.transform(ob.matrix_world)
 
             bm.from_mesh(me)
 
-            bpy.data.meshes.remove(me)
+            ob_eval.to_mesh_clear()
 
         bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=self.merge_distance)
 
