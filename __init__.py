@@ -72,21 +72,21 @@ var.UPDATE_CURRENT_VERSION = bl_info["version"]
 
 classes = (
     preferences.BooltronPreferences,
-    preferences.BooltronPropertiesWm,
+    preferences.WmProperties,
     ui.VIEW3D_PT_booltron_update,
     ui.VIEW3D_PT_booltron_destructive,
     ui.VIEW3D_PT_booltron_nondestructive,
-    ops_destructive.OBJECT_OT_booltron_destructive_union,
-    ops_destructive.OBJECT_OT_booltron_destructive_difference,
-    ops_destructive.OBJECT_OT_booltron_destructive_intersect,
-    ops_destructive.OBJECT_OT_booltron_destructive_slice,
-    ops_nondestructive.OBJECT_OT_booltron_nondestructive_union,
-    ops_nondestructive.OBJECT_OT_booltron_nondestructive_difference,
-    ops_nondestructive.OBJECT_OT_booltron_nondestructive_intersect,
-    ops_nondestructive.OBJECT_OT_booltron_nondestructive_remove,
-    mod_update.WM_OT_booltron_update_check,
-    mod_update.WM_OT_booltron_update_download,
-    mod_update.WM_OT_booltron_update_whats_new,
+    ops_destructive.OBJECT_OT_destructive_union,
+    ops_destructive.OBJECT_OT_destructive_difference,
+    ops_destructive.OBJECT_OT_destructive_intersect,
+    ops_destructive.OBJECT_OT_destructive_slice,
+    ops_nondestructive.OBJECT_OT_nondestructive_union,
+    ops_nondestructive.OBJECT_OT_nondestructive_difference,
+    ops_nondestructive.OBJECT_OT_nondestructive_intersect,
+    ops_nondestructive.OBJECT_OT_nondestructive_remove,
+    mod_update.WM_OT_update_check,
+    mod_update.WM_OT_update_download,
+    mod_update.WM_OT_update_whats_new,
 )
 
 
@@ -94,7 +94,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.WindowManager.booltron = PointerProperty(type=preferences.BooltronPropertiesWm)
+    bpy.types.WindowManager.booltron = PointerProperty(type=preferences.WmProperties)
 
     # Translations
     # ---------------------------

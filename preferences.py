@@ -234,7 +234,7 @@ def update_mod_disable(self, context):
                     md.show_viewport = show
 
 
-class BooltronPropertiesWm(PropertyGroup):
+class WmProperties(PropertyGroup):
     prefs_active_tab: EnumProperty(
         items=(
             ("DESTRUCTIVE", "Destructive", ""),
