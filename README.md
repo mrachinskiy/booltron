@@ -16,7 +16,7 @@ How to install
 
 ### Blender 2.80
 
-1. [Download Booltron v2.4.0 (May 10 pre-release).][v2_4_0]<sup>1</sup>
+1. [Download Booltron v2.4.1.][v2_4_1]<sup>1</sup>
 2. Open `Edit` → `Preferences` → `Add-ons` category.
 3. Use `Install` to install add-on from downloaded zip archive.
 4. Read [quick tips](#quick-tips).
@@ -36,7 +36,7 @@ How to install
 
 ### Blender 2.80
 
-1. [Загрузите Booltron v2.4.0 (пре-релиз от 10-05).][v2_4_0]<sup>1</sup>
+1. [Загрузите Booltron v2.4.1.][v2_4_1]<sup>1</sup>
 2. Откройте `Edit` → `Preferences` → `Add-ons`.
 3. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.
 4. Ознакомьтесь с [советами](#советы).
@@ -91,7 +91,7 @@ Contributing
 * [Open new issue][new_issue], be sure to include Blender and add-on versions, and screenshot showing the error message.
 
 
-[v2_4_0]: https://github.com/mrachinskiy/booltron/releases/download/v2.4.0/booltron-2_4_0.zip
+[v2_4_1]: https://github.com/mrachinskiy/booltron/releases/download/v2.4.1/booltron-2_4_1.zip
 [v2_3_1]: https://github.com/mrachinskiy/booltron/releases/download/v2.3.1/booltron-2_3_1.zip
 [install_guide]: https://github.com/mrachinskiy/booltron#how-to-install
 [new_issue]: https://github.com/mrachinskiy/booltron/issues/new
