@@ -15,8 +15,8 @@ How to install
 ==========================
 
 1. Download the add-on:<sup>1</sup>
-    * [**Blender 2.80** Booltron v2.4.1 (pre-release).][v2_4_1]
-    * [**Blender 2.79** Booltron v2.3.1.][v2_3_1]
+    * [**Blender 2.80** Booltron v2.4.1][v2_4_1]
+    * [**Blender 2.79** Booltron v2.3.1][v2_3_1]
 2. Open `Preferences` → `Add-ons` category.
 3. Use `Install` to install add-on from downloaded zip archive.
 4. Read [quick tips](#quick-tips).
@@ -28,8 +28,8 @@ How to install
 ==========================
 
 1. Загрузите аддон:<sup>1</sup>
-    * [**Blender 2.80** Booltron v2.4.1 (пре-релиз).][v2_4_1]
-    * [**Blender 2.79** Booltron v2.3.1.][v2_3_1]
+    * [**Blender 2.80** Booltron v2.4.1][v2_4_1]
+    * [**Blender 2.79** Booltron v2.3.1][v2_3_1]
 2. Откройте `Preferences` → `Add-ons`.
 3. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.
 4. Ознакомьтесь с [советами](#советы).
