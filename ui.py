@@ -40,7 +40,7 @@ class Setup:
         return self.pcoll[self.theme + name].icon_id
 
 
-class VIEW3D_PT_booltron_update(Panel, Setup):
+class VIEW3D_PT_booltron_update(Setup, Panel):
     bl_label = "Update"
 
     @classmethod
@@ -51,7 +51,7 @@ class VIEW3D_PT_booltron_update(Panel, Setup):
         mod_update.sidebar_ui(self, context)
 
 
-class VIEW3D_PT_booltron_destructive(Panel, Setup):
+class VIEW3D_PT_booltron_destructive(Setup, Panel):
     bl_label = "Destructive"
 
     def draw(self, context):
@@ -65,7 +65,7 @@ class VIEW3D_PT_booltron_destructive(Panel, Setup):
         layout.operator("object.booltron_destructive_slice", text="Slice", icon_value=self.icon_get("DESTR_SLICE"))
 
 
-class VIEW3D_PT_booltron_nondestructive(Panel, Setup):
+class VIEW3D_PT_booltron_nondestructive(Setup, Panel):
     bl_label = "Non-destructive"
 
     def draw_header(self, context):
