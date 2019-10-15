@@ -137,7 +137,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         return self.execute(context)
 
 
-class OBJECT_OT_destructive_union(Operator, Setup):
+class OBJECT_OT_destructive_union(Setup, Operator):
     bl_label = "Booltron Destructive Union"
     bl_description = "Combine selected objects"
     bl_idname = "object.booltron_destructive_union"
@@ -146,7 +146,7 @@ class OBJECT_OT_destructive_union(Operator, Setup):
     mode = "UNION"
 
 
-class OBJECT_OT_destructive_difference(Operator, Setup):
+class OBJECT_OT_destructive_difference(Setup, Operator):
     bl_label = "Booltron Destructive Difference"
     bl_description = "Subtract selected objects from active object"
     bl_idname = "object.booltron_destructive_difference"
@@ -155,7 +155,7 @@ class OBJECT_OT_destructive_difference(Operator, Setup):
     mode = "DIFFERENCE"
 
 
-class OBJECT_OT_destructive_intersect(Operator, Setup):
+class OBJECT_OT_destructive_intersect(Setup, Operator):
     bl_label = "Booltron Destructive Intersect"
     bl_description = "Keep the common part between active and selected objects"
     bl_idname = "object.booltron_destructive_intersect"
@@ -164,7 +164,7 @@ class OBJECT_OT_destructive_intersect(Operator, Setup):
     mode = "INTERSECT"
 
 
-class OBJECT_OT_destructive_slice(Operator, Setup):
+class OBJECT_OT_destructive_slice(Setup, Operator):
     bl_label = "Booltron Destructive Slice"
     bl_description = "Slice active object along the volume of selected objects"
     bl_idname = "object.booltron_destructive_slice"
