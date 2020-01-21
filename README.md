@@ -73,7 +73,7 @@ Contributing
 ### Did you find a bug?
 
 * Ensure the bug can be reproduced in the latest add-on version.
-* If error occurs on add-on installation or activation, check [how to install](#how-to-install) guide.
+* If error occurs on add-on installation or activation you probably trying to install add-on repository instead of release, check [how to install](#how-to-install) guide for propper instalation process.
 * [Open new issue][new_issue], be sure to include Blender and add-on versions, and screenshot showing the error message.
 
 
