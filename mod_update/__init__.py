@@ -1,7 +1,7 @@
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
 #  mod_update automatic add-on updates.
-#  Copyright (C) 2019  Mikhail Rachinskiy
+#  Copyright (C) 2019-2020  Mikhail Rachinskiy
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,6 @@
 
 
 from .lib import update_init_check, update_init_download
-from .localization import DICTIONARY
+from .operators import WM_OT_update_check, WM_OT_update_download, WM_OT_update_whats_new
 from .ui import prefs_ui, sidebar_ui
-from .operators import *
+from .localization import DICTIONARY
