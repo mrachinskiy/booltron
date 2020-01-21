@@ -15,8 +15,8 @@ How to install
 ==========================
 
 1. Download the add-on:<sup>1</sup>
-    * [**Blender 2.80** Booltron v2.4.1][v2_4_1]
-    * [**Blender 2.79** Booltron v2.3.1][v2_3_1]
+    * [**Blender 2.80** Booltron v2.4.2][v_latest]
+    * [**Blender 2.79** Booltron v2.3.1][v_legacy]
 2. Open `Preferences` → `Add-ons` category.
 3. Use `Install` to install add-on from downloaded zip archive.
 4. Read [quick tips](#quick-tips).
@@ -28,8 +28,8 @@ How to install
 ==========================
 
 1. Загрузите аддон:<sup>1</sup>
-    * [**Blender 2.80** Booltron v2.4.1][v2_4_1]
-    * [**Blender 2.79** Booltron v2.3.1][v2_3_1]
+    * [**Blender 2.80** Booltron v2.4.2][v_latest]
+    * [**Blender 2.79** Booltron v2.3.1][v_legacy]
 2. Откройте `Preferences` → `Add-ons`.
 3. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.
 4. Ознакомьтесь с [советами](#советы).
@@ -77,6 +77,6 @@ Contributing
 * [Open new issue][new_issue], be sure to include Blender and add-on versions, and screenshot showing the error message.
 
 
-[v2_4_1]: https://github.com/mrachinskiy/booltron/releases/download/v2.4.1/booltron-2_4_1.zip
-[v2_3_1]: https://github.com/mrachinskiy/booltron/releases/download/v2.3.1/booltron-2_3_1.zip
+[v_latest]: https://github.com/mrachinskiy/booltron/releases/download/v2.4.2/booltron-2_4_2.zip
+[v_legacy]: https://github.com/mrachinskiy/booltron/releases/download/v2.3.1/booltron-2_3_1.zip
 [new_issue]: https://github.com/mrachinskiy/booltron/issues/new
