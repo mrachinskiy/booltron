@@ -55,7 +55,7 @@ _ru = {
 }
 
 
-def _translation_dict(dictionary):
+def _convert(dictionary):
     d = {}
 
     for ctxt, msgs in dictionary.items():
@@ -66,7 +66,8 @@ def _translation_dict(dictionary):
 
 
 DICTIONARY = {
-    "ru_RU": _translation_dict(_ru),
+    "ru_RU": _convert(_ru),
 }
 
 _ru.clear()
+del _ru
