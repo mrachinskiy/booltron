@@ -73,10 +73,10 @@ Contributing
 ### Did you find a bug?
 
 * Ensure the bug can be reproduced in the latest add-on version.
-* If error occurs on add-on installation or activation you probably trying to install add-on repository instead of release, check [how to install](#how-to-install) guide for propper instalation process.
-* [Open new issue][new_issue], be sure to include Blender and add-on versions, and screenshot showing the error message.
+* If error occurs on add-on installation or activation you probably trying to install add-on repository instead of release, check [how to install](#how-to-install) guide for proper installation process.
+* [Open new bug report][new_bug_report], be sure to include Blender and add-on versions, and screenshot showing the error message.
 
 
 [v_latest]: https://github.com/mrachinskiy/booltron/releases/download/v2.4.2/booltron-2_4_2.zip
 [v_legacy]: https://github.com/mrachinskiy/booltron/releases/download/v2.3.1/booltron-2_3_1.zip
-[new_issue]: https://github.com/mrachinskiy/booltron/issues/new
+[new_bug_report]: https://github.com/mrachinskiy/booltron/issues/new?template=bug_report.md
