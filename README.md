@@ -1,4 +1,4 @@
-Booltron—super add-on for super fast booleans.
+Booltron—super add-on for super fast booleans for Blender.
 
 Features:
 
@@ -14,27 +14,29 @@ Features:
 How to install
 ==========================
 
-1. Download the add-on:<sup>1</sup>
-    * [**Blender 2.80** Booltron v2.4.2][v_latest]
-    * [**Blender 2.79** Booltron v2.3.1][v_legacy]
-2. Open `Preferences` → `Add-ons` category.
-3. Use `Install` to install add-on from downloaded zip archive.
-4. Read [quick tips](#quick-tips).
+1. Download [Booltron 2.4.2][v_latest].<sup>1</sup>
+2. Make sure you have Blender 2.80 or newer.
+3. Open `Preferences` → `Add-ons` category.
+4. Use `Install` to install add-on from downloaded zip archive.<sup>2</sup>
+5. Read [quick tips](#quick-tips).
 
 <sup>1</sup> Note for mac users: Safari browser will automatically unpack downloaded zip archive, so in order to install the add-on, you have to pack folder with add-on files back into zip archive. Or use a different browser to download add-on.
+
+<sup>2</sup> If error occurs on add-on activation, it means you are trying to install add-on repository instead of release. Make sure you download add-on release using link provided in step one of this guide.
 
 
 Установка
 ==========================
 
-1. Загрузите аддон:<sup>1</sup>
-    * [**Blender 2.80** Booltron v2.4.2][v_latest]
-    * [**Blender 2.79** Booltron v2.3.1][v_legacy]
-2. Откройте `Preferences` → `Add-ons`.
-3. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.
-4. Ознакомьтесь с [советами](#советы).
+1. Загрузите [Booltron 2.4.2][v_latest].<sup>1</sup>
+2. Убедитесь, что у вас установлен Blender 2.80 или новее.
+3. Откройте `Preferences` → `Add-ons`.
+4. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.<sup>2</sup>
+5. Ознакомьтесь с [кратким руководством](#краткое-руководство).
 
 <sup>1</sup> Примечание для пользователей mac: браузер Safari автоматически распаковывает скачиваемые zip архивы, поэтому, чтобы установить аддон, необходимо запаковать папку с файлами аддона обратно в zip архив. Или используйте другой браузер для скачивания аддона.
+
+<sup>2</sup> Если при активации аддона возникает ошибка, значит вы пытаетесь установить репозиторий вместо релиза. Для загрузки релиза используйте ссылку, приведённую в первом шаге данного руководства.
 
 
 Quick tips
@@ -48,11 +50,11 @@ Destructive:
 
 Non-destructive:
 
-* Supports Mesh only objects.
+* Supports only Mesh objects.
 * Unifies secondary boolean objects into one combined object for faster boolean operations.
 
 
-Советы
+Краткое руководство
 ==========================
 
 Деструктивные:
@@ -78,5 +80,4 @@ Contributing
 
 
 [v_latest]: https://github.com/mrachinskiy/booltron/releases/download/v2.4.2/booltron-2_4_2.zip
-[v_legacy]: https://github.com/mrachinskiy/booltron/releases/download/v2.3.1/booltron-2_3_1.zip
 [new_bug_report]: https://github.com/mrachinskiy/booltron/issues/new?template=bug_report.md
