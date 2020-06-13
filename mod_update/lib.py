@@ -28,7 +28,10 @@ from .. import var
 from . import state
 
 
-def _save_state_get():
+SAVE_STATE_FILEPATH = os.path.join(var.CONFIG_DIR, "update_state.json")
+
+
+def _save_state_deserialize():
     import datetime
     import json
 
@@ -37,8 +40,8 @@ def _save_state_get():
         "last_check": 0,
     }
 
-    if os.path.exists(var.UPDATE_SAVE_STATE_FILEPATH):
-        with open(var.UPDATE_SAVE_STATE_FILEPATH, "r", encoding="utf-8") as file:
+    if os.path.exists(SAVE_STATE_FILEPATH):
+        with open(SAVE_STATE_FILEPATH, "r", encoding="utf-8") as file:
             data.update(json.load(file))
 
             last_check = datetime.date.fromtimestamp(data["last_check"])
@@ -48,20 +51,20 @@ def _save_state_get():
     return data
 
 
-def _save_state_set():
+def _save_state_serialize():
     import datetime
     import json
 
     state.days_passed = 0
     data = {
-        "update_available": var.update_available,
+        "update_available": state.update_available,
         "last_check": int(datetime.datetime.now().timestamp()),
     }
 
-    if not os.path.exists(var.ADDON_CONFIG_DIR):
-        os.makedirs(var.ADDON_CONFIG_DIR)
+    if not os.path.exists(var.CONFIG_DIR):
+        os.makedirs(var.CONFIG_DIR)
 
-    with open(var.UPDATE_SAVE_STATE_FILEPATH, "w", encoding="utf-8") as file:
+    with open(SAVE_STATE_FILEPATH, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
 
@@ -81,7 +84,7 @@ def _update_check(use_force_check):
     import ssl
 
     prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
-    save_state = _save_state_get()
+    save_state = _save_state_deserialize()
 
     if not use_force_check and not prefs.update_use_auto_check:
         return
@@ -112,13 +115,13 @@ def _update_check(use_force_check):
                     version_string = re.sub(r"[^0-9]", " ", release["tag_name"])
                     version_new = tuple(int(x) for x in version_string.split())
 
-                    if var.UPDATE_VERSION_MAX and version_new >= var.UPDATE_VERSION_MAX:
+                    if var.update_block(version_new):
                         continue
 
-                    if version_new > var.UPDATE_VERSION_CURRENT:
+                    if version_new > state.VERSION_CURRENT:
                         break
                     else:
-                        _save_state_set()
+                        _save_state_serialize()
                         _runtime_state_set(None)
                         return
 
@@ -131,19 +134,19 @@ def _update_check(use_force_check):
 
                 prerelease_note = " (pre-release)" if release["prerelease"] else ""
 
-                var.update_available = True
+                state.update_available = True
                 state.version_new = release["tag_name"] + prerelease_note
                 state.url_download = asset["browser_download_url"]
                 state.url_changelog = release["html_url"]
 
-        _save_state_set()
+        _save_state_serialize()
         _runtime_state_set(None)
 
     except (urllib.error.HTTPError, urllib.error.URLError) as e:
 
         state.error_msg = str(e)
 
-        _save_state_set()
+        _save_state_serialize()
         _runtime_state_set(state.ERROR)
 
 

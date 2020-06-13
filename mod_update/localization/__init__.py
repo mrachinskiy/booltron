@@ -19,18 +19,25 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-CHECKING = 0
-INSTALLING = 1
-COMPLETED = 2
-ERROR = 3
+def _get_dicts():
+    import os
+    import json
 
-VERSION_CURRENT = None
+    for entry in os.scandir(os.path.dirname(__file__)):
+        if entry.is_file() and entry.name.endswith(".json"):
+            with open(entry, "r", encoding="utf-8") as file:
+                yield json.load(file)
 
-status = None
-days_passed = None
-version_new = None
-url_download = None
-url_changelog = None
-error_msg = None
 
-update_available = False
+def _convert(dictionary):
+    d = {}
+
+    for ctxt, msgs in dictionary.items():
+        for msg_key, msg_translation in msgs.items():
+            d[(ctxt, msg_key)] = msg_translation
+
+    return d
+
+
+def dict_init():
+    return {k: _convert(v) for k, v in _get_dicts()}
