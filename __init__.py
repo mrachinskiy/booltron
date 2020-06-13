@@ -99,6 +99,10 @@ classes = (
 
 
 def register():
+    if not os.path.exists(var.ICONS_DIR):
+        integrity_check = FileNotFoundError("!!! READ INSTALLATION GUIDE !!!")
+        raise integrity_check
+
     for cls in classes:
         bpy.utils.register_class(cls)
 
