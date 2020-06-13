@@ -22,12 +22,18 @@
 import os
 
 
+preview_collections = {}
+
+
+# Paths
+# --------------------------------
+
+
 ADDON_ID = __package__
 ADDON_DIR = os.path.dirname(__file__)
-ICONS_DIR = os.path.join(ADDON_DIR, "icons")
-ADDON_CONFIG_DIR = ADDON_DIR
+CONFIG_DIR = os.path.join(ADDON_DIR, ".config")
 
-preview_collections = {}
+ICONS_DIR = os.path.join(ADDON_DIR, "icons")
 
 
 # mod_update
@@ -35,9 +41,8 @@ preview_collections = {}
 
 
 UPDATE_OPERATOR_ID_AFFIX = "booltron"
-UPDATE_SAVE_STATE_FILEPATH = os.path.join(ADDON_CONFIG_DIR, "update_state.json")
 UPDATE_URL_RELEASES = "https://api.github.com/repos/mrachinskiy/booltron/releases"
-UPDATE_VERSION_CURRENT = None
-UPDATE_VERSION_MAX = None
 
-update_available = False
+
+def update_block(version_new):
+    return False
