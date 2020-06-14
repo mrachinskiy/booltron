@@ -76,8 +76,6 @@ else:
     )
 
 
-mod_update.state.VERSION_CURRENT = bl_info["version"]
-
 classes = (
     preferences.BooltronPreferences,
     preferences.WmProperties,
@@ -136,7 +134,10 @@ def register():
     # mod_update
     # ---------------------------
 
-    mod_update.update_init_check()
+    mod_update.init(
+        addon_version=bl_info["version"],
+        url_releases="https://api.github.com/repos/mrachinskiy/booltron/releases",
+    )
 
 
 def unregister():
@@ -144,6 +145,9 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
     del bpy.types.WindowManager.booltron
+
+    # Translations
+    # ---------------------------
 
     bpy.app.translations.unregister(__name__)
 
