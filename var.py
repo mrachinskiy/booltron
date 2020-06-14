@@ -34,15 +34,3 @@ ADDON_DIR = os.path.dirname(__file__)
 CONFIG_DIR = os.path.join(ADDON_DIR, ".config")
 
 ICONS_DIR = os.path.join(ADDON_DIR, "icons")
-
-
-# mod_update
-# --------------------------------
-
-
-UPDATE_OPERATOR_ID_AFFIX = "booltron"
-UPDATE_URL_RELEASES = "https://api.github.com/repos/mrachinskiy/booltron/releases"
-
-
-def update_block(version_new):
-    return False
