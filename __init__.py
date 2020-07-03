@@ -137,7 +137,6 @@ def register():
     mod_update.init(
         addon_version=bl_info["version"],
         releases_url="https://api.github.com/repos/mrachinskiy/booltron/releases",
-        interrupt=lambda upd_ver: upd_ver >= (2, 5, 0) and bpy.app.version < (2, 90, 0),
     )
 
 
