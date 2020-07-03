@@ -27,13 +27,15 @@ from mathutils import Vector
 
 class ObjectUtils:
 
-    def object_add(self, name):
+    @staticmethod
+    def object_add(name):
         me = bpy.data.meshes.new(name)
         ob = bpy.data.objects.new(name, me)
         bpy.context.collection.objects.link(ob)
         return ob
 
-    def object_remove(self, ob):
+    @staticmethod
+    def object_remove(ob):
         me = ob.data
         bpy.data.objects.remove(ob)
         bpy.data.meshes.remove(me)
