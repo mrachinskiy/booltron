@@ -92,9 +92,9 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         col = layout.column()
         col.prop(self, "double_threshold")
 
-        split = col.split(factor=0.49)
-        split.prop(self, "use_pos_offset")
-        sub = split.row()
+        row = col.row(heading="Correct Position")
+        row.prop(self, "use_pos_offset", text="")
+        sub = row.row()
         sub.enabled = self.use_pos_offset
         sub.prop(self, "pos_offset", text="")
 

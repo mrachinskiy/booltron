@@ -187,9 +187,9 @@ class BooltronPreferences(AddonPreferences):
             col = box.column()
             col.prop(self, "destr_double_threshold")
 
-            split = col.split(factor=0.49)
-            split.prop(self, "destr_use_pos_offset")
-            sub = split.row()
+            row = col.row(heading="Correct Position")
+            row.prop(self, "destr_use_pos_offset", text="")
+            sub = row.row()
             sub.active = self.destr_use_pos_offset
             sub.prop(self, "destr_pos_offset", text="")
 
@@ -201,9 +201,9 @@ class BooltronPreferences(AddonPreferences):
             col = box.column()
             col.prop(self, "nondestr_double_threshold")
 
-            split = col.split(factor=0.49)
-            split.prop(self, "nondestr_use_pos_offset")
-            sub = split.row()
+            row = col.row(heading="Correct Position")
+            row.prop(self, "nondestr_use_pos_offset", text="")
+            sub = row.row()
             sub.active = self.nondestr_use_pos_offset
             sub.prop(self, "nondestr_pos_offset", text="")
 
