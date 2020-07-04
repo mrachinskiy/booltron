@@ -20,9 +20,13 @@
 
 
 import bpy
-from bpy.types import Panel
+from bpy.types import Panel, Menu
 
 from . import var, mod_update
+
+
+# Utils
+# ---------------------------
 
 
 class Setup:
@@ -38,6 +42,39 @@ class Setup:
 
     def icon_get(self, name):
         return self.pcoll[self.theme + name].icon_id
+
+
+def draw_booltron_menu(self, context):
+    layout = self.layout
+    layout.separator()
+    layout.menu("VIEW3D_MT_booltron")
+
+
+# Menus
+# ---------------------------
+
+
+class VIEW3D_MT_booltron(Setup, Menu):
+    bl_label = "Booltron"
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.operator("object.booltron_destructive_difference", text="Difference", icon_value=self.icon_get("DESTR_DIFFERENCE"))
+        layout.operator("object.booltron_destructive_union", text="Union", icon_value=self.icon_get("DESTR_UNION"))
+        layout.operator("object.booltron_destructive_intersect", text="Intersect", icon_value=self.icon_get("DESTR_INTERSECT"))
+        layout.operator("object.booltron_destructive_slice", text="Slice", icon_value=self.icon_get("DESTR_SLICE"))
+
+        layout.separator()
+
+        layout.operator("object.booltron_nondestructive_difference", text="Difference", icon_value=self.icon_get("NONDESTR_DIFFERENCE"))
+        layout.operator("object.booltron_nondestructive_union", text="Union", icon_value=self.icon_get("NONDESTR_UNION"))
+        layout.operator("object.booltron_nondestructive_intersect", text="Intersect", icon_value=self.icon_get("NONDESTR_INTERSECT"))
+        layout.operator("object.booltron_nondestructive_remove", text="Dismiss", icon_value=self.icon_get("NONDESTR_REMOVE"))
+
+
+# Panels
+# ---------------------------
 
 
 class VIEW3D_PT_booltron_update(Setup, Panel):
