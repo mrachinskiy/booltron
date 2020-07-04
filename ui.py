@@ -65,6 +65,7 @@ class VIEW3D_MT_booltron(Setup, Menu):
         layout.operator("object.booltron_destructive_intersect", icon_value=self.icon_get("DESTR_INTERSECT"))
         layout.operator("object.booltron_destructive_slice", icon_value=self.icon_get("DESTR_SLICE"))
         layout.separator()
+        layout.prop(context.window_manager.booltron, "mod_disable")
         layout.operator("object.booltron_nondestructive_difference", icon_value=self.icon_get("NONDESTR_DIFFERENCE"))
         layout.operator("object.booltron_nondestructive_union", icon_value=self.icon_get("NONDESTR_UNION"))
         layout.operator("object.booltron_nondestructive_intersect", icon_value=self.icon_get("NONDESTR_INTERSECT"))
