@@ -244,6 +244,7 @@ class WmProperties(PropertyGroup):
         ),
     )
     mod_disable: BoolProperty(
+        name="Modifiers",
         description="Disable boolean modifiers on all objects",
         default=True,
         update=update_mod_disable,
