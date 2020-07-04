@@ -152,7 +152,7 @@ class Setup(BooleanMethods, ObjectUtils):
 
 
 class OBJECT_OT_nondestructive_union(Setup, Operator):
-    bl_label = "Booltron Non-destructive Union"
+    bl_label = "Union"
     bl_description = "Combine active (primary) and selected (secondary) objects"
     bl_idname = "object.booltron_nondestructive_union"
     bl_options = {"REGISTER", "UNDO"}
@@ -161,7 +161,7 @@ class OBJECT_OT_nondestructive_union(Setup, Operator):
 
 
 class OBJECT_OT_nondestructive_difference(Setup, Operator):
-    bl_label = "Booltron Non-destructive Difference"
+    bl_label = "Difference"
     bl_description = "Subtract selected (secondary) objects from active (primary) object"
     bl_idname = "object.booltron_nondestructive_difference"
     bl_options = {"REGISTER", "UNDO"}
@@ -170,7 +170,7 @@ class OBJECT_OT_nondestructive_difference(Setup, Operator):
 
 
 class OBJECT_OT_nondestructive_intersect(Setup, Operator):
-    bl_label = "Booltron Non-destructive Intersect"
+    bl_label = "Intersect"
     bl_description = "Keep the common part between active (primary) and selected (secondary) objects"
     bl_idname = "object.booltron_nondestructive_intersect"
     bl_options = {"REGISTER", "UNDO"}
@@ -179,7 +179,7 @@ class OBJECT_OT_nondestructive_intersect(Setup, Operator):
 
 
 class OBJECT_OT_nondestructive_remove(ObjectUtils, Operator):
-    bl_label = "Booltron Non-destructive Dismiss"
+    bl_label = "Dismiss"
     bl_description = "Dismiss selected secondary objects from boolean operation"
     bl_idname = "object.booltron_nondestructive_remove"
     bl_options = {"REGISTER", "UNDO"}
