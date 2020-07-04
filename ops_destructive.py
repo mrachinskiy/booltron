@@ -126,7 +126,7 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         self.keep_objects = event.alt
         self.is_overlap = False
 
-        if len(obs) > 2 and self.mode != "NONE":
+        if len(obs) > 2 and self.mode is not None:
             obs.remove(context.object)
             self.is_overlap = self.object_overlap(context, obs)
 
@@ -170,7 +170,7 @@ class OBJECT_OT_destructive_slice(Setup, Operator):
     bl_idname = "object.booltron_destructive_slice"
     bl_options = {"REGISTER", "UNDO"}
 
-    mode = "NONE"
+    mode = None
 
     def execute(self, context):
         space_data = context.space_data
