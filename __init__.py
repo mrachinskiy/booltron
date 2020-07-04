@@ -79,6 +79,7 @@ else:
 classes = (
     preferences.BooltronPreferences,
     preferences.WmProperties,
+    ui.VIEW3D_MT_booltron,
     ui.VIEW3D_PT_booltron_update,
     ui.VIEW3D_PT_booltron_destructive,
     ui.VIEW3D_PT_booltron_nondestructive,
@@ -105,6 +106,11 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.WindowManager.booltron = PointerProperty(type=preferences.WmProperties)
+
+    # Menu
+    # ---------------------------
+
+    bpy.types.VIEW3D_MT_object.append(ui.draw_booltron_menu)
 
     # Translations
     # ---------------------------
@@ -145,6 +151,11 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
     del bpy.types.WindowManager.booltron
+
+    # Menu
+    # ---------------------------
+
+    bpy.types.VIEW3D_MT_object.remove(ui.draw_booltron_menu)
 
     # Translations
     # ---------------------------
