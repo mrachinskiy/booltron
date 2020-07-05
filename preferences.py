@@ -195,7 +195,7 @@ class WmProperties(PropertyGroup):
         ),
     )
     mod_disable: BoolProperty(
-        name="Modifiers",
+        name="Non-destructive",
         description="Disable boolean modifiers on all objects",
         default=True,
         update=update_mod_disable,
