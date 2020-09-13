@@ -55,17 +55,6 @@ class BooltronPreferences(AddonPreferences):
         description="Update add-on to pre-release version if available",
     )
 
-    # Themes
-    # ------------------------
-
-    theme_icon: EnumProperty(
-        name="Icons",
-        items=(
-            ("LIGHT", "Light", ""),
-            ("DARK", "Dark", ""),
-        ),
-    )
-
     # Destructive
     # ------------------------
 
@@ -188,7 +177,6 @@ class WmProperties(PropertyGroup):
         items=(
             ("DESTRUCTIVE", "Destructive", ""),
             ("NONDESTRUCTIVE", "Non-destructive", ""),
-            ("UI", "Themes", ""),
             ("UPDATES", "Updates", ""),
         ),
     )

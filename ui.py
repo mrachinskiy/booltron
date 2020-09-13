@@ -35,13 +35,23 @@ class Setup:
     bl_region_type = "UI"
     bl_context = "objectmode"
 
-    def __init__(self):
-        prefs = bpy.context.preferences.addons[__package__].preferences
-        self.pcoll = var.preview_collections["icons"]
-        self.theme = prefs.theme_icon
 
-    def icon_get(self, name):
-        return self.pcoll[self.theme + name].icon_id
+def _get_icon(name, override=None):
+    if override is not None:
+        value = override
+    else:
+        value = bpy.context.preferences.themes[0].user_interface.wcol_tool.text.v
+
+    theme = "DARK" if value < 0.5 else "LIGHT"
+    return var.preview_collections["icons"][theme + name].icon_id
+
+
+def _get_icon_menu(name):
+    return _get_icon(name, override=bpy.context.preferences.themes[0].user_interface.wcol_menu_item.text.v)
+
+
+# Menus
+# ---------------------------
 
 
 def draw_booltron_menu(self, context):
@@ -50,31 +60,27 @@ def draw_booltron_menu(self, context):
     layout.menu("VIEW3D_MT_booltron")
 
 
-# Menus
-# ---------------------------
-
-
-class VIEW3D_MT_booltron(Setup, Menu):
+class VIEW3D_MT_booltron(Menu):
     bl_label = "Booltron"
 
     def draw(self, context):
         layout = self.layout
         wm_props = context.window_manager.booltron
 
-        layout.operator("object.booltron_destructive_difference", icon_value=self.icon_get("DESTR_DIFFERENCE"))
-        layout.operator("object.booltron_destructive_union", icon_value=self.icon_get("DESTR_UNION"))
-        layout.operator("object.booltron_destructive_intersect", icon_value=self.icon_get("DESTR_INTERSECT"))
-        layout.operator("object.booltron_destructive_slice", icon_value=self.icon_get("DESTR_SLICE"))
+        layout.operator("object.booltron_destructive_difference", icon_value=_get_icon_menu("DESTR_DIFFERENCE"))
+        layout.operator("object.booltron_destructive_union", icon_value=_get_icon_menu("DESTR_UNION"))
+        layout.operator("object.booltron_destructive_intersect", icon_value=_get_icon_menu("DESTR_INTERSECT"))
+        layout.operator("object.booltron_destructive_slice", icon_value=_get_icon_menu("DESTR_SLICE"))
 
         layout.separator()
 
         layout.prop(wm_props, "mod_disable")
         col = layout.column()
         col.active = wm_props.mod_disable
-        col.operator("object.booltron_nondestructive_difference", icon_value=self.icon_get("NONDESTR_DIFFERENCE"))
-        col.operator("object.booltron_nondestructive_union", icon_value=self.icon_get("NONDESTR_UNION"))
-        col.operator("object.booltron_nondestructive_intersect", icon_value=self.icon_get("NONDESTR_INTERSECT"))
-        col.operator("object.booltron_nondestructive_remove", icon_value=self.icon_get("NONDESTR_REMOVE"))
+        col.operator("object.booltron_nondestructive_difference", icon_value=_get_icon_menu("NONDESTR_DIFFERENCE"))
+        col.operator("object.booltron_nondestructive_union", icon_value=_get_icon_menu("NONDESTR_UNION"))
+        col.operator("object.booltron_nondestructive_intersect", icon_value=_get_icon_menu("NONDESTR_INTERSECT"))
+        col.operator("object.booltron_nondestructive_remove", icon_value=_get_icon_menu("NONDESTR_REMOVE"))
 
 
 # Panels
@@ -99,11 +105,11 @@ class VIEW3D_PT_booltron_destructive(Setup, Panel):
         layout = self.layout
 
         col = layout.column(align=True)
-        col.operator("object.booltron_destructive_difference", icon_value=self.icon_get("DESTR_DIFFERENCE"))
-        col.operator("object.booltron_destructive_union", icon_value=self.icon_get("DESTR_UNION"))
-        col.operator("object.booltron_destructive_intersect", icon_value=self.icon_get("DESTR_INTERSECT"))
+        col.operator("object.booltron_destructive_difference", icon_value=_get_icon("DESTR_DIFFERENCE"))
+        col.operator("object.booltron_destructive_union", icon_value=_get_icon("DESTR_UNION"))
+        col.operator("object.booltron_destructive_intersect", icon_value=_get_icon("DESTR_INTERSECT"))
 
-        layout.operator("object.booltron_destructive_slice", icon_value=self.icon_get("DESTR_SLICE"))
+        layout.operator("object.booltron_destructive_slice", icon_value=_get_icon("DESTR_SLICE"))
 
 
 class VIEW3D_PT_booltron_nondestructive(Setup, Panel):
@@ -118,11 +124,11 @@ class VIEW3D_PT_booltron_nondestructive(Setup, Panel):
         layout.active = context.window_manager.booltron.mod_disable
 
         col = layout.column(align=True)
-        col.operator("object.booltron_nondestructive_difference", icon_value=self.icon_get("NONDESTR_DIFFERENCE"))
-        col.operator("object.booltron_nondestructive_union", icon_value=self.icon_get("NONDESTR_UNION"))
-        col.operator("object.booltron_nondestructive_intersect", icon_value=self.icon_get("NONDESTR_INTERSECT"))
+        col.operator("object.booltron_nondestructive_difference", icon_value=_get_icon("NONDESTR_DIFFERENCE"))
+        col.operator("object.booltron_nondestructive_union", icon_value=_get_icon("NONDESTR_UNION"))
+        col.operator("object.booltron_nondestructive_intersect", icon_value=_get_icon("NONDESTR_INTERSECT"))
 
-        layout.operator("object.booltron_nondestructive_remove", icon_value=self.icon_get("NONDESTR_REMOVE"))
+        layout.operator("object.booltron_nondestructive_remove", icon_value=_get_icon("NONDESTR_REMOVE"))
 
 
 # Preferences
@@ -173,10 +179,6 @@ def prefs_ui(self, context):
         col = box.column()
         col.prop(self, "display_secondary")
         col.prop(self, "display_combined")
-
-    elif active_tab == "UI":
-        col = box.column()
-        col.prop(self, "theme_icon")
 
     elif active_tab == "UPDATES":
         mod_update.prefs_ui(self, box)
