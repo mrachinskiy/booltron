@@ -175,14 +175,12 @@ class BooltronPreferences(AddonPreferences):
 # ------------------------------------------
 
 
-def update_mod_disable(self, context):
-    show = self.mod_disable
-
+def upd_mod_disable(self, context):
     for ob in context.scene.objects:
         if ob.type == "MESH":
             for md in ob.modifiers:
                 if md.type == "BOOLEAN":
-                    md.show_viewport = show
+                    md.show_viewport = self.mod_disable
 
 
 class WmProperties(PropertyGroup):
@@ -198,5 +196,5 @@ class WmProperties(PropertyGroup):
         name="Non-destructive",
         description="Disable boolean modifiers on all objects",
         default=True,
-        update=update_mod_disable,
+        update=upd_mod_disable,
     )

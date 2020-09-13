@@ -22,12 +22,8 @@
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
 
-from .boolean_methods import BooleanMethods
-from .mesh_utils import MeshUtils
-from .object_utils import ObjectUtils
 
-
-class Setup(BooleanMethods, MeshUtils, ObjectUtils):
+class Destructive:
     use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
@@ -104,40 +100,15 @@ class Setup(BooleanMethods, MeshUtils, ObjectUtils):
         col.prop(self, "keep_objects")
 
     def execute(self, context):
-        self.object_prepare(context)
-        self.boolean_adaptive(context)
-        self.mesh_check(context.object)
-        return {"FINISHED"}
+        from . import destructive_func
+        return destructive_func.execute(self, context)
 
     def invoke(self, context, event):
-        obs = context.selected_objects
-
-        if len(obs) < 2:
-            self.report({"ERROR"}, "At least two objects must be selected")
-            return {"CANCELLED"}
-
-        prefs = context.preferences.addons[__package__].preferences
-        self.double_threshold = prefs.destr_double_threshold
-        self.use_pos_offset = prefs.destr_use_pos_offset
-        self.pos_offset = prefs.destr_pos_offset
-        self.merge_distance = prefs.merge_distance
-        self.cleanup = prefs.cleanup
-        self.triangulate = prefs.triangulate
-        self.keep_objects = event.alt
-        self.is_overlap = False
-
-        if len(obs) > 2 and self.mode is not None:
-            obs.remove(context.object)
-            self.is_overlap = self.object_overlap(context, obs)
-
-        if event.ctrl:
-            wm = context.window_manager
-            return wm.invoke_props_dialog(self)
-
-        return self.execute(context)
+        from . import destructive_func
+        return destructive_func.invoke(self, context, event)
 
 
-class OBJECT_OT_destructive_union(Setup, Operator):
+class OBJECT_OT_destructive_union(Destructive, Operator):
     bl_label = "Union"
     bl_description = "Combine selected objects"
     bl_idname = "object.booltron_destructive_union"
@@ -146,7 +117,7 @@ class OBJECT_OT_destructive_union(Setup, Operator):
     mode = "UNION"
 
 
-class OBJECT_OT_destructive_difference(Setup, Operator):
+class OBJECT_OT_destructive_difference(Destructive, Operator):
     bl_label = "Difference"
     bl_description = "Subtract selected objects from active object"
     bl_idname = "object.booltron_destructive_difference"
@@ -155,7 +126,7 @@ class OBJECT_OT_destructive_difference(Setup, Operator):
     mode = "DIFFERENCE"
 
 
-class OBJECT_OT_destructive_intersect(Setup, Operator):
+class OBJECT_OT_destructive_intersect(Destructive, Operator):
     bl_label = "Intersect"
     bl_description = "Keep the common part between active and selected objects"
     bl_idname = "object.booltron_destructive_intersect"
@@ -164,7 +135,7 @@ class OBJECT_OT_destructive_intersect(Setup, Operator):
     mode = "INTERSECT"
 
 
-class OBJECT_OT_destructive_slice(Setup, Operator):
+class OBJECT_OT_destructive_slice(Destructive, Operator):
     bl_label = "Slice"
     bl_description = "Slice active object along the volume of selected objects"
     bl_idname = "object.booltron_destructive_slice"
@@ -173,51 +144,5 @@ class OBJECT_OT_destructive_slice(Setup, Operator):
     mode = None
 
     def execute(self, context):
-        space_data = context.space_data
-        use_local_view = bool(space_data.local_view)
-        self.object_prepare(context)
-
-        ob1 = context.object
-        ob1.select_set(False)
-        self.mesh_prepare(ob1, select=False)
-
-        for ob2 in context.selected_objects:
-
-            self.mesh_prepare(ob2, select=True)
-
-            # Create copy of main object
-            # ---------------------------------
-
-            ob1_copy = ob1.copy()
-            ob1_copy.data = ob1.data.copy()
-
-            for coll in ob1.users_collection:
-                coll.objects.link(ob1_copy)
-
-            if use_local_view:
-                ob1_copy.local_view_set(space_data, True)
-
-            ob1_copy.select_set(True)
-
-            # Main object difference
-            # ---------------------------------
-
-            self.boolean_mod(ob1, ob2, "DIFFERENCE", terminate=False)
-
-            if self.mesh_check(ob1):
-                return {"FINISHED"}
-
-            # Copy object intersect
-            # ---------------------------------
-
-            self.boolean_mod(ob1_copy, ob2, "INTERSECT")
-
-            if self.mesh_check(ob1_copy):
-                return {"FINISHED"}
-
-            if self.cleanup:
-                self.mesh_cleanup(ob1)
-
-        context.view_layer.objects.active = ob1_copy
-
-        return {"FINISHED"}
+        from . import destructive_func
+        return destructive_func.execute_slice(self, context)

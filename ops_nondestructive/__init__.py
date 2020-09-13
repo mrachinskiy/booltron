@@ -22,11 +22,8 @@
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty, EnumProperty
 
-from .boolean_methods import BooleanMethods
-from .object_utils import ObjectUtils
 
-
-class Setup(BooleanMethods, ObjectUtils):
+class Nondestructive:
     use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
@@ -95,64 +92,15 @@ class Setup(BooleanMethods, ObjectUtils):
         col.prop(self, "display_combined")
 
     def execute(self, context):
-        ob1 = context.object
-        obs = context.selected_objects
-        if ob1.select_get():
-            obs.remove(ob1)
-
-        for md in ob1.modifiers:
-            if (
-                md.type == "BOOLEAN" and
-                md.operation == self.mode and
-                md.object and
-                "booltron_combined" in md.object
-            ):
-                ob2 = md.object
-                break
-        else:
-            name = f"{ob1.name} COMBINED {self.mode[:3]}"
-            ob2 = self.object_add(name)
-            ob2.display_type = self.display_combined
-            ob2["booltron_combined"] = self.mode
-            self.boolean_mod(ob1, ob2, self.mode, name=self.mode[:3] + " COMBINED", md_apply=False, terminate=False)
-
-        if self.use_pos_offset:
-            self.object_pos_offset(obs)
-
-        ob2_mats = ob2.data.materials
-
-        for ob in obs:
-            if ob.type == "MESH":
-                self.boolean_mod(ob2, ob, "UNION", md_apply=False, terminate=False)
-                ob.display_type = self.display_secondary
-                for mat in ob.data.materials:
-                    if mat.name not in ob2_mats:
-                        ob2_mats.append(mat)
-
-        return {"FINISHED"}
+        from . import nondestructive_func
+        return nondestructive_func.execute(self, context)
 
     def invoke(self, context, event):
-        obs = [ob for ob in context.selected_objects if ob.type == "MESH"]
-
-        if len(obs) < 2 or context.object.type != "MESH":
-            self.report({"ERROR"}, "At least two Mesh objects must be selected")
-            return {"CANCELLED"}
-
-        prefs = context.preferences.addons[__package__].preferences
-        self.double_threshold = prefs.nondestr_double_threshold
-        self.use_pos_offset = prefs.nondestr_use_pos_offset
-        self.pos_offset = prefs.nondestr_pos_offset
-        self.display_secondary = prefs.display_secondary
-        self.display_combined = prefs.display_combined
-
-        if event.ctrl:
-            wm = context.window_manager
-            return wm.invoke_props_dialog(self)
-
-        return self.execute(context)
+        from . import nondestructive_func
+        return nondestructive_func.invoke(self, context, event)
 
 
-class OBJECT_OT_nondestructive_union(Setup, Operator):
+class OBJECT_OT_nondestructive_union(Nondestructive, Operator):
     bl_label = "Union"
     bl_description = "Combine active (primary) and selected (secondary) objects"
     bl_idname = "object.booltron_nondestructive_union"
@@ -161,7 +109,7 @@ class OBJECT_OT_nondestructive_union(Setup, Operator):
     mode = "UNION"
 
 
-class OBJECT_OT_nondestructive_difference(Setup, Operator):
+class OBJECT_OT_nondestructive_difference(Nondestructive, Operator):
     bl_label = "Difference"
     bl_description = "Subtract selected (secondary) objects from active (primary) object"
     bl_idname = "object.booltron_nondestructive_difference"
@@ -170,7 +118,7 @@ class OBJECT_OT_nondestructive_difference(Setup, Operator):
     mode = "DIFFERENCE"
 
 
-class OBJECT_OT_nondestructive_intersect(Setup, Operator):
+class OBJECT_OT_nondestructive_intersect(Nondestructive, Operator):
     bl_label = "Intersect"
     bl_description = "Keep the common part between active (primary) and selected (secondary) objects"
     bl_idname = "object.booltron_nondestructive_intersect"
@@ -179,41 +127,12 @@ class OBJECT_OT_nondestructive_intersect(Setup, Operator):
     mode = "INTERSECT"
 
 
-class OBJECT_OT_nondestructive_remove(ObjectUtils, Operator):
+class OBJECT_OT_nondestructive_remove(Operator):
     bl_label = "Dismiss"
     bl_description = "Dismiss selected secondary objects from boolean operation"
     bl_idname = "object.booltron_nondestructive_remove"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        obs = set(ob for ob in context.selected_objects if "booltron_combined" not in ob)
-        is_empty = False
-
-        if not obs:
-            return {"CANCELLED"}
-
-        for ob in context.scene.objects:
-            if "booltron_combined" in ob:
-
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN" and (not md.object or md.object in obs):
-                        ob.modifiers.remove(md)
-
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN":
-                        break
-                else:
-                    is_empty = True
-                    self.object_remove(ob)
-
-        if is_empty:
-            for ob in context.scene.objects:
-                if ob.type == "MESH":
-                    for md in ob.modifiers:
-                        if md.type == "BOOLEAN" and not md.object:
-                            ob.modifiers.remove(md)
-
-        for ob in obs:
-            ob.display_type = "TEXTURED"
-
-        return {"FINISHED"}
+        from . import nondestructive_func
+        return nondestructive_func.execute_remove(self, context)
