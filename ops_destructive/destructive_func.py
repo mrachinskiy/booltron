@@ -159,7 +159,6 @@ def execute_slice(self, context):
     use_local_view = bool(space_data.local_view)
 
     ob1 = context.object
-    ob1.select_set(False)
     obs = prepare_objects(self, context)
 
     Mesh.prepare(ob1, select=False)
@@ -201,6 +200,7 @@ def execute_slice(self, context):
         if self.cleanup:
             Mesh.cleanup(ob1)
 
+    ob1.select_set(False)
     context.view_layer.objects.active = ob1_copy
 
     return {"FINISHED"}
