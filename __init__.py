@@ -22,11 +22,11 @@
 bl_info = {
     "name": "Booltron",
     "author": "Mikhail Rachinskiy",
-    "version": (2, 4, 3),
-    "blender": (2, 80, 0),
+    "version": (2, 5, 0),
+    "blender": (2, 90, 0),
     "location": "3D View > Sidebar",
     "description": "Super add-on for super fast booleans.",
-    "wiki_url": "https://github.com/mrachinskiy/booltron#readme",
+    "doc_url": "https://github.com/mrachinskiy/booltron#readme",
     "tracker_url": "https://github.com/mrachinskiy/booltron/issues",
     "category": "Object",
 }
