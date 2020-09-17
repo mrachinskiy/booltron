@@ -46,8 +46,30 @@ def _get_icon(name, override=None):
     return var.preview_collections["icons"][theme + name].icon_id
 
 
-def _get_icon_menu(name):
-    return _get_icon(name, override=bpy.context.preferences.themes[0].user_interface.wcol_menu_item.text.v)
+def _icon(name, override=None):
+    global _icon
+    _icon = _get_icon
+
+    if "icons" not in var.preview_collections:
+        import os
+        import bpy.utils.previews
+
+        pcoll = bpy.utils.previews.new()
+
+        for entry in os.scandir(var.ICONS_DIR):
+            if entry.is_dir():
+                for subentry in os.scandir(entry.path):
+                    if subentry.is_file() and subentry.name.endswith(".png"):
+                        filename = entry.name + os.path.splitext(subentry.name)[0]
+                        pcoll.load(filename.upper(), subentry.path, "IMAGE")
+
+        var.preview_collections["icons"] = pcoll
+
+    return _get_icon(name, override)
+
+
+def _icon_menu(name):
+    return _icon(name, override=bpy.context.preferences.themes[0].user_interface.wcol_menu_item.text.v)
 
 
 # Menus
@@ -67,20 +89,20 @@ class VIEW3D_MT_booltron(Menu):
         layout = self.layout
         wm_props = context.window_manager.booltron
 
-        layout.operator("object.booltron_destructive_difference", icon_value=_get_icon_menu("DESTR_DIFFERENCE"))
-        layout.operator("object.booltron_destructive_union", icon_value=_get_icon_menu("DESTR_UNION"))
-        layout.operator("object.booltron_destructive_intersect", icon_value=_get_icon_menu("DESTR_INTERSECT"))
-        layout.operator("object.booltron_destructive_slice", icon_value=_get_icon_menu("DESTR_SLICE"))
+        layout.operator("object.booltron_destructive_difference", icon_value=_icon_menu("DESTR_DIFFERENCE"))
+        layout.operator("object.booltron_destructive_union", icon_value=_icon_menu("DESTR_UNION"))
+        layout.operator("object.booltron_destructive_intersect", icon_value=_icon_menu("DESTR_INTERSECT"))
+        layout.operator("object.booltron_destructive_slice", icon_value=_icon_menu("DESTR_SLICE"))
 
         layout.separator()
 
         layout.prop(wm_props, "mod_disable")
         col = layout.column()
         col.active = wm_props.mod_disable
-        col.operator("object.booltron_nondestructive_difference", icon_value=_get_icon_menu("NONDESTR_DIFFERENCE"))
-        col.operator("object.booltron_nondestructive_union", icon_value=_get_icon_menu("NONDESTR_UNION"))
-        col.operator("object.booltron_nondestructive_intersect", icon_value=_get_icon_menu("NONDESTR_INTERSECT"))
-        col.operator("object.booltron_nondestructive_remove", icon_value=_get_icon_menu("NONDESTR_REMOVE"))
+        col.operator("object.booltron_nondestructive_difference", icon_value=_icon_menu("NONDESTR_DIFFERENCE"))
+        col.operator("object.booltron_nondestructive_union", icon_value=_icon_menu("NONDESTR_UNION"))
+        col.operator("object.booltron_nondestructive_intersect", icon_value=_icon_menu("NONDESTR_INTERSECT"))
+        col.operator("object.booltron_nondestructive_remove", icon_value=_icon_menu("NONDESTR_REMOVE"))
 
 
 # Panels
@@ -105,11 +127,11 @@ class VIEW3D_PT_booltron_destructive(Setup, Panel):
         layout = self.layout
 
         col = layout.column(align=True)
-        col.operator("object.booltron_destructive_difference", icon_value=_get_icon("DESTR_DIFFERENCE"))
-        col.operator("object.booltron_destructive_union", icon_value=_get_icon("DESTR_UNION"))
-        col.operator("object.booltron_destructive_intersect", icon_value=_get_icon("DESTR_INTERSECT"))
+        col.operator("object.booltron_destructive_difference", icon_value=_icon("DESTR_DIFFERENCE"))
+        col.operator("object.booltron_destructive_union", icon_value=_icon("DESTR_UNION"))
+        col.operator("object.booltron_destructive_intersect", icon_value=_icon("DESTR_INTERSECT"))
 
-        layout.operator("object.booltron_destructive_slice", icon_value=_get_icon("DESTR_SLICE"))
+        layout.operator("object.booltron_destructive_slice", icon_value=_icon("DESTR_SLICE"))
 
 
 class VIEW3D_PT_booltron_nondestructive(Setup, Panel):
@@ -124,11 +146,11 @@ class VIEW3D_PT_booltron_nondestructive(Setup, Panel):
         layout.active = context.window_manager.booltron.mod_disable
 
         col = layout.column(align=True)
-        col.operator("object.booltron_nondestructive_difference", icon_value=_get_icon("NONDESTR_DIFFERENCE"))
-        col.operator("object.booltron_nondestructive_union", icon_value=_get_icon("NONDESTR_UNION"))
-        col.operator("object.booltron_nondestructive_intersect", icon_value=_get_icon("NONDESTR_INTERSECT"))
+        col.operator("object.booltron_nondestructive_difference", icon_value=_icon("NONDESTR_DIFFERENCE"))
+        col.operator("object.booltron_nondestructive_union", icon_value=_icon("NONDESTR_UNION"))
+        col.operator("object.booltron_nondestructive_intersect", icon_value=_icon("NONDESTR_INTERSECT"))
 
-        layout.operator("object.booltron_nondestructive_remove", icon_value=_get_icon("NONDESTR_REMOVE"))
+        layout.operator("object.booltron_nondestructive_remove", icon_value=_icon("NONDESTR_REMOVE"))
 
 
 # Preferences

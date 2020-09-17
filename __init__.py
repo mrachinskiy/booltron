@@ -34,6 +34,7 @@ bl_info = {
 
 if "bpy" in locals():
 
+
     def reload_recursive(path, mods):
         import importlib
 
@@ -54,12 +55,12 @@ if "bpy" in locals():
 
                 reload_recursive(entry.path, mods)
 
+
     reload_recursive(var.ADDON_DIR, locals())
 else:
     import os
 
     import bpy
-    import bpy.utils.previews
     from bpy.props import PointerProperty
 
     from . import (
@@ -120,20 +121,6 @@ def register():
 
     bpy.app.translations.register(__name__, localization.DICTIONARY)
 
-    # Previews
-    # ---------------------------
-
-    pcoll = bpy.utils.previews.new()
-
-    for entry in os.scandir(var.ICONS_DIR):
-        if entry.is_dir():
-            for subentry in os.scandir(entry.path):
-                if subentry.is_file() and subentry.name.endswith(".png"):
-                    name = entry.name + os.path.splitext(subentry.name)[0]
-                    pcoll.load(name.upper(), subentry.path, "IMAGE")
-
-    var.preview_collections["icons"] = pcoll
-
     # mod_update
     # ---------------------------
 
@@ -144,6 +131,8 @@ def register():
 
 
 def unregister():
+    import bpy.utils.previews
+
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
