@@ -81,6 +81,15 @@ class BooltronPreferences(AddonPreferences):
         precision=5,
         unit="LENGTH",
     )
+    destr_solver: EnumProperty(
+        name="Solver",
+        description="Method for calculating booleans",
+        items=(
+            ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
+            ("EXACT", "Exact", "Advanced solver for the best result"),
+        ),
+        default="FAST",
+    )
     destr_use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
@@ -97,7 +106,7 @@ class BooltronPreferences(AddonPreferences):
         precision=3,
         unit="LENGTH",
     )
-    destr_double_threshold: FloatProperty(
+    destr_threshold: FloatProperty(
         name="Overlap Threshold",
         description="Threshold for checking overlapping geometry",
         default=0.000001,
@@ -109,6 +118,15 @@ class BooltronPreferences(AddonPreferences):
     # Non-destructive
     # ------------------------
 
+    nondestr_solver: EnumProperty(
+        name="Solver",
+        description="Method for calculating booleans",
+        items=(
+            ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
+            ("EXACT", "Exact", "Advanced solver for the best result"),
+        ),
+        default="FAST",
+    )
     nondestr_use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
@@ -125,7 +143,7 @@ class BooltronPreferences(AddonPreferences):
         precision=3,
         unit="LENGTH",
     )
-    nondestr_double_threshold: FloatProperty(
+    nondestr_threshold: FloatProperty(
         name="Overlap Threshold",
         description="Threshold for checking overlapping geometry",
         default=0.000001,

@@ -174,24 +174,34 @@ def prefs_ui(self, context):
     box = split.box()
 
     if active_tab == "DESTRUCTIVE":
+        box.label(text="Modifier")
         col = box.column()
-        col.prop(self, "destr_double_threshold")
+        if var.ver_291:
+            col.prop(self, "destr_solver")
+        col.prop(self, "destr_threshold")
 
-        row = col.row(heading="Correct Position")
+        box.label(text="Object")
+        row = box.row(heading="Correct Position")
         row.prop(self, "destr_use_pos_offset", text="")
         sub = row.row()
         sub.active = self.destr_use_pos_offset
         sub.prop(self, "destr_pos_offset", text="")
 
+        box.label(text="Mesh")
+        col = box.column()
         col.prop(self, "merge_distance")
         col.prop(self, "cleanup")
         col.prop(self, "triangulate")
 
     elif active_tab == "NONDESTRUCTIVE":
+        box.label(text="Modifier")
         col = box.column()
-        col.prop(self, "nondestr_double_threshold")
+        if var.ver_291:
+            col.prop(self, "nondestr_solver")
+        col.prop(self, "nondestr_threshold")
 
-        row = col.row(heading="Correct Position")
+        box.label(text="Object")
+        row = box.row(heading="Correct Position")
         row.prop(self, "nondestr_use_pos_offset", text="")
         sub = row.row()
         sub.active = self.nondestr_use_pos_offset
