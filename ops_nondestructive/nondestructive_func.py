@@ -35,7 +35,9 @@ def execute(self, context):
     boolean_mod = lib.ModUtils(
         apply=False,
         remove_ob2=False,
-        threshold=self.double_threshold,
+        solver=self.solver,
+        threshold=self.threshold,
+        use_self=self.use_self,
     ).add
 
     ob1 = context.object
@@ -95,12 +97,15 @@ def invoke(self, context, event):
         self.report({"ERROR"}, "At least two Mesh objects must be selected")
         return {"CANCELLED"}
 
-    prefs = context.preferences.addons[var.ADDON_ID].preferences
-    self.double_threshold = prefs.nondestr_double_threshold
-    self.use_pos_offset = prefs.nondestr_use_pos_offset
-    self.pos_offset = prefs.nondestr_pos_offset
-    self.display_secondary = prefs.display_secondary
-    self.display_combined = prefs.display_combined
+    if self.first_run:
+        self.first_run = False
+        prefs = context.preferences.addons[var.ADDON_ID].preferences
+        self.solver = prefs.nondestr_solver
+        self.threshold = prefs.nondestr_threshold
+        self.use_pos_offset = prefs.nondestr_use_pos_offset
+        self.pos_offset = prefs.nondestr_pos_offset
+        self.display_secondary = prefs.display_secondary
+        self.display_combined = prefs.display_combined
 
     if event.ctrl:
         wm = context.window_manager

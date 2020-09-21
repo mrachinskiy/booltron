@@ -36,12 +36,14 @@ def object_offset(obs, offset):
 
 
 class ModUtils:
-    __slots__ = ("apply", "remove_ob2", "threshold")
+    __slots__ = ("apply", "remove_ob2", "solver", "threshold", "use_self")
 
-    def __init__(self, apply=False, remove_ob2=False, threshold=0.000001):
+    def __init__(self, apply=False, remove_ob2=False, solver="FAST", threshold=0.000001, use_self=False):
         self.apply = apply
         self.remove_ob2 = remove_ob2
+        self.solver = solver
         self.threshold = threshold
+        self.use_self = use_self
 
     def add(self, ob1, ob2, mode, name="Boolean", remove_ob2=None):
         if remove_ob2 is None:
@@ -50,7 +52,11 @@ class ModUtils:
         md = ob1.modifiers.new(name, "BOOLEAN")
         md.show_viewport = not self.apply
         md.operation = mode
+        if hasattr(md, "solver"):
+            md.solver = self.solver
         md.double_threshold = self.threshold
+        if hasattr(md, "use_self"):
+            md.use_self = self.use_self
         md.object = ob2
 
         if self.apply:

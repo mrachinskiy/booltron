@@ -22,8 +22,23 @@
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty, EnumProperty
 
+from .. import var
+
 
 class Nondestructive:
+    solver: EnumProperty(
+        name="Solver",
+        description="Method for calculating booleans",
+        items=(
+            ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
+            ("EXACT", "Exact", "Advanced solver for the best result"),
+        ),
+        default="FAST",
+    )
+    use_self: BoolProperty(
+        name="Self",
+        description="Allow self-intersection in operands",
+    )
     use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
@@ -40,7 +55,7 @@ class Nondestructive:
         precision=3,
         unit="LENGTH",
     )
-    double_threshold: FloatProperty(
+    threshold: FloatProperty(
         name="Overlap Threshold",
         description="Threshold for checking overlapping geometry",
         default=0.000001,
@@ -70,16 +85,31 @@ class Nondestructive:
         ),
         default="BOUNDS",
     )
+    first_run: BoolProperty(default=True, options={"HIDDEN"})
 
     def draw(self, context):
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        col = layout.column()
-        col.prop(self, "double_threshold")
+        layout.label(text="Modifier")
 
-        row = col.row(heading="Correct Position")
+        if var.ver_291:
+            col = layout.column()
+            col.prop(self, "solver")
+
+            if self.solver == "FAST":
+                col.prop(self, "threshold")
+            else:
+                col.prop(self, "use_self")
+
+        else:
+            layout.prop(self, "threshold")
+
+        layout.separator()
+
+        layout.label(text="Object")
+        row = layout.row(heading="Correct Position")
         row.prop(self, "use_pos_offset", text="")
         sub = row.row()
         sub.enabled = self.use_pos_offset
@@ -87,6 +117,7 @@ class Nondestructive:
 
         layout.separator()
 
+        layout.label(text="Viewport Display")
         col = layout.column()
         col.prop(self, "display_secondary")
         col.prop(self, "display_combined")

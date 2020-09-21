@@ -121,6 +121,11 @@ def register():
 
     bpy.app.translations.register(__name__, localization.DICTIONARY)
 
+    # Versioning
+    # ---------------------------
+
+    var.ver_291 = bpy.app.version >= (2, 91, 0)
+
     # mod_update
     # ---------------------------
 

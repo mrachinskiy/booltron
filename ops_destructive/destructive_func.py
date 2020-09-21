@@ -71,7 +71,9 @@ def execute(self, context):
     boolean_mod = lib.ModUtils(
         apply=True,
         remove_ob2=True,
-        threshold=self.double_threshold,
+        solver=self.solver,
+        threshold=self.threshold,
+        use_self=self.use_self,
     ).add
 
     ob1 = context.object
@@ -122,13 +124,17 @@ def invoke(self, context, event):
         self.report({"ERROR"}, "At least two objects must be selected")
         return {"CANCELLED"}
 
-    prefs = context.preferences.addons[var.ADDON_ID].preferences
-    self.double_threshold = prefs.destr_double_threshold
-    self.use_pos_offset = prefs.destr_use_pos_offset
-    self.pos_offset = prefs.destr_pos_offset
-    self.merge_distance = prefs.merge_distance
-    self.cleanup = prefs.cleanup
-    self.triangulate = prefs.triangulate
+    if self.first_run:
+        self.first_run = False
+        prefs = context.preferences.addons[var.ADDON_ID].preferences
+        self.solver = prefs.destr_solver
+        self.threshold = prefs.destr_threshold
+        self.use_pos_offset = prefs.destr_use_pos_offset
+        self.pos_offset = prefs.destr_pos_offset
+        self.merge_distance = prefs.merge_distance
+        self.cleanup = prefs.cleanup
+        self.triangulate = prefs.triangulate
+
     self.keep_objects = event.alt
     self.is_overlap = False
 
@@ -152,7 +158,7 @@ def execute_slice(self, context):
     boolean_mod = lib.ModUtils(
         apply=True,
         remove_ob2=True,
-        threshold=self.double_threshold,
+        threshold=self.threshold,
     ).add
 
     space_data = context.space_data

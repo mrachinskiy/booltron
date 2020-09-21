@@ -20,10 +20,21 @@
 
 
 from bpy.types import Operator
-from bpy.props import BoolProperty, FloatProperty
+from bpy.props import BoolProperty, FloatProperty, EnumProperty
+
+from .. import var
 
 
 class Destructive:
+    solver: EnumProperty(
+        name="Solver",
+        description="Method for calculating booleans",
+        items=(
+            ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
+            ("EXACT", "Exact", "Advanced solver for the best result"),
+        ),
+        default="FAST",
+    )
     use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
@@ -40,7 +51,7 @@ class Destructive:
         precision=3,
         unit="LENGTH",
     )
-    double_threshold: FloatProperty(
+    threshold: FloatProperty(
         name="Overlap Threshold",
         description="Threshold for checking overlapping geometry",
         default=0.000001,
@@ -56,6 +67,10 @@ class Destructive:
         step=0.01,
         precision=5,
         unit="LENGTH",
+    )
+    use_self: BoolProperty(
+        name="Self",
+        description="Allow self-intersection in operands",
     )
     cleanup: BoolProperty(
         name="Mesh Cleanup",
@@ -79,25 +94,45 @@ class Destructive:
         ),
         options={"SKIP_SAVE"},
     )
+    first_run: BoolProperty(default=True, options={"HIDDEN"})
 
     def draw(self, context):
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        col = layout.column()
-        col.prop(self, "double_threshold")
+        layout.label(text="Modifier")
 
+        if var.ver_291:
+            col = layout.column()
+            col.prop(self, "solver")
+
+            if self.solver == "FAST":
+                col.prop(self, "threshold")
+            else:
+                col.prop(self, "use_self")
+
+        else:
+            layout.prop(self, "threshold")
+
+        layout.separator()
+
+        layout.label(text="Object")
+        col = layout.column()
+        col.prop(self, "keep_objects")
         row = col.row(heading="Correct Position")
         row.prop(self, "use_pos_offset", text="")
         sub = row.row()
         sub.enabled = self.use_pos_offset
         sub.prop(self, "pos_offset", text="")
 
+        layout.separator()
+
+        layout.label(text="Mesh")
+        col = layout.column()
         col.prop(self, "merge_distance")
         col.prop(self, "cleanup")
         col.prop(self, "triangulate")
-        col.prop(self, "keep_objects")
 
     def execute(self, context):
         from . import destructive_func
