@@ -119,12 +119,12 @@ class Destructive:
 
         layout.label(text="Object")
         col = layout.column()
-        col.prop(self, "keep_objects")
         row = col.row(heading="Correct Position")
         row.prop(self, "use_pos_offset", text="")
         sub = row.row()
         sub.enabled = self.use_pos_offset
         sub.prop(self, "pos_offset", text="")
+        col.prop(self, "keep_objects")
 
         layout.separator()
 
