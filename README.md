@@ -14,7 +14,7 @@ Features:
 How to install
 ==========================
 
-1. Download [Booltron 2.5.1][v_latest].<sup>1</sup>
+1. Download [Booltron 2.6.0][v_latest].<sup>1</sup>
 2. Make sure you have Blender 2.90 or newer.
 3. Open `Preferences` → `Add-ons` category.
 4. Use `Install` to install add-on from downloaded zip archive.<sup>2</sup>
@@ -28,7 +28,7 @@ How to install
 Установка
 ==========================
 
-1. Загрузите [Booltron 2.5.1][v_latest].<sup>1</sup>
+1. Загрузите [Booltron 2.6.0][v_latest].<sup>1</sup>
 2. Убедитесь, что у вас установлен Blender 2.90 или новее.
 3. Откройте `Preferences` → `Add-ons`.
 4. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.<sup>2</sup>
@@ -79,5 +79,5 @@ Contributing
 * [Open new bug report][new_bug_report], be sure to include Blender and add-on versions, and screenshot showing the error message.
 
 
-[v_latest]: https://github.com/mrachinskiy/booltron/releases/download/v2.5.1-blender2.90.0/booltron-2_5_1.zip
+[v_latest]: https://github.com/mrachinskiy/booltron/releases/download/v2.6.0-blender2.90.0/booltron-2_6_0.zip
 [new_bug_report]: https://github.com/mrachinskiy/booltron/issues/new?template=bug_report.md
