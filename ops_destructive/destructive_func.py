@@ -25,6 +25,15 @@ from .. import var, lib
 from . import mesh_lib
 
 
+def cursor_state(func):
+    def wrapper(*args):
+        bpy.context.window.cursor_set("WAIT")
+        result = func(*args)
+        bpy.context.window.cursor_set("DEFAULT")
+        return result
+    return wrapper
+
+
 def prepare_objects(self, context):
     ob1 = context.object
     obs = list(context.selected_objects)
@@ -62,6 +71,7 @@ def prepare_objects(self, context):
     return obs
 
 
+@cursor_state
 def execute(self, context):
     Mesh = mesh_lib.Utils(
         merge_distance=self.merge_distance,
@@ -149,6 +159,7 @@ def invoke(self, context, event):
     return self.execute(context)
 
 
+@cursor_state
 def execute_slice(self, context):
     Mesh = mesh_lib.Utils(
         merge_distance=self.merge_distance,
