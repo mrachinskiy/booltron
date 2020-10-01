@@ -21,6 +21,8 @@
 
 import os
 
+import bpy
+
 
 preview_collections = {}
 
@@ -34,3 +36,10 @@ ADDON_DIR = os.path.dirname(__file__)
 CONFIG_DIR = os.path.join(ADDON_DIR, ".config")
 
 ICONS_DIR = os.path.join(ADDON_DIR, "icons")
+
+
+# Versioning
+# ---------------------------
+
+
+ver_291 = bpy.app.version >= (2, 91, 0)
