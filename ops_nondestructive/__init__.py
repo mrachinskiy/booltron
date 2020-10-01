@@ -20,71 +20,12 @@
 
 
 from bpy.types import Operator
-from bpy.props import BoolProperty, FloatProperty, EnumProperty
+from bpy.props import BoolProperty
 
-from .. import var
+from .. import preferences, var
 
 
-class Nondestructive:
-    solver: EnumProperty(
-        name="Solver",
-        description="Method for calculating booleans",
-        items=(
-            ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
-            ("EXACT", "Exact", "Advanced solver for the best result"),
-        ),
-        default="FAST",
-    )
-    use_self: BoolProperty(
-        name="Self",
-        description="Allow self-intersection in operands",
-    )
-    use_pos_offset: BoolProperty(
-        name="Correct Position",
-        description=(
-            "Shift objects position for a very small amount to avoid coplanar "
-            "geometry errors during boolean operation (does not affect active object)"
-        ),
-    )
-    pos_offset: FloatProperty(
-        name="Position Offset",
-        description="Position offset is randomly generated for each object in range [-x, +x] input value",
-        default=0.005,
-        min=0.0,
-        step=0.01,
-        precision=3,
-        unit="LENGTH",
-    )
-    threshold: FloatProperty(
-        name="Overlap Threshold",
-        description="Threshold for checking overlapping geometry",
-        default=0.000001,
-        min=0.0,
-        step=0.0001,
-        precision=6,
-    )
-    display_secondary: EnumProperty(
-        name="Secondary Object",
-        description="How to display object in viewport",
-        items=(
-            ("BOUNDS", "Bounds", ""),
-            ("WIRE", "Wire", ""),
-            ("SOLID", "Solid", ""),
-            ("TEXTURED", "Textured", ""),
-        ),
-        default="WIRE",
-    )
-    display_combined: EnumProperty(
-        name="Combined Object",
-        description="How to display object in viewport",
-        items=(
-            ("BOUNDS", "Bounds", ""),
-            ("WIRE", "Wire", ""),
-            ("SOLID", "Solid", ""),
-            ("TEXTURED", "Textured", ""),
-        ),
-        default="BOUNDS",
-    )
+class Nondestructive(preferences.ToolProps):
     first_run: BoolProperty(default=True, options={"HIDDEN"})
 
     def draw(self, context):
