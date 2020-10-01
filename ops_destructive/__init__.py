@@ -20,72 +20,12 @@
 
 
 from bpy.types import Operator
-from bpy.props import BoolProperty, FloatProperty, EnumProperty
+from bpy.props import BoolProperty
 
-from .. import var
+from .. import preferences, var
 
 
-class Destructive:
-    solver: EnumProperty(
-        name="Solver",
-        description="Method for calculating booleans",
-        items=(
-            ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
-            ("EXACT", "Exact", "Advanced solver for the best result"),
-        ),
-        default="FAST",
-    )
-    use_pos_offset: BoolProperty(
-        name="Correct Position",
-        description=(
-            "Shift objects position for a very small amount to avoid coplanar "
-            "geometry errors during boolean operation (does not affect active object)"
-        ),
-    )
-    pos_offset: FloatProperty(
-        name="Position Offset",
-        description="Position offset is randomly generated for each object in range [-x, +x] input value",
-        default=0.005,
-        min=0.0,
-        step=0.01,
-        precision=3,
-        unit="LENGTH",
-    )
-    threshold: FloatProperty(
-        name="Overlap Threshold",
-        description="Threshold for checking overlapping geometry",
-        default=0.000001,
-        min=0.0,
-        step=0.0001,
-        precision=6,
-    )
-    merge_distance: FloatProperty(
-        name="Merge Distance",
-        description="Minimum distance between elements to merge",
-        default=0.0002,
-        min=0.00001,
-        step=0.01,
-        precision=5,
-        unit="LENGTH",
-    )
-    use_self: BoolProperty(
-        name="Self",
-        description="Allow self-intersection in operands",
-    )
-    cleanup: BoolProperty(
-        name="Mesh Cleanup",
-        description=(
-            "Perform mesh cleanup in between boolean operations, "
-            "enabling this option will greatly affect performance of a boolean operation"
-        ),
-    )
-    triangulate: BoolProperty(
-        name="Triangulate",
-        description=(
-            "Triangulate geometry before boolean operation, "
-            "in some cases may improve result of a boolean operation"
-        ),
-    )
+class Destructive(preferences.ToolProps):
     keep_objects: BoolProperty(
         name="Keep Objects",
         description=(

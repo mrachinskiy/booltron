@@ -100,10 +100,10 @@ def invoke(self, context, event):
     if self.first_run:
         self.first_run = False
         prefs = context.preferences.addons[var.ADDON_ID].preferences
-        self.solver = prefs.nondestr_solver
-        self.threshold = prefs.nondestr_threshold
-        self.use_pos_offset = prefs.nondestr_use_pos_offset
-        self.pos_offset = prefs.nondestr_pos_offset
+        self.solver = prefs.solver
+        self.threshold = prefs.threshold
+        self.use_pos_offset = prefs.use_pos_offset
+        self.pos_offset = prefs.pos_offset
         self.display_secondary = prefs.display_secondary
         self.display_combined = prefs.display_combined
 
