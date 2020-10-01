@@ -127,10 +127,10 @@ def invoke(self, context, event):
     if self.first_run:
         self.first_run = False
         prefs = context.preferences.addons[var.ADDON_ID].preferences
-        self.solver = prefs.destr_solver
-        self.threshold = prefs.destr_threshold
-        self.use_pos_offset = prefs.destr_use_pos_offset
-        self.pos_offset = prefs.destr_pos_offset
+        self.solver = prefs.solver
+        self.threshold = prefs.threshold
+        self.use_pos_offset = prefs.use_pos_offset
+        self.pos_offset = prefs.pos_offset
         self.merge_distance = prefs.merge_distance
         self.cleanup = prefs.cleanup
         self.triangulate = prefs.triangulate
