@@ -10,12 +10,12 @@
     "Combined Object": "Объединённый объект",
     "Viewport Display": "Отображение во вьюпорте",
     "Icons": "Иконки",
-    "Perform mesh cleanup in between boolean operations, enabling this option will greatly affect performance of a boolean operation":
-      "Выполнять очистку геометрии между булевскими операциями, включение этой опции значительно повлияет на производительность булевской операции",
+    "Perform mesh cleanup in between boolean operations, enabling this option will greatly affect performance":
+      "Выполнять очистку геометрии между булевыми операциями, включение этой опции значительно повлияет на производительность",
     "Triangulate geometry before boolean operation, in some cases may improve result of a boolean operation":
-      "Триангулировать геометрию перед булевской операцией, в некоторых случаях может улучшить результат булевских операций",
+      "Триангулировать геометрию перед булевой операцией, в некоторых случаях может улучшить результат булевой операции",
     "Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)":
-      "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевских операций (не влияет на активный объект)",
+      "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевой операции (не влияет на активный объект)",
     "Position offset is randomly generated for each object in range [-x, +x] input value":
       "Сдвиг позиции генерируется в случайном порядке для каждого объекта в диапазоне [-x, +x] указанного значения",
     "Combine selected objects": "Объединить выделенные объекты",
@@ -31,11 +31,11 @@
     "Slice active object along the volume of selected objects":
       "Разрезать активный объект по объёму выделенных объектов",
     "Do not remove selected objects after boolean operation (Shortcut: hold Alt when using the tool)":
-      "Не удалять выделенные объекты после булевской операции (Горячая клавиша: удерживайте клавишу Alt при использовании инструмента)",
+      "Не удалять выделенные объекты после булевой операции (Горячая клавиша: удерживайте клавишу Alt при использовании инструмента)",
     "Dismiss selected secondary objects from boolean operation":
-      "Исключить выделенные вспомогательные объекты из булевской операции",
+      "Исключить выделенные вспомогательные объекты из булевой операции",
     "Disable boolean modifiers on all objects": "Отключить модификаторы Boolean на всех объектах",
-    "Boolean operation result is non-manifold": "Результат булевской операции non-manifold",
+    "Boolean operation result is non-manifold": "Результат булевой операции non-manifold",
     "At least two objects must be selected": "Как минимум два объекта должны быть выделены",
     "At least two Mesh objects must be selected": "Как минимум два Mesh объекта должны быть выделены"
   },

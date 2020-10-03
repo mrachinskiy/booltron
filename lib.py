@@ -54,9 +54,9 @@ class ModUtils:
         md.operation = mode
         if hasattr(md, "solver"):
             md.solver = self.solver
-        md.double_threshold = self.threshold
         if hasattr(md, "use_self"):
             md.use_self = self.use_self
+        md.double_threshold = self.threshold
         md.object = ob2
 
         if self.apply:

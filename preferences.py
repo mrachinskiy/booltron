@@ -92,7 +92,7 @@ class ToolProps:
         name="Mesh Cleanup",
         description=(
             "Perform mesh cleanup in between boolean operations, "
-            "enabling this option will greatly affect performance of a boolean operation"
+            "enabling this option will greatly affect performance"
         ),
     )
     triangulate: BoolProperty(
