@@ -25,15 +25,8 @@ from bpy.types import Panel, Menu
 from . import var, mod_update
 
 
-# Utils
+# Icon utils
 # ---------------------------
-
-
-class Setup:
-    bl_category = "Booltron"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_context = "objectmode"
 
 
 def _get_icon(name, override=None):
@@ -109,7 +102,14 @@ class VIEW3D_MT_booltron(Menu):
 # ---------------------------
 
 
-class VIEW3D_PT_booltron_update(Setup, Panel):
+class SidebarSetup:
+    bl_category = "Booltron"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = "objectmode"
+
+
+class VIEW3D_PT_booltron_update(SidebarSetup, Panel):
     bl_label = "Update"
 
     @classmethod
@@ -120,7 +120,7 @@ class VIEW3D_PT_booltron_update(Setup, Panel):
         mod_update.sidebar_ui(self, context)
 
 
-class VIEW3D_PT_booltron_destructive(Setup, Panel):
+class VIEW3D_PT_booltron_destructive(SidebarSetup, Panel):
     bl_label = "Destructive"
 
     def draw(self, context):
@@ -134,7 +134,7 @@ class VIEW3D_PT_booltron_destructive(Setup, Panel):
         layout.operator("object.booltron_destructive_slice", icon_value=_icon("DESTR_SLICE"))
 
 
-class VIEW3D_PT_booltron_nondestructive(Setup, Panel):
+class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
     bl_label = "Non-destructive"
 
     def draw_header(self, context):
