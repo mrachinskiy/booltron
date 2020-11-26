@@ -75,7 +75,7 @@ else:
 
 
 classes = (
-    preferences.BooltronPreferences,
+    preferences.Preferences,
     preferences.WmProperties,
     ui.VIEW3D_MT_booltron,
     ui.VIEW3D_PT_booltron_update,
@@ -89,9 +89,7 @@ classes = (
     ops_nondestructive.OBJECT_OT_nondestructive_difference,
     ops_nondestructive.OBJECT_OT_nondestructive_intersect,
     ops_nondestructive.OBJECT_OT_nondestructive_remove,
-    mod_update.WM_OT_update_check,
-    mod_update.WM_OT_update_download,
-    mod_update.WM_OT_update_whats_new,
+    *mod_update.ops,
 )
 
 
@@ -110,24 +108,19 @@ def register():
 
     bpy.types.VIEW3D_MT_object.append(ui.draw_booltron_menu)
 
-    # Translations
-    # ---------------------------
-
-    for k, v in mod_update.localization.init().items():
-        if k in localization.DICTIONARY.keys():
-            localization.DICTIONARY[k].update(v)
-        else:
-            localization.DICTIONARY[k] = v
-
-    bpy.app.translations.register(__name__, localization.DICTIONARY)
-
     # mod_update
     # ---------------------------
 
     mod_update.init(
         addon_version=bl_info["version"],
-        releases_url="https://api.github.com/repos/mrachinskiy/booltron/releases",
+        releases_url="mrachinskiy/booltron",
+        translation_dict=localization.DICTIONARY,
     )
+
+    # Translations
+    # ---------------------------
+
+    bpy.app.translations.register(__name__, localization.DICTIONARY)
 
 
 def unregister():
