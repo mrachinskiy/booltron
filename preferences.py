@@ -22,7 +22,7 @@
 from bpy.types import AddonPreferences, PropertyGroup
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
-from . import ui
+from . import ui, mod_update
 
 
 # Operator properties
@@ -134,31 +134,8 @@ class ToolProps:
 # ------------------------------------------
 
 
-class BooltronPreferences(ToolProps, AddonPreferences):
+class Preferences(ToolProps, mod_update.Preferences, AddonPreferences):
     bl_idname = __package__
-
-    # Updates
-    # ------------------------
-
-    update_use_auto_check: BoolProperty(
-        name="Automatically check for updates",
-        description="Automatically check for updates with specified interval",
-        default=True,
-    )
-    update_interval: EnumProperty(
-        name="Auto-check interval",
-        description="Auto-check interval",
-        items=(
-            ("1", "Once a day", ""),
-            ("7", "Once a week", ""),
-            ("30", "Once a month", ""),
-        ),
-        default="7",
-    )
-    update_use_prerelease: BoolProperty(
-        name="Update to pre-release",
-        description="Update add-on to pre-release version if available",
-    )
 
     def draw(self, context):
         ui.prefs_ui(self, context)
