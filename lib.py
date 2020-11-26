@@ -19,14 +19,15 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-import bpy
-
 import random
+from typing import Iterable, Optional
 
+import bpy
+from bpy.types import Object
 from mathutils import Vector
 
 
-def object_offset(obs, offset):
+def object_offset(obs: Iterable[Object], offset: float):
     for ob in obs:
         x = random.uniform(-offset, offset)
         y = random.uniform(-offset, offset)
@@ -45,7 +46,7 @@ class ModUtils:
         self.threshold = threshold
         self.use_self = use_self
 
-    def add(self, ob1, ob2, mode, name="Boolean", remove_ob2=None):
+    def add(self, ob1: Object, ob2: Object, mode: str, name: str = "Boolean", remove_ob2: Optional[bool] = None):
         if remove_ob2 is None:
             remove_ob2 = self.remove_ob2
 

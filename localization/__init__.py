@@ -21,21 +21,25 @@
 
 import os
 import json
+from typing import Dict, Tuple, Iterator
 
 
-def _walk():
-    for entry in os.scandir(os.path.dirname(__file__)):
-        if entry.is_file() and entry.name.endswith(".json"):
-            with open(entry, "r", encoding="utf-8") as file:
-                yield os.path.splitext(entry.name)[0], json.loads(file.read())
+Translation = Dict[Tuple[str, str], str]
 
 
-def _convert(dictionary):
+def _convert(d: Dict[str, Dict[str, str]]) -> Translation:
     return {
         (ctxt, msg_key): msg_translation
-        for ctxt, msgs in dictionary.items()
+        for ctxt, msgs in d.items()
         for msg_key, msg_translation in msgs.items()
     }
 
 
-DICTIONARY = {k: _convert(v) for k, v in _walk()}
+def _walk() -> Iterator[Tuple[str, Translation]]:
+    for entry in os.scandir(os.path.dirname(__file__)):
+        if entry.is_file() and entry.name.endswith(".json"):
+            with open(entry, "r", encoding="utf-8") as file:
+                yield os.path.splitext(entry.name)[0], _convert(json.loads(file.read()))
+
+
+DICTIONARY = {k: v for k, v in _walk()}

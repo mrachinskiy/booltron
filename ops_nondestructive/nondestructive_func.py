@@ -20,11 +20,12 @@
 
 
 import bpy
+from bpy.types import Object
 
 from .. import var, lib
 
 
-def _object_add(name):
+def _object_add(name: str) -> Object:
     me = bpy.data.meshes.new(name)
     ob = bpy.data.objects.new(name, me)
     bpy.context.collection.objects.link(ob)

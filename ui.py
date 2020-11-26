@@ -19,6 +19,8 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+from typing import Optional
+
 import bpy
 from bpy.types import Panel, Menu
 
@@ -29,7 +31,7 @@ from . import var, mod_update
 # ---------------------------
 
 
-def _get_icon(name, override=None):
+def _get_icon(name: str, override: Optional[float] = None) -> int:
     if override is not None:
         value = override
     else:
@@ -39,7 +41,7 @@ def _get_icon(name, override=None):
     return var.preview_collections["icons"][theme + name].icon_id
 
 
-def _icon(name, override=None):
+def _icon(name: str, override: Optional[float] = None) -> int:
     global _icon
     _icon = _get_icon
 
@@ -61,7 +63,7 @@ def _icon(name, override=None):
     return _get_icon(name, override)
 
 
-def _icon_menu(name):
+def _icon_menu(name: str) -> int:
     return _icon(name, override=bpy.context.preferences.themes[0].user_interface.wcol_menu_item.text.v)
 
 
