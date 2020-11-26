@@ -19,11 +19,18 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+from typing import Iterable, Callable, Set
+
+from bpy.types import Object, Context
 import bmesh
+from bmesh.types import BMesh
 from mathutils import bvhtree
 
 
-def _cleanup(bm, merge_distance):
+OperatorReport = Callable[[Set[str], str], None]
+
+
+def _cleanup(bm: BMesh, merge_distance: float) -> None:
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=merge_distance)
 
     # Delete loose
@@ -35,12 +42,12 @@ def _cleanup(bm, merge_distance):
 class Utils:
     __slots__ = ("merge_distance", "triangulate", "report")
 
-    def __init__(self, merge_distance=0.0002, triangulate=False, report=None):
+    def __init__(self, merge_distance=0.0002, triangulate=False, report: OperatorReport = lambda x, y: None) -> None:
         self.merge_distance = merge_distance
         self.triangulate = triangulate
         self.report = report
 
-    def prepare(self, ob, select=False):
+    def prepare(self, ob: Object, select=False) -> None:
         me = ob.data
         bm = bmesh.new()
         bm.from_mesh(me)
@@ -57,7 +64,7 @@ class Utils:
         bm.to_mesh(me)
         bm.free()
 
-    def cleanup(self, ob):
+    def cleanup(self, ob: Object) -> None:
         me = ob.data
         bm = bmesh.new()
         bm.from_mesh(me)
@@ -67,7 +74,7 @@ class Utils:
         bm.to_mesh(me)
         bm.free()
 
-    def check(self, ob):
+    def check(self, ob: Object) -> bool:
         bm = bmesh.new()
         bm.from_mesh(ob.data)
 
@@ -81,7 +88,7 @@ class Utils:
         return False
 
 
-def detect_overlap(context, obs, merge_distance):
+def detect_overlap(context: Context, obs: Iterable[Object], merge_distance: float):
     depsgraph = context.evaluated_depsgraph_get()
     bm = bmesh.new()
 
