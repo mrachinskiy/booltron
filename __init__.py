@@ -115,7 +115,7 @@ def register():
 
     mod_update.init(
         addon_version=bl_info["version"],
-        releases_url="mrachinskiy/booltron",
+        repo_url="mrachinskiy/booltron",
         translation_dict=localization.DICTIONARY,
     )
 
