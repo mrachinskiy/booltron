@@ -31,7 +31,26 @@ from . import var, mod_update
 # ---------------------------
 
 
-def _get_icon(name: str, override: Optional[float] = None) -> int:
+def scan_icons() -> None:
+    import os
+    import bpy.utils.previews
+
+    pcoll = bpy.utils.previews.new()
+
+    for entry in os.scandir(var.ICONS_DIR):
+        if entry.is_dir():
+            for subentry in os.scandir(entry.path):
+                if subentry.is_file() and subentry.name.endswith(".png"):
+                    filename = entry.name + os.path.splitext(subentry.name)[0]
+                    pcoll.load(filename.upper(), subentry.path, "IMAGE")
+
+    var.preview_collections["icons"] = pcoll
+
+
+def _icon(name: str, override: Optional[float] = None) -> int:
+    if "icons" not in var.preview_collections:
+        scan_icons()
+
     if override is not None:
         value = override
     else:
@@ -39,28 +58,6 @@ def _get_icon(name: str, override: Optional[float] = None) -> int:
 
     theme = "DARK" if value < 0.5 else "LIGHT"
     return var.preview_collections["icons"][theme + name].icon_id
-
-
-def _icon(name: str, override: Optional[float] = None) -> int:
-    global _icon
-    _icon = _get_icon
-
-    if "icons" not in var.preview_collections:
-        import os
-        import bpy.utils.previews
-
-        pcoll = bpy.utils.previews.new()
-
-        for entry in os.scandir(var.ICONS_DIR):
-            if entry.is_dir():
-                for subentry in os.scandir(entry.path):
-                    if subentry.is_file() and subentry.name.endswith(".png"):
-                        filename = entry.name + os.path.splitext(subentry.name)[0]
-                        pcoll.load(filename.upper(), subentry.path, "IMAGE")
-
-        var.preview_collections["icons"] = pcoll
-
-    return _get_icon(name, override)
 
 
 def _icon_menu(name: str) -> int:
