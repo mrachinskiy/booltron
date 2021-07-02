@@ -111,7 +111,6 @@ def register():
     mod_update.init(
         addon_version=bl_info["version"],
         repo_url="mrachinskiy/booltron",
-        translation_dict=localization.DICTIONARY,
     )
 
     # Translations
