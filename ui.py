@@ -41,7 +41,7 @@ def scan_icons() -> None:
             for subchild in child.iterdir():
                 if subchild.is_file() and subchild.suffix == ".png":
                     filename = child.name + subchild.stem
-                    pcoll.load(filename.upper(), subchild.path, "IMAGE")
+                    pcoll.load(filename.upper(), str(subchild), "IMAGE")
 
     var.preview_collections["icons"] = pcoll
 
