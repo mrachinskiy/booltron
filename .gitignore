@@ -1,11 +1,15 @@
+# Release files
+icons/
+mod_update/
+.config/
+
 # IDE
 .idea/
 .vscode/
-.config/
-icons/
 
 # Python byte-compiled
 __pycache__/
+*.pickle
 
 # =========================
 # Operating System Files
