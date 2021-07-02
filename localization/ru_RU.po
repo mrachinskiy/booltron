@@ -1,0 +1,113 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Booltron 2.6\n"
+"POT-Creation-Date: 2020-10-02\n"
+"PO-Revision-Date: 2021-07-02 16:58+0400\n"
+"Last-Translator: Mikhail Rachinskiy\n"
+"Language-Team: Mikhail Rachinskiy\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru_RU\n"
+"X-Generator: Poedit 3.0\n"
+
+msgid "Mesh Cleanup"
+msgstr "Очистка"
+
+msgid "Correct Position"
+msgstr "Коррекция позиции"
+
+msgid "Position Offset"
+msgstr "Сдвиг позиции"
+
+msgid "Keep Objects"
+msgstr "Сохранить объекты"
+
+msgid "Destructive"
+msgstr "Деструктивные"
+
+msgid "Non-destructive"
+msgstr "Недеструктивные"
+
+msgid "Secondary Object"
+msgstr "Вспомогательный объект"
+
+msgid "Combined Object"
+msgstr "Объединённый объект"
+
+msgid "Viewport Display"
+msgstr "Отображение во вьюпорте"
+
+msgid "Icons"
+msgstr "Иконки"
+
+msgid "Perform mesh cleanup in between boolean operations, enabling this option will greatly affect performance"
+msgstr "Выполнять очистку геометрии между булевыми операциями, включение этой опции значительно повлияет на производительность"
+
+msgid "Triangulate geometry before boolean operation, in some cases may improve result of a boolean operation"
+msgstr "Триангулировать геометрию перед булевой операцией, в некоторых случаях может улучшить результат булевой операции"
+
+msgid "Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)"
+msgstr "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевой операции (не влияет на активный объект)"
+
+msgid "Position offset is randomly generated for each object in range [-x, +x] input value"
+msgstr "Сдвиг позиции генерируется в случайном порядке для каждого объекта в диапазоне [-x, +x] указанного значения"
+
+msgid "Combine selected objects"
+msgstr "Объединить выделенные объекты"
+
+msgid "Subtract selected objects from active object"
+msgstr "Вычесть выделенные объекты из активного объекта"
+
+msgid "Keep the common part between active and selected objects"
+msgstr "Оставить общую часть между активным и выделенными объектами"
+
+msgid "Combine active (primary) and selected (secondary) objects"
+msgstr "Объединить активный (основной) и выделенные (вспомогательные) объекты"
+
+msgid "Subtract selected (secondary) objects from active (primary) object"
+msgstr "Вычесть выделенные (вспомогательные) объекты из активного (основного) объекта"
+
+msgid "Keep the common part between active (primary) and selected (secondary) objects"
+msgstr "Оставить общую часть между активным (основным) и выделенными (вспомогательными) объектами"
+
+msgid "Slice active object along the volume of selected objects"
+msgstr "Разрезать активный объект по объёму выделенных объектов"
+
+msgid "Do not remove selected objects after boolean operation (Shortcut: hold Alt when using the tool)"
+msgstr "Не удалять выделенные объекты после булевой операции (Горячая клавиша: удерживайте клавишу Alt при использовании инструмента)"
+
+msgid "Dismiss selected secondary objects from boolean operation"
+msgstr "Исключить выделенные вспомогательные объекты из булевой операции"
+
+msgid "Disable boolean modifiers on all objects"
+msgstr "Отключить модификаторы Boolean на всех объектах"
+
+msgid "Boolean operation result is non-manifold"
+msgstr "Результат булевой операции non-manifold"
+
+msgid "At least two objects must be selected"
+msgstr "Как минимум два объекта должны быть выделены"
+
+msgid "At least two Mesh objects must be selected"
+msgstr "Как минимум два Mesh объекта должны быть выделены"
+
+msgctxt "Operator"
+msgid "Union"
+msgstr "Объединение"
+
+msgctxt "Operator"
+msgid "Difference"
+msgstr "Разность"
+
+msgctxt "Operator"
+msgid "Intersect"
+msgstr "Пересечение"
+
+msgctxt "Operator"
+msgid "Slice"
+msgstr "Разрезать"
+
+msgctxt "Operator"
+msgid "Dismiss"
+msgstr "Исключить"
