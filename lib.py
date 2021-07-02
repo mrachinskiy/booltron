@@ -20,14 +20,14 @@
 
 
 import random
-from typing import Iterable, Optional
+from typing import Optional
 
 import bpy
 from bpy.types import Object, Operator
 from mathutils import Vector
 
 
-def object_offset(obs: Iterable[Object], offset: float) -> None:
+def object_offset(obs: list[Object], offset: float) -> None:
     for ob in obs:
         x = random.uniform(-offset, offset)
         y = random.uniform(-offset, offset)
