@@ -23,11 +23,11 @@ import random
 from typing import Iterable, Optional
 
 import bpy
-from bpy.types import Object
+from bpy.types import Object, Operator
 from mathutils import Vector
 
 
-def object_offset(obs: Iterable[Object], offset: float):
+def object_offset(obs: Iterable[Object], offset: float) -> None:
     for ob in obs:
         x = random.uniform(-offset, offset)
         y = random.uniform(-offset, offset)
@@ -37,30 +37,29 @@ def object_offset(obs: Iterable[Object], offset: float):
 
 
 class ModUtils:
-    __slots__ = ("apply", "remove_ob2", "solver", "threshold", "use_self")
+    __slots__ = ("is_destructive", "solver", "threshold", "use_self", "use_hole_tolerant")
 
-    def __init__(self, apply=False, remove_ob2=False, solver="FAST", threshold=0.000001, use_self=False):
-        self.apply = apply
-        self.remove_ob2 = remove_ob2
-        self.solver = solver
-        self.threshold = threshold
-        self.use_self = use_self
+    def __init__(self, op: Operator) -> None:
+        self.is_destructive = op.is_destructive
+        self.solver = op.solver
+        self.threshold = op.threshold
+        self.use_self = op.use_self
+        self.use_hole_tolerant = op.use_hole_tolerant
 
-    def add(self, ob1: Object, ob2: Object, mode: str, name: str = "Boolean", remove_ob2: Optional[bool] = None):
+    def add(self, ob1: Object, ob2: Object, mode: str, name: str = "Boolean", remove_ob2: Optional[bool] = None) -> None:
         if remove_ob2 is None:
-            remove_ob2 = self.remove_ob2
+            remove_ob2 = self.is_destructive
 
         md = ob1.modifiers.new(name, "BOOLEAN")
-        md.show_viewport = not self.apply
+        md.show_viewport = not self.is_destructive
         md.operation = mode
-        if hasattr(md, "solver"):
-            md.solver = self.solver
-        if hasattr(md, "use_self"):
-            md.use_self = self.use_self
+        md.solver = self.solver
+        md.use_self = self.use_self
+        md.use_hole_tolerant = self.use_hole_tolerant
         md.double_threshold = self.threshold
         md.object = ob2
 
-        if self.apply:
+        if self.is_destructive:
             override = {"object": ob1}
             bpy.ops.object.modifier_apply(override, modifier=md.name)
 

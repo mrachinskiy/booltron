@@ -73,18 +73,8 @@ def prepare_objects(self, context):
 
 @cursor_state
 def execute(self, context):
-    Mesh = mesh_lib.Utils(
-        merge_distance=self.merge_distance,
-        triangulate=self.triangulate,
-        report=self.report,
-    )
-    boolean_mod = lib.ModUtils(
-        apply=True,
-        remove_ob2=True,
-        solver=self.solver,
-        threshold=self.threshold,
-        use_self=self.use_self,
-    ).add
+    Mesh = mesh_lib.Utils(self)
+    boolean_mod = lib.ModUtils(self).add
 
     ob1 = context.object
     obs = prepare_objects(self, context)
@@ -161,16 +151,8 @@ def invoke(self, context, event):
 
 @cursor_state
 def execute_slice(self, context):
-    Mesh = mesh_lib.Utils(
-        merge_distance=self.merge_distance,
-        triangulate=self.triangulate,
-        report=self.report,
-    )
-    boolean_mod = lib.ModUtils(
-        apply=True,
-        remove_ob2=True,
-        threshold=self.threshold,
-    ).add
+    Mesh = mesh_lib.Utils(self)
+    boolean_mod = lib.ModUtils(self).add
 
     space_data = context.space_data
     use_local_view = bool(space_data.local_view)

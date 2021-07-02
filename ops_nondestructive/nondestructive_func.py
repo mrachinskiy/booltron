@@ -33,13 +33,7 @@ def _object_add(name: str) -> Object:
 
 
 def execute(self, context):
-    boolean_mod = lib.ModUtils(
-        apply=False,
-        remove_ob2=False,
-        solver=self.solver,
-        threshold=self.threshold,
-        use_self=self.use_self,
-    ).add
+    boolean_mod = lib.ModUtils(self).add
 
     ob1 = context.object
     obs = context.selected_objects

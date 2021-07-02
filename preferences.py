@@ -47,6 +47,10 @@ class ToolProps:
         name="Self",
         description="Allow self-intersection in operands",
     )
+    use_hole_tolerant: BoolProperty(
+        name="Hole Tolerant",
+        description="Better results when there are holes (slower)",
+    )
     threshold: FloatProperty(
         name="Overlap Threshold",
         description="Threshold for checking overlapping geometry",

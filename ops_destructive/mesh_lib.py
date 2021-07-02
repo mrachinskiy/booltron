@@ -19,15 +19,12 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-from typing import Iterable, Callable, Set
+from typing import Iterable
 
-from bpy.types import Object, Context
+from bpy.types import Object, Context, Operator
 import bmesh
 from bmesh.types import BMesh
 from mathutils import bvhtree
-
-
-OperatorReport = Callable[[Set[str], str], None]
 
 
 def _cleanup(bm: BMesh, merge_distance: float) -> None:
@@ -42,12 +39,12 @@ def _cleanup(bm: BMesh, merge_distance: float) -> None:
 class Utils:
     __slots__ = ("merge_distance", "triangulate", "report")
 
-    def __init__(self, merge_distance=0.0002, triangulate=False, report: OperatorReport = lambda x, y: None) -> None:
-        self.merge_distance = merge_distance
-        self.triangulate = triangulate
-        self.report = report
+    def __init__(self, op: Operator) -> None:
+        self.merge_distance = op.merge_distance
+        self.triangulate = op.triangulate
+        self.report = op.report
 
-    def prepare(self, ob: Object, select=False) -> None:
+    def prepare(self, ob: Object, select: bool = False) -> None:
         me = ob.data
         bm = bmesh.new()
         bm.from_mesh(me)
