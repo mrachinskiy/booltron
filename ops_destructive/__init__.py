@@ -35,6 +35,7 @@ class Destructive(preferences.ToolProps):
         options={"SKIP_SAVE"},
     )
     first_run: BoolProperty(default=True, options={"HIDDEN"})
+    is_destructive = True
 
     def draw(self, context):
         layout = self.layout
@@ -49,6 +50,7 @@ class Destructive(preferences.ToolProps):
             col.prop(self, "threshold")
         else:
             col.prop(self, "use_self")
+            col.prop(self, "use_hole_tolerant")
 
         layout.separator()
 

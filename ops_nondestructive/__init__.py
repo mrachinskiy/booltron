@@ -27,6 +27,7 @@ from .. import preferences
 
 class Nondestructive(preferences.ToolProps):
     first_run: BoolProperty(default=True, options={"HIDDEN"})
+    is_destructive = False
 
     def draw(self, context):
         layout = self.layout
@@ -41,6 +42,7 @@ class Nondestructive(preferences.ToolProps):
             col.prop(self, "threshold")
         else:
             col.prop(self, "use_self")
+            col.prop(self, "use_hole_tolerant")
 
         layout.separator()
 
