@@ -40,11 +40,8 @@ class ModUtils:
     __slots__ = ("is_destructive", "solver", "threshold", "use_self", "use_hole_tolerant")
 
     def __init__(self, op: Operator) -> None:
-        self.is_destructive = op.is_destructive
-        self.solver = op.solver
-        self.threshold = op.threshold
-        self.use_self = op.use_self
-        self.use_hole_tolerant = op.use_hole_tolerant
+        for prop in self.__slots__:
+            setattr(self, prop, getattr(op, prop))
 
     def add(self, ob1: Object, ob2: Object, mode: str, name: str = "Boolean", remove_ob2: Optional[bool] = None) -> None:
         if remove_ob2 is None:

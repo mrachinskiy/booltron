@@ -38,9 +38,8 @@ class Utils:
     __slots__ = ("merge_distance", "triangulate", "report")
 
     def __init__(self, op: Operator) -> None:
-        self.merge_distance = op.merge_distance
-        self.triangulate = op.triangulate
-        self.report = op.report
+        for prop in self.__slots__:
+            setattr(self, prop, getattr(op, prop))
 
     def prepare(self, ob: Object, select: bool = False) -> None:
         me = ob.data
