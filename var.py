@@ -19,7 +19,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-import os
+from pathlib import Path
 
 import bpy
 
@@ -32,10 +32,10 @@ preview_collections = {}
 
 
 ADDON_ID = __package__
-ADDON_DIR = os.path.dirname(__file__)
-CONFIG_DIR = os.path.join(ADDON_DIR, ".config")
+ADDON_DIR = Path(__file__).parent
+CONFIG_DIR = ADDON_DIR / ".config"
 
-ICONS_DIR = os.path.join(ADDON_DIR, "icons")
+ICONS_DIR = ADDON_DIR / "icons"
 
 
 # Versioning
