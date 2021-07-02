@@ -107,7 +107,7 @@ class SidebarSetup:
     bl_context = "objectmode"
 
 
-class VIEW3D_PT_booltron_update(mod_update.SidebarPanel, SidebarSetup, Panel):
+class VIEW3D_PT_booltron_update(mod_update.Sidebar, SidebarSetup, Panel):
     bl_label = "Update"
 
 
@@ -167,8 +167,7 @@ def prefs_ui(self, context):
     if active_tab == "TOOLS":
         box.label(text="Modifier")
         col = box.column()
-        if var.ver_291:
-            col.prop(self, "solver")
+        col.prop(self, "solver")
         col.prop(self, "threshold")
 
         box.label(text="Object")

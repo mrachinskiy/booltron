@@ -22,7 +22,7 @@
 from bpy.types import Operator
 from bpy.props import BoolProperty
 
-from .. import preferences, var
+from .. import preferences
 
 
 class Nondestructive(preferences.ToolProps):
@@ -34,18 +34,13 @@ class Nondestructive(preferences.ToolProps):
         layout.use_property_decorate = False
 
         layout.label(text="Modifier")
+        col = layout.column()
+        col.prop(self, "solver")
 
-        if var.ver_291:
-            col = layout.column()
-            col.prop(self, "solver")
-
-            if self.solver == "FAST":
-                col.prop(self, "threshold")
-            else:
-                col.prop(self, "use_self")
-
+        if self.solver == "FAST":
+            col.prop(self, "threshold")
         else:
-            layout.prop(self, "threshold")
+            col.prop(self, "use_self")
 
         layout.separator()
 

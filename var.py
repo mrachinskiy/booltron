@@ -21,8 +21,6 @@
 
 from pathlib import Path
 
-import bpy
-
 
 preview_collections = {}
 
@@ -36,10 +34,3 @@ ADDON_DIR = Path(__file__).parent
 CONFIG_DIR = ADDON_DIR / ".config"
 
 ICONS_DIR = ADDON_DIR / "icons"
-
-
-# Versioning
-# ---------------------------
-
-
-ver_291 = bpy.app.version >= (2, 91, 0)
