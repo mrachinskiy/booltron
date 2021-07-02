@@ -32,17 +32,16 @@ from . import var, mod_update
 
 
 def scan_icons() -> None:
-    import os
     import bpy.utils.previews
 
     pcoll = bpy.utils.previews.new()
 
-    for entry in os.scandir(var.ICONS_DIR):
-        if entry.is_dir():
-            for subentry in os.scandir(entry.path):
-                if subentry.is_file() and subentry.name.endswith(".png"):
-                    filename = entry.name + os.path.splitext(subentry.name)[0]
-                    pcoll.load(filename.upper(), subentry.path, "IMAGE")
+    for child in var.ICONS_DIR.iterdir():
+        if child.is_dir():
+            for subchild in child.iterdir():
+                if subchild.is_file() and subchild.suffix == ".png":
+                    filename = child.name + subchild.stem
+                    pcoll.load(filename.upper(), subchild.path, "IMAGE")
 
     var.preview_collections["icons"] = pcoll
 
