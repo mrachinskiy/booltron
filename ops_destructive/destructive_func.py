@@ -36,7 +36,7 @@ def cursor_state(func):
 
 def prepare_objects(self, context):
     ob1 = context.object
-    obs = list(context.selected_objects)
+    obs = context.selected_objects
     if ob1.select_get():
         obs.remove(ob1)
 

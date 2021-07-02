@@ -19,8 +19,6 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-from typing import Iterable
-
 from bpy.types import Object, Context, Operator
 import bmesh
 from bmesh.types import BMesh
@@ -85,7 +83,7 @@ class Utils:
         return False
 
 
-def detect_overlap(context: Context, obs: Iterable[Object], merge_distance: float):
+def detect_overlap(context: Context, obs: list[Object], merge_distance: float):
     depsgraph = context.evaluated_depsgraph_get()
     bm = bmesh.new()
 
