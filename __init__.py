@@ -33,41 +33,23 @@ bl_info = {
 
 
 if "bpy" in locals():
-    from types import ModuleType
-    from pathlib import Path
-
-
-    def reload_recursive(path: Path, mods: dict[str, ModuleType]) -> None:
-        import importlib
-
-        for child in path.iterdir():
-
-            if child.is_file() and child.suffix == ".py" and not child.name.startswith("__") and child.stem in mods:
-                importlib.reload(mods[child.stem])
-
-            elif child.is_dir() and not child.name.startswith((".", "__")):
-
-                if child.name in mods:
-                    reload_recursive(child, mods[child.name].__dict__)
-                    importlib.reload(mods[child.name])
-                    continue
-
-                reload_recursive(child, mods)
-
-
-    reload_recursive(var.ADDON_DIR, locals())
+    mod_essentials.reload_recursive(var.ADDON_DIR, locals())
 else:
     import bpy
     from bpy.props import PointerProperty
 
+    from . import mod_essentials, var
+
+    mod_essentials.check_path(var.ICONS_DIR)
+    mod_essentials.check_ver(bl_info)
+
     from . import (
         localization,
+        mod_update,
         preferences,
         ops_destructive,
         ops_nondestructive,
         ui,
-        var,
-        mod_update,
     )
 
 
@@ -91,10 +73,6 @@ classes = (
 
 
 def register():
-    if not var.ICONS_DIR.exists():
-        integrity_check = FileNotFoundError("!!! READ INSTALLATION GUIDE !!!")
-        raise integrity_check
-
     for cls in classes:
         bpy.utils.register_class(cls)
 
