@@ -40,7 +40,7 @@ else:
 
     from . import _essential, var
 
-    _essential.check_path(var.ICONS_DIR, bl_info["blender"])
+    _essential.check(var.ICONS_DIR, bl_info["blender"])
 
     from . import (
         localization,
