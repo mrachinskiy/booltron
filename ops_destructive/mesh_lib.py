@@ -50,7 +50,7 @@ class Utils:
         bmesh.ops.holes_fill(bm, edges=bm.edges)
 
         if self.triangulate:
-            bmesh.ops.triangulate(bm, faces=bm.faces, quad_method="SHORT_EDGE")
+            bmesh.ops.triangulate(bm, faces=bm.faces)
 
         for f in bm.faces:
             f.select = select
