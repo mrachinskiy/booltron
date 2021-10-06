@@ -44,7 +44,7 @@ class ToolProps:
         default="FAST",
     )
     use_self: BoolProperty(
-        name="Self",
+        name="Self Intersection",
         description="Allow self-intersection in operands",
     )
     use_hole_tolerant: BoolProperty(
@@ -86,7 +86,7 @@ class ToolProps:
     merge_distance: FloatProperty(
         name="Merge Distance",
         description="Minimum distance between elements to merge",
-        default=0.0002,
+        default=0.0003,
         min=0.00001,
         step=0.01,
         precision=5,
