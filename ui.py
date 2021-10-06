@@ -168,7 +168,12 @@ def prefs_ui(self, context):
         box.label(text="Modifier")
         col = box.column()
         col.prop(self, "solver")
-        col.prop(self, "threshold")
+
+        if self.solver == "FAST":
+            col.prop(self, "threshold")
+        else:
+            col.prop(self, "use_self")
+            col.prop(self, "use_hole_tolerant")
 
         box.label(text="Object")
         row = box.row(heading="Correct Position")
