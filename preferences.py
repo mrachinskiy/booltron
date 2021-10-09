@@ -19,6 +19,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+import bpy
 from bpy.types import AddonPreferences, PropertyGroup
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 
@@ -155,6 +156,9 @@ def upd_mod_disable(self, context):
             for md in ob.modifiers:
                 if md.type == "BOOLEAN":
                     md.show_viewport = self.mod_disable
+
+    action = "Enable" if self.mod_disable else "Disable"
+    bpy.ops.ed.undo_push(message=f"Non-destructive [{action}]")
 
 
 class WmProperties(PropertyGroup):
