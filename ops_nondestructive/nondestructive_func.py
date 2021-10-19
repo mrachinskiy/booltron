@@ -73,7 +73,7 @@ def execute(self, context):
         boolean_mod(ob2, ob, "UNION")
         ob.display_type = self.display_secondary
         for mat in ob.data.materials:
-            if mat.name not in ob2_mats:
+            if mat is not None and mat.name not in ob2_mats:
                 ob2_mats.append(mat)
 
     return {"FINISHED"}
