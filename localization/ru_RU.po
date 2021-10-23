@@ -11,9 +11,6 @@ msgstr ""
 "Language: ru_RU\n"
 "X-Generator: Poedit 3.0\n"
 
-msgid "Mesh Cleanup"
-msgstr "Очистка"
-
 msgid "Correct Position"
 msgstr "Коррекция позиции"
 
@@ -40,12 +37,6 @@ msgstr "Отображение во вьюпорте"
 
 msgid "Icons"
 msgstr "Иконки"
-
-msgid "Perform mesh cleanup in between boolean operations, enabling this option will greatly affect performance"
-msgstr "Выполнять очистку геометрии между булевыми операциями, включение этой опции значительно повлияет на производительность"
-
-msgid "Triangulate geometry before boolean operation, in some cases may improve result of a boolean operation"
-msgstr "Триангулировать геометрию перед булевой операцией, в некоторых случаях может улучшить результат булевой операции"
 
 msgid "Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation (does not affect active object)"
 msgstr "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевой операции (не влияет на активный объект)"

@@ -68,8 +68,6 @@ class Destructive(preferences.ToolProps):
         layout.label(text="Mesh")
         col = layout.column()
         col.prop(self, "merge_distance")
-        col.prop(self, "cleanup")
-        col.prop(self, "triangulate")
 
     def execute(self, context):
         from . import destructive_func
