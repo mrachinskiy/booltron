@@ -86,8 +86,6 @@ def execute(self, context):
             for ob3 in obs:
                 Mesh.prepare(ob3, select=True)
                 boolean_mod(ob2, ob3, "UNION")
-                if self.cleanup:
-                    Mesh.cleanup(ob2)
         else:
             obs.append(ob2)
             override = {
@@ -101,9 +99,6 @@ def execute(self, context):
 
     Mesh.prepare(ob1, select=False)
     boolean_mod(ob1, ob2, self.mode)
-
-    if self.cleanup:
-        Mesh.cleanup(ob1)
 
     Mesh.check(ob1)
 
@@ -132,8 +127,6 @@ def invoke(self, context, event):
         self.use_pos_offset = prefs.use_pos_offset
         self.pos_offset = prefs.pos_offset
         self.merge_distance = prefs.merge_distance
-        self.cleanup = prefs.cleanup
-        self.triangulate = prefs.triangulate
 
     self.keep_objects = event.alt
     self.is_overlap = False
@@ -195,9 +188,6 @@ def execute_slice(self, context):
 
         if Mesh.check(ob1_copy):
             return {"FINISHED"}
-
-        if self.cleanup:
-            Mesh.cleanup(ob1)
 
     ob1.select_set(False)
     context.view_layer.objects.active = ob1_copy

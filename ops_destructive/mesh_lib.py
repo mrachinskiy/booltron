@@ -21,21 +21,11 @@
 
 from bpy.types import Object, Context, Operator
 import bmesh
-from bmesh.types import BMesh
 from mathutils import bvhtree
 
 
-def _cleanup(bm: BMesh, merge_distance: float) -> None:
-    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=merge_distance)
-
-    # Delete loose
-    for v in bm.verts:
-        if v.is_wire or not v.link_edges:
-            bm.verts.remove(v)
-
-
 class Utils:
-    __slots__ = ("merge_distance", "triangulate", "report")
+    __slots__ = ("merge_distance", "report")
 
     def __init__(self, op: Operator) -> None:
         for prop in self.__slots__:
@@ -46,11 +36,14 @@ class Utils:
         bm = bmesh.new()
         bm.from_mesh(me)
 
-        _cleanup(bm, self.merge_distance)
-        bmesh.ops.holes_fill(bm, edges=bm.edges)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=self.merge_distance)
 
-        if self.triangulate:
-            bmesh.ops.triangulate(bm, faces=bm.faces)
+        # Delete loose
+        for v in bm.verts:
+            if v.is_wire or not v.link_edges:
+                bm.verts.remove(v)
+
+        bmesh.ops.holes_fill(bm, edges=bm.edges)
 
         for f in bm.faces:
             f.select = select
@@ -58,15 +51,6 @@ class Utils:
         bm.to_mesh(me)
         bm.free()
 
-    def cleanup(self, ob: Object) -> None:
-        me = ob.data
-        bm = bmesh.new()
-        bm.from_mesh(me)
-
-        _cleanup(bm, self.merge_distance)
-
-        bm.to_mesh(me)
-        bm.free()
 
     def check(self, ob: Object) -> bool:
         bm = bmesh.new()

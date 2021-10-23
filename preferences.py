@@ -93,20 +93,6 @@ class ToolProps:
         precision=5,
         unit="LENGTH",
     )
-    cleanup: BoolProperty(
-        name="Mesh Cleanup",
-        description=(
-            "Perform mesh cleanup in between boolean operations, "
-            "enabling this option will greatly affect performance"
-        ),
-    )
-    triangulate: BoolProperty(
-        name="Triangulate",
-        description=(
-            "Triangulate geometry before boolean operation, "
-            "in some cases may improve result of a boolean operation"
-        ),
-    )
 
     # Viewport Display
     # ------------------------

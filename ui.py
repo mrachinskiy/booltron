@@ -185,8 +185,6 @@ def prefs_ui(self, context):
         box.label(text="Mesh")
         col = box.column()
         col.prop(self, "merge_distance")
-        col.prop(self, "cleanup")
-        col.prop(self, "triangulate")
 
         box.label(text="Viewport Display")
         col = box.column()
