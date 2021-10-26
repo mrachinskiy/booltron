@@ -24,6 +24,12 @@ import bmesh
 from mathutils import bvhtree
 
 
+def _delete_loose(bm: bmesh.types.BMesh) -> None:
+    for v in bm.verts:
+        if v.is_wire or not v.link_edges:
+            bm.verts.remove(v)
+
+
 class Utils:
     __slots__ = ("merge_distance", "report")
 
@@ -37,12 +43,7 @@ class Utils:
         bm.from_mesh(me)
 
         bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=self.merge_distance)
-
-        # Delete loose
-        for v in bm.verts:
-            if v.is_wire or not v.link_edges:
-                bm.verts.remove(v)
-
+        _delete_loose(bm)
         bmesh.ops.holes_fill(bm, edges=bm.edges)
 
         for f in bm.faces:
@@ -66,7 +67,7 @@ class Utils:
         return False
 
 
-def detect_overlap(context: Context, obs: list[Object], merge_distance: float):
+def detect_overlap(context: Context, obs: list[Object], merge_distance: float) -> bool:
     depsgraph = context.evaluated_depsgraph_get()
     bm = bmesh.new()
 

@@ -34,7 +34,7 @@ class Nondestructive(preferences.ToolProps):
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        layout.label(text="Modifier")
+        layout.label(text="Modifier", icon="MOD_BOOLEAN")
         col = layout.column()
         col.prop(self, "solver")
 
@@ -46,19 +46,21 @@ class Nondestructive(preferences.ToolProps):
 
         layout.separator()
 
-        layout.label(text="Object")
-        row = layout.row(heading="Correct Position")
+        layout.label(text="Secondary Object", icon="OBJECT_DATA")
+        col = layout.column()
+        row = col.row(heading="Correct Position")
         row.prop(self, "use_pos_offset", text="")
         sub = row.row()
         sub.enabled = self.use_pos_offset
         sub.prop(self, "pos_offset", text="")
+        col.prop(self, "display_secondary")
 
         layout.separator()
 
-        layout.label(text="Viewport Display")
-        col = layout.column()
-        col.prop(self, "display_secondary")
-        col.prop(self, "display_combined")
+        layout.label(text="Combined Object", icon="OBJECT_DATA")
+        layout.prop(self, "display_combined")
+
+        layout.separator()
 
     def execute(self, context):
         from . import nondestructive_func

@@ -61,14 +61,14 @@ class ToolProps:
         precision=6,
     )
 
-    # Object
+    # Secondary
     # ------------------------
 
     use_pos_offset: BoolProperty(
         name="Correct Position",
         description=(
             "Shift objects position for a very small amount to avoid coplanar "
-            "geometry errors during boolean operation (does not affect active object)"
+            "geometry errors during boolean operation"
         ),
     )
     pos_offset: FloatProperty(
@@ -80,8 +80,34 @@ class ToolProps:
         precision=3,
         unit="LENGTH",
     )
+    display_secondary: EnumProperty(
+        name="Display As",
+        description="How to display object in viewport",
+        items=(
+            ("BOUNDS", "Bounds", ""),
+            ("WIRE", "Wire", ""),
+            ("SOLID", "Solid", ""),
+            ("TEXTURED", "Textured", ""),
+        ),
+        default="WIRE",
+    )
 
-    # Mesh
+    # Combined
+    # ------------------------
+
+    display_combined: EnumProperty(
+        name="Display As",
+        description="How to display object in viewport",
+        items=(
+            ("BOUNDS", "Bounds", ""),
+            ("WIRE", "Wire", ""),
+            ("SOLID", "Solid", ""),
+            ("TEXTURED", "Textured", ""),
+        ),
+        default="BOUNDS",
+    )
+
+    # Pre-processing
     # ------------------------
 
     merge_distance: FloatProperty(
@@ -92,32 +118,6 @@ class ToolProps:
         step=0.01,
         precision=5,
         unit="LENGTH",
-    )
-
-    # Viewport Display
-    # ------------------------
-
-    display_secondary: EnumProperty(
-        name="Secondary Object",
-        description="How to display object in viewport",
-        items=(
-            ("BOUNDS", "Bounds", ""),
-            ("WIRE", "Wire", ""),
-            ("SOLID", "Solid", ""),
-            ("TEXTURED", "Textured", ""),
-        ),
-        default="WIRE",
-    )
-    display_combined: EnumProperty(
-        name="Combined Object",
-        description="How to display object in viewport",
-        items=(
-            ("BOUNDS", "Bounds", ""),
-            ("WIRE", "Wire", ""),
-            ("SOLID", "Solid", ""),
-            ("TEXTURED", "Textured", ""),
-        ),
-        default="BOUNDS",
     )
 
 
