@@ -114,8 +114,9 @@ class ToolProps:
         name="Merge Distance",
         description="Minimum distance between elements to merge",
         default=0.0003,
-        min=0.00001,
-        step=0.01,
+        soft_min=0.00001,
+        min=0.000001,
+        step=0.001,
         precision=5,
         unit="LENGTH",
     )
