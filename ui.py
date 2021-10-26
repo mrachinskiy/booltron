@@ -165,7 +165,7 @@ def prefs_ui(self, context):
     box = split.box()
 
     if active_tab == "TOOLS":
-        box.label(text="Modifier")
+        box.label(text="Modifier", icon="MOD_BOOLEAN")
         col = box.column()
         col.prop(self, "solver")
 
@@ -175,21 +175,20 @@ def prefs_ui(self, context):
             col.prop(self, "use_self")
             col.prop(self, "use_hole_tolerant")
 
-        box.label(text="Object")
-        row = box.row(heading="Correct Position")
+        box.label(text="Secondary Object", icon="OBJECT_DATA")
+        col = box.column()
+        row = col.row(heading="Correct Position")
         row.prop(self, "use_pos_offset", text="")
         sub = row.row()
-        sub.active = self.use_pos_offset
+        sub.enabled = self.use_pos_offset
         sub.prop(self, "pos_offset", text="")
+        col.prop(self, "display_secondary", text="Display As")
 
-        box.label(text="Mesh")
-        col = box.column()
-        col.prop(self, "merge_distance")
+        box.label(text="Combined Object", icon="OBJECT_DATA")
+        box.prop(self, "display_combined", text="Display As")
 
-        box.label(text="Viewport Display")
-        col = box.column()
-        col.prop(self, "display_secondary")
-        col.prop(self, "display_combined")
+        box.label(text="Pre-processing", icon="MESH_DATA")
+        box.prop(self, "merge_distance")
 
     elif active_tab == "UPDATES":
         mod_update.prefs_ui(self, box)

@@ -42,7 +42,7 @@ class Destructive(preferences.ToolProps):
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        layout.label(text="Modifier")
+        layout.label(text="Modifier", icon="MOD_BOOLEAN")
         col = layout.column()
         col.prop(self, "solver")
 
@@ -54,7 +54,7 @@ class Destructive(preferences.ToolProps):
 
         layout.separator()
 
-        layout.label(text="Object")
+        layout.label(text="Secondary Object", icon="OBJECT_DATA")
         col = layout.column()
         row = col.row(heading="Correct Position")
         row.prop(self, "use_pos_offset", text="")
@@ -65,9 +65,10 @@ class Destructive(preferences.ToolProps):
 
         layout.separator()
 
-        layout.label(text="Mesh")
-        col = layout.column()
-        col.prop(self, "merge_distance")
+        layout.label(text="Pre-processing", icon="MESH_DATA")
+        layout.prop(self, "merge_distance")
+
+        layout.separator()
 
     def execute(self, context):
         from . import destructive_func
