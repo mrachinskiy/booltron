@@ -42,8 +42,8 @@ class Destructive(preferences.ToolProps):
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        layout.label(text="Modifier", icon="MOD_BOOLEAN")
-        col = layout.column()
+        layout.label(text="Modifier")
+        col = layout.box().column()
         col.prop(self, "solver")
 
         if self.solver == "FAST":
@@ -54,8 +54,8 @@ class Destructive(preferences.ToolProps):
 
         layout.separator()
 
-        layout.label(text="Secondary Object", icon="OBJECT_DATA")
-        col = layout.column()
+        layout.label(text="Secondary Object")
+        col = layout.box().column()
         row = col.row(heading="Correct Position")
         row.prop(self, "use_pos_offset", text="")
         sub = row.row()
@@ -65,8 +65,8 @@ class Destructive(preferences.ToolProps):
 
         layout.separator()
 
-        layout.label(text="Pre-processing", icon="MESH_DATA")
-        layout.prop(self, "merge_distance")
+        layout.label(text="Pre-processing")
+        layout.box().prop(self, "merge_distance")
 
         layout.separator()
 
