@@ -19,7 +19,8 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-from bpy.types import Object, Context, Operator
+import bpy
+from bpy.types import Object, Operator
 import bmesh
 from mathutils import bvhtree
 
@@ -67,8 +68,8 @@ class Utils:
         return False
 
 
-def detect_overlap(context: Context, obs: list[Object], merge_distance: float) -> bool:
-    depsgraph = context.evaluated_depsgraph_get()
+def detect_overlap(obs: list[Object], merge_distance: float) -> bool:
+    depsgraph = bpy.context.evaluated_depsgraph_get()
     bm = bmesh.new()
 
     for ob in obs:

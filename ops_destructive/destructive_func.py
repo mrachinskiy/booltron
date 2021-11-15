@@ -20,12 +20,13 @@
 
 
 import bpy
+from bpy.types import Object
 
 from .. import var, lib
 from . import mesh_lib
 
 
-def cursor_state(func):
+def _cursor_state(func):
     def wrapper(*args):
         bpy.context.window.cursor_set("WAIT")
         result = func(*args)
@@ -34,14 +35,14 @@ def cursor_state(func):
     return wrapper
 
 
-def prepare_objects(self, context):
-    ob1 = context.object
-    obs = context.selected_objects
+def _prepare_objects(self) -> tuple[Object, list[Object]]:
+    ob1 = bpy.context.object
+    obs = bpy.context.selected_objects
     if ob1.select_get():
         obs.remove(ob1)
 
     if self.keep_objects:
-        space_data = context.space_data
+        space_data = bpy.context.space_data
         use_local_view = bool(space_data.local_view)
         obs_copy = []
         app = obs_copy.append
@@ -68,16 +69,15 @@ def prepare_objects(self, context):
     if self.use_pos_offset:
         lib.object_offset(obs, self.pos_offset)
 
-    return obs
+    return ob1, obs
 
 
-@cursor_state
+@_cursor_state
 def execute(self, context):
     Mesh = mesh_lib.Utils(self)
     boolean_mod = lib.ModUtils(self).add
 
-    ob1 = context.object
-    obs = prepare_objects(self, context)
+    ob1, obs = _prepare_objects(self)
     ob2 = obs.pop()
 
     if obs:
@@ -142,7 +142,7 @@ def invoke(self, context, event):
     return self.execute(context)
 
 
-@cursor_state
+@_cursor_state
 def execute_slice(self, context):
     Mesh = mesh_lib.Utils(self)
     boolean_mod = lib.ModUtils(self).add
@@ -150,8 +150,7 @@ def execute_slice(self, context):
     space_data = context.space_data
     use_local_view = bool(space_data.local_view)
 
-    ob1 = context.object
-    obs = prepare_objects(self, context)
+    ob1, obs = _prepare_objects(self)
 
     Mesh.prepare(ob1, select=False)
 
