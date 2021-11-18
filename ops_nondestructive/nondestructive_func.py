@@ -20,16 +20,8 @@
 
 
 import bpy
-from bpy.types import Object
 
 from .. import var, lib
-
-
-def _object_add(name: str) -> Object:
-    me = bpy.data.meshes.new(name)
-    ob = bpy.data.objects.new(name, me)
-    bpy.context.collection.objects.link(ob)
-    return ob
 
 
 def execute(self, context):
@@ -56,11 +48,16 @@ def execute(self, context):
             break
     else:
         ob2_name = f"{ob1.name} COMBINED {self.mode[:3]}"
-        ob2 = _object_add(ob2_name)
-        ob2["booltron_combined"] = self.mode
+        me = bpy.data.meshes.new(ob2_name)
+        ob2 = bpy.data.objects.new(ob2_name, me)
+
+        for coll in obs[0].users_collection:
+            coll.objects.link(ob2)
 
         mod_name = self.mode[:3] + " COMBINED"
         boolean_mod(ob1, ob2, self.mode, name=mod_name)
+
+        ob2["booltron_combined"] = self.mode
 
     ob2.display_type = self.display_combined
 
