@@ -133,7 +133,7 @@ def invoke(self, context, event):
 
     if len(obs) > 2 and self.mode is not None:
         obs.remove(context.object)
-        self.is_overlap = mesh_lib.detect_overlap(context, obs, self.merge_distance)
+        self.is_overlap = mesh_lib.detect_overlap(obs, self.merge_distance)
 
     if event.ctrl:
         wm = context.window_manager
