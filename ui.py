@@ -60,6 +60,7 @@ class VIEW3D_MT_booltron(Menu):
 
     def draw(self, context):
         layout = self.layout
+        layout.operator_context = "INVOKE_DEFAULT"
         wm_props = context.window_manager.booltron
 
         layout.operator("object.booltron_destructive_difference", icon_value=_icon_menu("DESTR_DIFFERENCE"))
