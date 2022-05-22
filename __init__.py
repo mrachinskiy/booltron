@@ -79,8 +79,6 @@ def register():
 
 
 def unregister():
-    import bpy.utils.previews
-
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
@@ -99,10 +97,7 @@ def unregister():
     # Previews
     # ---------------------------
 
-    for pcoll in var.preview_collections.values():
-        bpy.utils.previews.remove(pcoll)
-
-    var.preview_collections.clear()
+    ui.clear_previews()
 
 
 if __name__ == "__main__":

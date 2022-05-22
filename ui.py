@@ -13,24 +13,35 @@ from . import var, mod_update
 # ---------------------------
 
 
-def scan_icons() -> None:
-    import bpy.utils.previews
+_previews = None
 
-    pcoll = bpy.utils.previews.new()
+
+def clear_previews():
+    import bpy.utils.previews
+    global _previews
+
+    if _previews is not None:
+        bpy.utils.previews.remove(_previews)
+        _previews = None
+
+
+def _scan_icons() -> None:
+    import bpy.utils.previews
+    global _previews
+
+    _previews = bpy.utils.previews.new()
 
     for child in var.ICONS_DIR.iterdir():
         if child.is_dir():
             for subchild in child.iterdir():
                 if subchild.is_file() and subchild.suffix == ".png":
                     filename = child.name + subchild.stem
-                    pcoll.load(filename.upper(), str(subchild), "IMAGE")
-
-    var.preview_collections["icons"] = pcoll
+                    _previews.load(filename.upper(), str(subchild), "IMAGE")
 
 
 def _icon(name: str, override: Optional[float] = None) -> int:
-    if "icons" not in var.preview_collections:
-        scan_icons()
+    if _previews is None:
+        _scan_icons()
 
     if override is not None:
         value = override
@@ -38,7 +49,7 @@ def _icon(name: str, override: Optional[float] = None) -> int:
         value = bpy.context.preferences.themes[0].user_interface.wcol_tool.text.v
 
     theme = "DARK" if value < 0.5 else "LIGHT"
-    return var.preview_collections["icons"][theme + name].icon_id
+    return _previews[theme + name].icon_id
 
 
 def _icon_menu(name: str) -> int:
