@@ -59,15 +59,11 @@ def execute(self, context):
 
 
 def invoke(self, context, event):
-    obs = []
-    app = obs.append
-
     for ob in context.selected_objects:
         if ob.type != "MESH":
             ob.select_set(False)
-        app(ob)
 
-    if len(obs) < 2 or context.object.type != "MESH":
+    if len(context.selected_objects) < 2 or context.object.type != "MESH":
         self.report({"ERROR"}, "At least two Mesh objects must be selected")
         return {"CANCELLED"}
 
@@ -89,7 +85,7 @@ def invoke(self, context, event):
 
 
 def execute_remove(self, context):
-    obs = set(ob for ob in context.selected_objects if "booltron_combined" not in ob)
+    obs = {ob for ob in context.selected_objects if "booltron_combined" not in ob}
     is_empty = False
 
     if not obs:
@@ -111,10 +107,11 @@ def execute_remove(self, context):
 
     if is_empty:
         for ob in context.scene.objects:
-            if ob.type == "MESH":
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN" and not md.object:
-                        ob.modifiers.remove(md)
+            if ob.type != "MESH":
+                continue
+            for md in ob.modifiers:
+                if md.type == "BOOLEAN" and not md.object:
+                    ob.modifiers.remove(md)
 
     for ob in obs:
         ob.display_type = "TEXTURED"
