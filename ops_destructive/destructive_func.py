@@ -88,14 +88,11 @@ def execute(self, context):
 
 
 def invoke(self, context, event):
-    obs = []
-    app = obs.append
-
     for ob in context.selected_objects:
         if ob.type not in {"MESH", "CURVE", "SURFACE", "META", "FONT"}:
             ob.select_set(False)
-            continue
-        app(ob)
+
+    obs = context.selected_objects
 
     if len(obs) < 2:
         self.report({"ERROR"}, "At least two objects must be selected")
