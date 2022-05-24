@@ -9,14 +9,14 @@ from bpy.types import Panel, Menu
 from . import var, mod_update
 
 
-# Icon utils
+# Previews
 # ---------------------------
 
 
 _previews = None
 
 
-def clear_previews():
+def clear_previews() -> None:
     import bpy.utils.previews
     global _previews
 
