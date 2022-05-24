@@ -14,7 +14,7 @@ def _delete_loose(bm: bmesh.types.BMesh) -> None:
 
 
 class Utils:
-    __slots__ = ("merge_distance", "report")
+    __slots__ = "merge_distance", "report"
 
     def __init__(self, op: Operator) -> None:
         for prop in self.__slots__:
@@ -34,7 +34,6 @@ class Utils:
 
         bm.to_mesh(me)
         bm.free()
-
 
     def check(self, ob: Object) -> bool:
         bm = bmesh.new()

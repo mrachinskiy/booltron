@@ -19,7 +19,7 @@ def object_offset(obs: list[Object], offset: float) -> None:
 
 
 class ModUtils:
-    __slots__ = ("is_destructive", "solver", "threshold", "use_self", "use_hole_tolerant")
+    __slots__ = "is_destructive", "solver", "threshold", "use_self", "use_hole_tolerant"
 
     def __init__(self, op: Operator) -> None:
         for prop in self.__slots__:

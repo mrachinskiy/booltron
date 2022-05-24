@@ -67,7 +67,7 @@ def invoke(self, context, event):
         self.report({"ERROR"}, "At least two Mesh objects must be selected")
         return {"CANCELLED"}
 
-    if self.first_run:
+    if self.first_run or not event.ctrl:
         self.first_run = False
         prefs = context.preferences.addons[var.ADDON_ID].preferences
         self.solver = prefs.solver

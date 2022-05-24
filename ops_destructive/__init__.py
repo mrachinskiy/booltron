@@ -18,6 +18,7 @@ class Destructive(preferences.ToolProps):
     )
     first_run: BoolProperty(default=True, options={"HIDDEN"})
     is_destructive = True
+    is_overlap = False
 
     def draw(self, context):
         layout = self.layout

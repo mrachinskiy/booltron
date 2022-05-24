@@ -98,7 +98,11 @@ def invoke(self, context, event):
         self.report({"ERROR"}, "At least two objects must be selected")
         return {"CANCELLED"}
 
-    if self.first_run:
+    if len(obs) > 2 and self.mode is not None:
+        obs.remove(context.object)
+        self.is_overlap = mesh_lib.detect_overlap(obs, self.merge_distance)
+
+    if self.first_run or not event.ctrl:
         self.first_run = False
         prefs = context.preferences.addons[var.ADDON_ID].preferences
         self.solver = prefs.solver
@@ -108,11 +112,6 @@ def invoke(self, context, event):
         self.merge_distance = prefs.merge_distance
 
     self.keep_objects = event.alt
-    self.is_overlap = False
-
-    if len(obs) > 2 and self.mode is not None:
-        obs.remove(context.object)
-        self.is_overlap = mesh_lib.detect_overlap(obs, self.merge_distance)
 
     if event.ctrl:
         wm = context.window_manager
