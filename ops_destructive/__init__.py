@@ -2,7 +2,7 @@
 # Copyright 2014-2022 Mikhail Rachinskiy
 
 from bpy.types import Operator
-from bpy.props import BoolProperty
+from bpy.props import BoolProperty, FloatVectorProperty
 
 from .. import preferences
 
@@ -55,6 +55,13 @@ class Destructive(preferences.ToolProps):
 
         layout.separator()
 
+        if self.mode == "SLICE":
+
+            layout.label(text="Slice")
+            layout.box().prop(self, "overlap_distance")
+
+            layout.separator()
+
     def execute(self, context):
         from . import destructive_func
         return destructive_func.execute(self, context)
@@ -97,7 +104,15 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
     bl_idname = "object.booltron_destructive_slice"
     bl_options = {"REGISTER", "UNDO"}
 
-    mode = None
+    mode = "SLICE"
+
+    overlap_distance: FloatVectorProperty(
+        name="Overlap",
+        description="Displace secondary object to create overlap between slices",
+        subtype="TRANSLATION",
+        step=0.1,
+        precision=3,
+    )
 
     def execute(self, context):
         from . import destructive_func
