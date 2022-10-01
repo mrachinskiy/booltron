@@ -206,10 +206,10 @@ def prefs_ui(self, context):
         box.label(text="Secondary Object")
         col = box.box().column()
         row = col.row(heading="Correct Position")
-        row.prop(self, "use_pos_offset", text="")
+        row.prop(self, "use_loc_rnd", text="")
         sub = row.row()
-        sub.active = self.use_pos_offset
-        sub.prop(self, "pos_offset", text="")
+        sub.active = self.use_loc_rnd
+        sub.prop(self, "loc_offset", text="")
         col.prop(self, "display_secondary", text="Display As")
 
         box.separator(factor=2)

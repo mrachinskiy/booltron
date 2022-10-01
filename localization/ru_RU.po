@@ -11,10 +11,7 @@ msgstr ""
 "Language: ru_RU\n"
 "X-Generator: Poedit 3.0\n"
 
-msgid "Correct Position"
-msgstr "Коррекция позиции"
-
-msgid "Position Offset"
+msgid "Location Offset"
 msgstr "Сдвиг позиции"
 
 msgid "Keep Objects"
@@ -35,11 +32,14 @@ msgstr "Объединённый объект"
 msgid "Pre-processing"
 msgstr "Предварительная обработка"
 
-msgid "Shift objects position for a very small amount to avoid coplanar geometry errors during boolean operation"
+msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
 msgstr "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевой операции"
 
-msgid "Position offset is randomly generated for each object in range [-x, +x] input value"
+msgid "Location offset is randomly generated for each object in range [-x, +x] input value"
 msgstr "Сдвиг позиции генерируется в случайном порядке для каждого объекта в диапазоне [-x, +x] указанного значения"
+
+msgid "Displace secondary object to create overlap between slices"
+msgstr "Сместить вспомогательный объект для создания перекрытия между срезами"
 
 msgid "Combine selected objects"
 msgstr "Объединить выделенные объекты"

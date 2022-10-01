@@ -48,8 +48,8 @@ def _prepare_objects(self) -> tuple[Object, list[Object]]:
     bpy.ops.object.make_single_user(object=True, obdata=True)
     bpy.ops.object.convert(target="MESH")
 
-    if self.use_pos_offset:
-        lib.object_offset(obs, self.pos_offset)
+    if self.use_loc_rnd:
+        lib.object_offset(obs, self.loc_offset)
 
     return ob1, obs
 
@@ -107,8 +107,8 @@ def invoke(self, context, event):
         prefs = context.preferences.addons[var.ADDON_ID].preferences
         self.solver = prefs.solver
         self.threshold = prefs.threshold
-        self.use_pos_offset = prefs.use_pos_offset
-        self.pos_offset = prefs.pos_offset
+        self.use_loc_rnd = prefs.use_loc_rnd
+        self.loc_offset = prefs.loc_offset
         self.merge_distance = prefs.merge_distance
 
     self.keep_objects = event.alt

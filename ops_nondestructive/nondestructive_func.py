@@ -14,8 +14,8 @@ def execute(self, context):
     if ob1.select_get():
         obs.remove(ob1)
 
-    if self.use_pos_offset:
-        lib.object_offset(obs, self.pos_offset)
+    if self.use_loc_rnd:
+        lib.object_offset(obs, self.loc_offset)
 
     # Prepare combined object
     # ----------------------------------
@@ -72,8 +72,8 @@ def invoke(self, context, event):
         prefs = context.preferences.addons[var.ADDON_ID].preferences
         self.solver = prefs.solver
         self.threshold = prefs.threshold
-        self.use_pos_offset = prefs.use_pos_offset
-        self.pos_offset = prefs.pos_offset
+        self.use_loc_rnd = prefs.use_loc_rnd
+        self.loc_offset = prefs.loc_offset
         self.display_secondary = prefs.display_secondary
         self.display_combined = prefs.display_combined
 
