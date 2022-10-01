@@ -46,16 +46,16 @@ class ToolProps:
     # Secondary
     # ------------------------
 
-    use_pos_offset: BoolProperty(
-        name="Correct Position",
+    use_loc_rnd: BoolProperty(
+        name="Randomize Location",
         description=(
-            "Shift objects position for a very small amount to avoid coplanar "
+            "Shift objects location for a very small amount to avoid coplanar "
             "geometry errors during boolean operation"
         ),
     )
-    pos_offset: FloatProperty(
-        name="Position Offset",
-        description="Position offset is randomly generated for each object in range [-x, +x] input value",
+    loc_offset: FloatProperty(
+        name="Location Offset",
+        description="Location offset is randomly generated for each object in range [-x, +x] input value",
         default=0.005,
         min=0.0,
         step=0.01,

@@ -39,11 +39,11 @@ class Destructive(preferences.ToolProps):
 
         layout.label(text="Secondary Object")
         col = layout.box().column()
-        row = col.row(heading="Correct Position")
-        row.prop(self, "use_pos_offset", text="")
+        row = col.row(heading="Randomize Location")
+        row.prop(self, "use_loc_rnd", text="")
         sub = row.row()
-        sub.enabled = self.use_pos_offset
-        sub.prop(self, "pos_offset", text="")
+        sub.enabled = self.use_loc_rnd
+        sub.prop(self, "loc_offset", text="")
         col.prop(self, "keep_objects")
 
         layout.separator()
@@ -51,7 +51,7 @@ class Destructive(preferences.ToolProps):
         layout.label(text="Pre-processing")
         col = layout.box().column()
         col.prop(self, "merge_distance")
-        col.prop(self, "dissolve_distance")
+        col.prop(self, "dissolve_distance", text="Degenerate Dissolve", text_ctxt="Operator")
 
         layout.separator()
 
