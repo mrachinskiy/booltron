@@ -98,7 +98,7 @@ def invoke(self, context, event):
         self.report({"ERROR"}, "At least two objects must be selected")
         return {"CANCELLED"}
 
-    if len(obs) > 2 and self.mode is not None:
+    if len(obs) > 2 and self.mode != "SLICE":
         obs.remove(context.object)
         self.is_overlap = mesh_lib.detect_overlap(obs, self.merge_distance)
 
@@ -153,13 +153,17 @@ def execute_slice(self, context):
         # Main object difference
         # ---------------------------------
 
+        ob2.matrix_world.translation += self.overlap_distance / 2
+
         boolean_mod(ob1, ob2, "DIFFERENCE", remove_ob2=False)
 
         if Mesh.check(ob1):
             return {"FINISHED"}
 
-        # Copy object intersect
+        # Main object copy intersect
         # ---------------------------------
+
+        ob2.matrix_world.translation -= self.overlap_distance
 
         boolean_mod(ob1_copy, ob2, "INTERSECT")
 
