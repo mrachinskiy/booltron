@@ -60,19 +60,25 @@ def _icon_menu(name: str) -> int:
 # ---------------------------
 
 
-def draw_booltron_menu(self, context):
+def draw_booltron_object_menu(self, context):
     layout = self.layout
     layout.separator()
-    layout.menu("VIEW3D_MT_booltron")
+    layout.menu("VIEW3D_MT_booltron_object")
 
 
-class VIEW3D_MT_booltron(Menu):
+def draw_booltron_edit_menu(self, context):
+    layout = self.layout
+    layout.separator()
+    layout.menu("VIEW3D_MT_booltron_edit")
+
+
+class VIEW3D_MT_booltron_object(Menu):
     bl_label = "Booltron"
 
     def draw(self, context):
         layout = self.layout
         layout.operator_context = "INVOKE_DEFAULT"
-        wm_props = context.window_manager.booltron
+        scene_props = context.scene.booltron
 
         layout.operator("object.booltron_destructive_difference", icon_value=_icon_menu("DESTR_DIFFERENCE"))
         layout.operator("object.booltron_destructive_union", icon_value=_icon_menu("DESTR_UNION"))
@@ -81,9 +87,26 @@ class VIEW3D_MT_booltron(Menu):
 
         layout.separator()
 
-        layout.prop(wm_props, "mod_disable")
+        layout.prop(scene_props, "mod_disable")
         col = layout.column()
-        col.active = wm_props.mod_disable
+        col.active = scene_props.mod_disable
+        col.operator("object.booltron_nondestructive_difference", icon_value=_icon_menu("NONDESTR_DIFFERENCE"))
+        col.operator("object.booltron_nondestructive_union", icon_value=_icon_menu("NONDESTR_UNION"))
+        col.operator("object.booltron_nondestructive_intersect", icon_value=_icon_menu("NONDESTR_INTERSECT"))
+        col.operator("object.booltron_nondestructive_remove", icon_value=_icon_menu("NONDESTR_REMOVE"))
+
+
+class VIEW3D_MT_booltron_edit(Menu):
+    bl_label = "Booltron"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator_context = "INVOKE_DEFAULT"
+        scene_props = context.scene.booltron
+
+        layout.prop(scene_props, "mod_disable")
+        col = layout.column()
+        col.active = scene_props.mod_disable
         col.operator("object.booltron_nondestructive_difference", icon_value=_icon_menu("NONDESTR_DIFFERENCE"))
         col.operator("object.booltron_nondestructive_union", icon_value=_icon_menu("NONDESTR_UNION"))
         col.operator("object.booltron_nondestructive_intersect", icon_value=_icon_menu("NONDESTR_INTERSECT"))
@@ -98,7 +121,6 @@ class SidebarSetup:
     bl_category = "Booltron"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_context = "objectmode"
 
 
 class VIEW3D_PT_booltron_update(mod_update.Sidebar, SidebarSetup, Panel):
@@ -107,6 +129,10 @@ class VIEW3D_PT_booltron_update(mod_update.Sidebar, SidebarSetup, Panel):
 
 class VIEW3D_PT_booltron_destructive(SidebarSetup, Panel):
     bl_label = "Destructive"
+
+    @classmethod
+    def poll(cls, context):
+        return context.mode == "OBJECT"
 
     def draw(self, context):
         layout = self.layout
@@ -122,13 +148,17 @@ class VIEW3D_PT_booltron_destructive(SidebarSetup, Panel):
 class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
     bl_label = "Non-destructive"
 
+    @classmethod
+    def poll(cls, context):
+        return context.mode in {"OBJECT", "EDIT_MESH", "EDIT_CURVE"}
+
     def draw_header(self, context):
         layout = self.layout
-        layout.prop(context.window_manager.booltron, "mod_disable", text="")
+        layout.prop(context.scene.booltron, "mod_disable", text="")
 
     def draw(self, context):
         layout = self.layout
-        layout.active = context.window_manager.booltron.mod_disable
+        layout.active = context.scene.booltron.mod_disable
 
         col = layout.column(align=True)
         col.operator("object.booltron_nondestructive_difference", icon_value=_icon("NONDESTR_DIFFERENCE"))
