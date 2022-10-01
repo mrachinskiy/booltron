@@ -102,6 +102,16 @@ class ToolProps:
         precision=5,
         unit="LENGTH",
     )
+    dissolve_distance: FloatProperty(
+        name="Degenerate Dissolve",
+        description="Dissolve zero area faces and zero length edges",
+        default=0.0001,
+        soft_min=0.00001,
+        min=0.000001,
+        step=0.001,
+        precision=5,
+        unit="LENGTH",
+    )
 
 
 # Add-on preferences
