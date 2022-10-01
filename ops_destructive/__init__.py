@@ -55,13 +55,6 @@ class Destructive(preferences.ToolProps):
 
         layout.separator()
 
-        if self.mode == "SLICE":
-
-            layout.label(text="Slice")
-            layout.box().prop(self, "overlap_distance")
-
-            layout.separator()
-
     def execute(self, context):
         from . import destructive_func
         return destructive_func.execute(self, context)
@@ -113,6 +106,18 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
         step=0.1,
         precision=3,
     )
+
+    def draw(self, context):
+        super().draw(context)
+
+        layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        layout.label(text="Slice")
+        layout.box().prop(self, "overlap_distance")
+
+        layout.separator()
 
     def execute(self, context):
         from . import destructive_func
