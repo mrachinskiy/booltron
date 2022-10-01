@@ -14,7 +14,7 @@ def _delete_loose(bm: bmesh.types.BMesh) -> None:
 
 
 class Utils:
-    __slots__ = "merge_distance", "report"
+    __slots__ = "merge_distance", "dissolve_distance", "report"
 
     def __init__(self, op: Operator) -> None:
         for prop in self.__slots__:
@@ -26,6 +26,7 @@ class Utils:
         bm.from_mesh(me)
 
         bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=self.merge_distance)
+        bmesh.ops.dissolve_degenerate(bm, edges=bm.edges, dist=self.dissolve_distance)
         _delete_loose(bm)
         bmesh.ops.holes_fill(bm, edges=bm.edges)
 

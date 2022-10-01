@@ -49,7 +49,9 @@ class Destructive(preferences.ToolProps):
         layout.separator()
 
         layout.label(text="Pre-processing")
-        layout.box().prop(self, "merge_distance")
+        col = layout.box().column()
+        col.prop(self, "merge_distance")
+        col.prop(self, "dissolve_distance")
 
         layout.separator()
 
