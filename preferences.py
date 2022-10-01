@@ -119,6 +119,19 @@ class Preferences(ToolProps, mod_update.Preferences, AddonPreferences):
 # ------------------------------------------
 
 
+class WmProperties(PropertyGroup):
+    prefs_active_tab: EnumProperty(
+        items=(
+            ("TOOLS", "Tools", ""),
+            ("UPDATES", "Updates", ""),
+        ),
+    )
+
+
+# Scene properties
+# ------------------------------------------
+
+
 def upd_mod_disable(self, context):
     for ob in context.scene.objects:
         if ob.type == "MESH":
@@ -130,13 +143,7 @@ def upd_mod_disable(self, context):
     bpy.ops.ed.undo_push(message=f"Non-destructive [{action}]")
 
 
-class WmProperties(PropertyGroup):
-    prefs_active_tab: EnumProperty(
-        items=(
-            ("TOOLS", "Tools", ""),
-            ("UPDATES", "Updates", ""),
-        ),
-    )
+class SceneProperties(PropertyGroup):
     mod_disable: BoolProperty(
         name="Non-destructive",
         description="Disable boolean modifiers on all objects",
