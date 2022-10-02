@@ -60,19 +60,13 @@ def _icon_menu(name: str) -> int:
 # ---------------------------
 
 
-def draw_booltron_object_menu(self, context):
+def draw_booltron_menu(self, context):
     layout = self.layout
     layout.separator()
-    layout.menu("VIEW3D_MT_booltron_object")
+    layout.menu("VIEW3D_MT_booltron")
 
 
-def draw_booltron_edit_menu(self, context):
-    layout = self.layout
-    layout.separator()
-    layout.menu("VIEW3D_MT_booltron_edit")
-
-
-class VIEW3D_MT_booltron_object(Menu):
+class VIEW3D_MT_booltron(Menu):
     bl_label = "Booltron"
 
     def draw(self, context):
@@ -95,24 +89,6 @@ class VIEW3D_MT_booltron_object(Menu):
         col.operator("object.booltron_nondestructive_intersect", icon_value=_icon_menu("NONDESTR_INTERSECT"))
         col.operator("object.booltron_nondestructive_remove", icon_value=_icon_menu("NONDESTR_REMOVE"))
 
-
-class VIEW3D_MT_booltron_edit(Menu):
-    bl_label = "Booltron"
-
-    def draw(self, context):
-        layout = self.layout
-        layout.operator_context = "INVOKE_DEFAULT"
-        scene_props = context.scene.booltron
-
-        layout.prop(scene_props, "mod_disable")
-        col = layout.column()
-        col.active = scene_props.mod_disable
-        col.operator("object.booltron_nondestructive_difference", icon_value=_icon_menu("NONDESTR_DIFFERENCE"))
-        col.operator("object.booltron_nondestructive_union", icon_value=_icon_menu("NONDESTR_UNION"))
-        col.operator("object.booltron_nondestructive_intersect", icon_value=_icon_menu("NONDESTR_INTERSECT"))
-        col.operator("object.booltron_nondestructive_remove", icon_value=_icon_menu("NONDESTR_REMOVE"))
-
-
 # Panels
 # ---------------------------
 
@@ -132,7 +108,7 @@ class VIEW3D_PT_booltron_destructive(SidebarSetup, Panel):
 
     @classmethod
     def poll(cls, context):
-        return context.mode == "OBJECT"
+        return context.mode in {"OBJECT", "EDIT_MESH", "EDIT_CURVE", "EDIT_TEXT", "SCULPT"}
 
     def draw(self, context):
         layout = self.layout
@@ -150,7 +126,7 @@ class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
 
     @classmethod
     def poll(cls, context):
-        return context.mode in {"OBJECT", "EDIT_MESH", "EDIT_CURVE"}
+        return context.mode in {"OBJECT", "EDIT_MESH", "EDIT_CURVE", "EDIT_TEXT", "SCULPT"}
 
     def draw_header(self, context):
         layout = self.layout

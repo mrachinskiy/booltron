@@ -56,6 +56,9 @@ def _prepare_objects(self) -> tuple[Object, list[Object]]:
 
 @_cursor_state
 def execute(self, context):
+    if context.mode != "OBJECT":
+        bpy.ops.object.mode_set(mode="OBJECT")
+
     Mesh = mesh_lib.Utils(self)
     boolean_mod = lib.ModUtils(self).add
 
@@ -122,6 +125,9 @@ def invoke(self, context, event):
 
 @_cursor_state
 def execute_slice(self, context):
+    if context.mode != "OBJECT":
+        bpy.ops.object.mode_set(mode="OBJECT")
+
     Mesh = mesh_lib.Utils(self)
     boolean_mod = lib.ModUtils(self).add
 
