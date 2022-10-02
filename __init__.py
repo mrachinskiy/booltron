@@ -38,8 +38,7 @@ classes = (
     preferences.Preferences,
     preferences.WmProperties,
     preferences.SceneProperties,
-    ui.VIEW3D_MT_booltron_object,
-    ui.VIEW3D_MT_booltron_edit,
+    ui.VIEW3D_MT_booltron,
     ui.VIEW3D_PT_booltron_update,
     ui.VIEW3D_PT_booltron_destructive,
     ui.VIEW3D_PT_booltron_nondestructive,
@@ -65,9 +64,9 @@ def register():
     # Menu
     # ---------------------------
 
-    bpy.types.VIEW3D_MT_object.append(ui.draw_booltron_object_menu)
-    bpy.types.VIEW3D_MT_edit_mesh.append(ui.draw_booltron_edit_menu)
-    bpy.types.VIEW3D_MT_edit_curve.append(ui.draw_booltron_edit_menu)
+    bpy.types.VIEW3D_MT_object.append(ui.draw_booltron_menu)
+    bpy.types.VIEW3D_MT_edit_mesh.append(ui.draw_booltron_menu)
+    bpy.types.VIEW3D_MT_edit_curve.append(ui.draw_booltron_menu)
 
     # mod_update
     # ---------------------------
@@ -93,9 +92,9 @@ def unregister():
     # Menu
     # ---------------------------
 
-    bpy.types.VIEW3D_MT_object.remove(ui.draw_booltron_object_menu)
-    bpy.types.VIEW3D_MT_edit_mesh.remove(ui.draw_booltron_edit_menu)
-    bpy.types.VIEW3D_MT_edit_curve.remove(ui.draw_booltron_edit_menu)
+    bpy.types.VIEW3D_MT_object.remove(ui.draw_booltron_menu)
+    bpy.types.VIEW3D_MT_edit_mesh.remove(ui.draw_booltron_menu)
+    bpy.types.VIEW3D_MT_edit_curve.remove(ui.draw_booltron_menu)
 
     # Translations
     # ---------------------------
