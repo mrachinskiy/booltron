@@ -181,7 +181,7 @@ def prefs_ui(self, context):
 
         box.label(text="Secondary Object")
         col = box.box().column()
-        row = col.row(heading="Correct Position")
+        row = col.row(heading="Randomize Location")
         row.prop(self, "use_loc_rnd", text="")
         sub = row.row()
         sub.active = self.use_loc_rnd
@@ -196,7 +196,9 @@ def prefs_ui(self, context):
         box.separator(factor=2)
 
         box.label(text="Pre-processing")
-        box.box().prop(self, "merge_distance")
+        col = box.box().column()
+        col.prop(self, "merge_distance")
+        col.prop(self, "dissolve_distance")
 
     elif active_tab == "UPDATES":
         mod_update.prefs_ui(self, box)
