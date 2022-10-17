@@ -30,7 +30,7 @@ class Nondestructive(preferences.ToolProps):
 
         layout.label(text="Secondary Object")
         col = layout.box().column()
-        row = col.row(heading="Correct Position")
+        row = col.row(heading="Randomize Location")
         row.prop(self, "use_loc_rnd", text="")
         sub = row.row()
         sub.enabled = self.use_loc_rnd
