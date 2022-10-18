@@ -4,7 +4,7 @@
 bl_info = {
     "name": "Booltron",
     "author": "Mikhail Rachinskiy",
-    "version": (2, 8, 0),
+    "version": (2, 8, 1),
     "blender": (2, 93, 0),
     "location": "3D View > Sidebar",
     "description": "Super add-on for super fast booleans.",
