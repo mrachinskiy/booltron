@@ -35,6 +35,7 @@ else:
 
 
 classes = (
+    preferences.ToolPropsGroup,
     preferences.Preferences,
     preferences.WmProperties,
     preferences.SceneProperties,

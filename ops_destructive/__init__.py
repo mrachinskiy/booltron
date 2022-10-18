@@ -4,10 +4,8 @@
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatVectorProperty
 
-from .. import preferences
 
-
-class Destructive(preferences.ToolProps):
+class Destructive:
     keep_objects: BoolProperty(
         name="Keep Objects",
         description=(
@@ -21,37 +19,38 @@ class Destructive(preferences.ToolProps):
     is_overlap = False
 
     def draw(self, context):
+        props = context.window_manager.booltron.destructive
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
 
         layout.label(text="Modifier")
         col = layout.box().column()
-        col.prop(self, "solver")
+        col.prop(props, "solver")
 
-        if self.solver == "FAST":
-            col.prop(self, "threshold")
+        if props.solver == "FAST":
+            col.prop(props, "threshold")
         else:
-            col.prop(self, "use_self")
-            col.prop(self, "use_hole_tolerant")
+            col.prop(props, "use_self")
+            col.prop(props, "use_hole_tolerant")
 
         layout.separator()
 
         layout.label(text="Secondary Object")
         col = layout.box().column()
         row = col.row(heading="Randomize Location")
-        row.prop(self, "use_loc_rnd", text="")
+        row.prop(props, "use_loc_rnd", text="")
         sub = row.row()
-        sub.enabled = self.use_loc_rnd
-        sub.prop(self, "loc_offset", text="")
+        sub.enabled = props.use_loc_rnd
+        sub.prop(props, "loc_offset", text="")
         col.prop(self, "keep_objects")
 
         layout.separator()
 
         layout.label(text="Pre-processing")
         col = layout.box().column()
-        col.prop(self, "merge_distance")
-        col.prop(self, "dissolve_distance", text="Degenerate Dissolve", text_ctxt="Operator")
+        col.prop(props, "merge_distance")
+        col.prop(props, "dissolve_distance", text="Degenerate Dissolve", text_ctxt="Operator")
 
         layout.separator()
 
