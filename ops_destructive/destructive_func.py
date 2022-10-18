@@ -17,13 +17,15 @@ def _cursor_state(func):
     return wrapper
 
 
-def _prepare_objects(self) -> tuple[Object, list[Object]]:
+def _prepare_objects(keep_objects: bool) -> tuple[Object, list[Object]]:
+    props = bpy.context.window_manager.booltron.destructive
+
     ob1 = bpy.context.object
     obs = bpy.context.selected_objects
     if ob1.select_get():
         obs.remove(ob1)
 
-    if self.keep_objects:
+    if keep_objects:
         space_data = bpy.context.space_data
         use_local_view = bool(space_data.local_view)
         obs_copy = []
@@ -48,18 +50,18 @@ def _prepare_objects(self) -> tuple[Object, list[Object]]:
     bpy.ops.object.make_single_user(object=True, obdata=True)
     bpy.ops.object.convert(target="MESH")
 
-    if self.use_loc_rnd:
-        lib.object_offset(obs, self.loc_offset)
+    if props.use_loc_rnd:
+        lib.object_offset(obs, props.loc_offset)
 
     return ob1, obs
 
 
 @_cursor_state
 def execute(self, context):
-    Mesh = mesh_lib.Utils(self)
-    boolean_mod = lib.ModUtils(self).add
+    Mesh = mesh_lib.Utils(self.report)
+    boolean_mod = lib.ModUtils(self.is_destructive).add
 
-    ob1, obs = _prepare_objects(self)
+    ob1, obs = _prepare_objects(self.keep_objects)
     ob2 = obs.pop()
 
     if obs:
@@ -104,16 +106,19 @@ def invoke(self, context, event):
 
     if len(obs) > 2 and self.mode != "SLICE":
         obs.remove(context.object)
-        self.is_overlap = mesh_lib.detect_overlap(obs, self.merge_distance)
+        self.is_overlap = mesh_lib.detect_overlap(obs)
 
-    if self.first_run or not event.ctrl:
-        self.first_run = False
+    props = context.window_manager.booltron.destructive
+
+    if props.first_run:
+        props.first_run = False
         prefs = context.preferences.addons[var.ADDON_ID].preferences
-        self.solver = prefs.solver
-        self.threshold = prefs.threshold
-        self.use_loc_rnd = prefs.use_loc_rnd
-        self.loc_offset = prefs.loc_offset
-        self.merge_distance = prefs.merge_distance
+        props.solver = prefs.solver
+        props.threshold = prefs.threshold
+        props.use_loc_rnd = prefs.use_loc_rnd
+        props.loc_offset = prefs.loc_offset
+        props.merge_distance = prefs.merge_distance
+        props.dissolve_distance = prefs.dissolve_distance
 
     self.keep_objects = event.alt
 
@@ -126,13 +131,13 @@ def invoke(self, context, event):
 
 @_cursor_state
 def execute_slice(self, context):
-    Mesh = mesh_lib.Utils(self)
-    boolean_mod = lib.ModUtils(self).add
+    Mesh = mesh_lib.Utils(self.report)
+    boolean_mod = lib.ModUtils(self.is_destructive).add
 
     space_data = context.space_data
     use_local_view = bool(space_data.local_view)
 
-    ob1, obs = _prepare_objects(self)
+    ob1, obs = _prepare_objects(self.keep_objects)
 
     Mesh.prepare(ob1, select=False)
 

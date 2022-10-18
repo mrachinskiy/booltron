@@ -4,10 +4,8 @@
 from bpy.types import Operator
 from bpy.props import BoolProperty
 
-from .. import preferences
 
-
-class Nondestructive(preferences.ToolProps):
+class Nondestructive:
     first_run: BoolProperty(default=True, options={"HIDDEN"})
     is_destructive = False
 
@@ -16,31 +14,33 @@ class Nondestructive(preferences.ToolProps):
         layout.use_property_split = True
         layout.use_property_decorate = False
 
+        props = context.window_manager.booltron.non_destructive
+
         layout.label(text="Modifier")
         col = layout.box().column()
-        col.prop(self, "solver")
+        col.prop(props, "solver")
 
-        if self.solver == "FAST":
-            col.prop(self, "threshold")
+        if props.solver == "FAST":
+            col.prop(props, "threshold")
         else:
-            col.prop(self, "use_self")
-            col.prop(self, "use_hole_tolerant")
+            col.prop(props, "use_self")
+            col.prop(props, "use_hole_tolerant")
 
         layout.separator()
 
         layout.label(text="Secondary Object")
         col = layout.box().column()
         row = col.row(heading="Randomize Location")
-        row.prop(self, "use_loc_rnd", text="")
+        row.prop(props, "use_loc_rnd", text="")
         sub = row.row()
-        sub.enabled = self.use_loc_rnd
-        sub.prop(self, "loc_offset", text="")
-        col.prop(self, "display_secondary")
+        sub.enabled = props.use_loc_rnd
+        sub.prop(props, "loc_offset", text="")
+        col.prop(props, "display_secondary")
 
         layout.separator()
 
         layout.label(text="Combined Object")
-        layout.box().prop(self, "display_combined")
+        layout.box().prop(props, "display_combined")
 
         layout.separator()
 

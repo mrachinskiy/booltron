@@ -7,15 +7,17 @@ from .. import var, lib
 
 
 def execute(self, context):
-    boolean_mod = lib.ModUtils(self).add
+    boolean_mod = lib.ModUtils(self.is_destructive).add
+
+    props = context.window_manager.booltron.non_destructive
 
     ob1 = context.object
     obs = context.selected_objects
     if ob1.select_get():
         obs.remove(ob1)
 
-    if self.use_loc_rnd:
-        lib.object_offset(obs, self.loc_offset)
+    if props.use_loc_rnd:
+        lib.object_offset(obs, props.loc_offset)
 
     # Prepare combined object
     # ----------------------------------
@@ -41,7 +43,7 @@ def execute(self, context):
 
         ob2["booltron_combined"] = self.mode
 
-    ob2.display_type = self.display_combined
+    ob2.display_type = props.display_combined
 
     # Merge secondary objects
     # ----------------------------------
@@ -50,7 +52,7 @@ def execute(self, context):
 
     for ob in obs:
         boolean_mod(ob2, ob, "UNION")
-        ob.display_type = self.display_secondary
+        ob.display_type = props.display_secondary
         for mat in ob.data.materials:
             if mat is not None and mat.name not in ob2_mats:
                 ob2_mats.append(mat)
@@ -67,15 +69,17 @@ def invoke(self, context, event):
         self.report({"ERROR"}, "At least two Mesh objects must be selected")
         return {"CANCELLED"}
 
-    if self.first_run or not event.ctrl:
-        self.first_run = False
+    props = context.window_manager.booltron.non_destructive
+
+    if props.first_run:
+        props.first_run = False
         prefs = context.preferences.addons[var.ADDON_ID].preferences
-        self.solver = prefs.solver
-        self.threshold = prefs.threshold
-        self.use_loc_rnd = prefs.use_loc_rnd
-        self.loc_offset = prefs.loc_offset
-        self.display_secondary = prefs.display_secondary
-        self.display_combined = prefs.display_combined
+        props.solver = prefs.solver
+        props.threshold = prefs.threshold
+        props.use_loc_rnd = prefs.use_loc_rnd
+        props.loc_offset = prefs.loc_offset
+        props.display_secondary = prefs.display_secondary
+        props.display_combined = prefs.display_combined
 
     if event.ctrl:
         wm = context.window_manager

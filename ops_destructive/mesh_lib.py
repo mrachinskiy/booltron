@@ -1,8 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright 2014-2022 Mikhail Rachinskiy
 
+from collections.abc import Callable
+
 import bpy
-from bpy.types import Object, Operator
+from bpy.types import Object
 import bmesh
 from mathutils import bvhtree
 
@@ -16,9 +18,11 @@ def _delete_loose(bm: bmesh.types.BMesh) -> None:
 class Utils:
     __slots__ = "merge_distance", "dissolve_distance", "report"
 
-    def __init__(self, op: Operator) -> None:
-        for prop in self.__slots__:
-            setattr(self, prop, getattr(op, prop))
+    def __init__(self, report: Callable) -> None:
+        self.report = report
+        props = bpy.context.window_manager.booltron.destructive
+        self.merge_distance = props.merge_distance
+        self.dissolve_distance = props.dissolve_distance
 
     def prepare(self, ob: Object, select: bool = False) -> None:
         me = ob.data
@@ -50,7 +54,8 @@ class Utils:
         return False
 
 
-def detect_overlap(obs: list[Object], merge_distance: float) -> bool:
+def detect_overlap(obs: list[Object]) -> bool:
+    props = bpy.context.window_manager.booltron.destructive
     depsgraph = bpy.context.evaluated_depsgraph_get()
     bm = bmesh.new()
 
@@ -63,7 +68,7 @@ def detect_overlap(obs: list[Object], merge_distance: float) -> bool:
 
         ob_eval.to_mesh_clear()
 
-    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=merge_distance)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=props.merge_distance)
 
     tree = bvhtree.BVHTree.FromBMesh(bm, epsilon=0.00001)
     overlap = tree.overlap(tree)

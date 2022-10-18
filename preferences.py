@@ -3,7 +3,7 @@
 
 import bpy
 from bpy.types import AddonPreferences, PropertyGroup
-from bpy.props import EnumProperty, BoolProperty, FloatProperty
+from bpy.props import EnumProperty, BoolProperty, FloatProperty, PointerProperty
 
 from . import ui, mod_update
 
@@ -113,6 +113,15 @@ class ToolProps:
         unit="LENGTH",
     )
 
+    # Utility
+    # ------------------------
+
+    first_run: BoolProperty(default=True)
+
+
+class ToolPropsGroup(ToolProps, PropertyGroup):
+    pass
+
 
 # Add-on preferences
 # ------------------------------------------
@@ -130,6 +139,8 @@ class Preferences(ToolProps, mod_update.Preferences, AddonPreferences):
 
 
 class WmProperties(PropertyGroup):
+    destructive: PointerProperty(type=ToolPropsGroup)
+    non_destructive: PointerProperty(type=ToolPropsGroup)
     prefs_active_tab: EnumProperty(
         items=(
             ("TOOLS", "Tools", ""),
