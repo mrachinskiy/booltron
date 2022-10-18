@@ -157,7 +157,7 @@ def execute_slice(self, context):
         # Main object difference
         # ---------------------------------
 
-        ob2.matrix_world.translation += self.overlap_distance / 2
+        ob2.matrix_basis.translation += self.overlap_distance / 2
 
         boolean_mod(ob1, ob2, "DIFFERENCE", remove_ob2=False)
 
@@ -167,7 +167,7 @@ def execute_slice(self, context):
         # Main object copy intersect
         # ---------------------------------
 
-        ob2.matrix_world.translation -= self.overlap_distance
+        ob2.matrix_basis.translation -= self.overlap_distance
 
         boolean_mod(ob1_copy, ob2, "INTERSECT")
 
