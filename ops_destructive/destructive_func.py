@@ -72,11 +72,8 @@ def execute(self, context):
                 boolean_mod(ob2, ob3, "UNION")
         else:
             obs.append(ob2)
-            override = {
-                "active_object": ob2,
-                "selected_editable_objects": obs,
-            }
-            bpy.ops.object.join(override)
+            with bpy.context.temp_override(active_object=ob2, selected_editable_objects=obs):
+                bpy.ops.object.join()
 
     if not self.is_overlap:
         Mesh.prepare(ob2, select=True)
