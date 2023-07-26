@@ -46,8 +46,8 @@ class ModUtils:
         md.object = ob2
 
         if self.is_destructive:
-            override = {"object": ob1}
-            bpy.ops.object.modifier_apply(override, modifier=md.name)
+            with bpy.context.temp_override(object=ob1):
+                bpy.ops.object.modifier_apply(modifier=md.name)
 
         if remove_ob2:
             bpy.data.meshes.remove(ob2.data)
