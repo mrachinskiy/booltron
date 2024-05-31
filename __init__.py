@@ -1,17 +1,5 @@
+# SPDX-FileCopyrightText: 2014-2024 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright 2014-2022 Mikhail Rachinskiy
-
-bl_info = {
-    "name": "Booltron",
-    "author": "Mikhail Rachinskiy",
-    "version": (2, 8, 3),
-    "blender": (3, 2, 0),
-    "location": "3D View > Sidebar",
-    "description": "Super add-on for super fast booleans.",
-    "doc_url": "https://github.com/mrachinskiy/booltron#readme",
-    "tracker_url": "https://github.com/mrachinskiy/booltron/issues",
-    "category": "Object",
-}
 
 
 if "bpy" in locals():
@@ -22,16 +10,10 @@ else:
 
     from . import _essential, var
 
-    _essential.check(var.ICONS_DIR, bl_info["blender"])
+    _essential.check(var.ICONS_DIR)
 
-    from . import (
-        localization,
-        mod_update,
-        preferences,
-        ops_destructive,
-        ops_nondestructive,
-        ui,
-    )
+    from . import (localization, ops_destructive, ops_nondestructive,
+                   preferences, ui)
 
 
 classes = (
@@ -40,7 +22,6 @@ classes = (
     preferences.WmProperties,
     preferences.SceneProperties,
     ui.VIEW3D_MT_booltron,
-    ui.VIEW3D_PT_booltron_update,
     ui.VIEW3D_PT_booltron_destructive,
     ui.VIEW3D_PT_booltron_nondestructive,
     ops_destructive.OBJECT_OT_destructive_union,
@@ -51,7 +32,6 @@ classes = (
     ops_nondestructive.OBJECT_OT_nondestructive_difference,
     ops_nondestructive.OBJECT_OT_nondestructive_intersect,
     ops_nondestructive.OBJECT_OT_nondestructive_remove,
-    *mod_update.ops,
 )
 
 
@@ -68,14 +48,6 @@ def register():
     bpy.types.VIEW3D_MT_object.append(ui.draw_booltron_menu)
     bpy.types.VIEW3D_MT_edit_mesh.append(ui.draw_booltron_menu)
     bpy.types.VIEW3D_MT_edit_curve.append(ui.draw_booltron_menu)
-
-    # mod_update
-    # ---------------------------
-
-    mod_update.init(
-        addon_version=bl_info["version"],
-        repo_url="mrachinskiy/booltron",
-    )
 
     # Translations
     # ---------------------------

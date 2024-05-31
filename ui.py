@@ -1,12 +1,12 @@
+# SPDX-FileCopyrightText: 2014-2024 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright 2014-2022 Mikhail Rachinskiy
 
 from typing import Optional
 
 import bpy
-from bpy.types import Panel, Menu
+from bpy.types import Menu, Panel
 
-from . import var, mod_update
+from . import var
 
 
 # Previews
@@ -97,10 +97,6 @@ class SidebarSetup:
     bl_category = "Booltron"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-
-
-class VIEW3D_PT_booltron_update(mod_update.Sidebar, SidebarSetup, Panel):
-    bl_label = "Update"
 
 
 class VIEW3D_PT_booltron_destructive(SidebarSetup, Panel):
@@ -199,6 +195,3 @@ def prefs_ui(self, context):
         col = box.box().column()
         col.prop(self, "merge_distance")
         col.prop(self, "dissolve_distance")
-
-    elif active_tab == "UPDATES":
-        mod_update.prefs_ui(self, box)
