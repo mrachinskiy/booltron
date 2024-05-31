@@ -1,9 +1,9 @@
+# SPDX-FileCopyrightText: 2014-2024 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright 2014-2022 Mikhail Rachinskiy
 
 import pickle
-from pathlib import Path
 from collections.abc import Iterator
+from pathlib import Path
 
 
 def _po_parse(text: str) -> dict[tuple[str, str], str]:
@@ -33,9 +33,6 @@ def _init() -> dict[str, dict[tuple[str, str], str]]:
             return pickle.load(file)
 
     dictionary = {locale: trnsl for locale, trnsl in _walk()}
-
-    from .. import mod_update
-    mod_update.localization_extend(dictionary)
 
     with open(path, "wb") as file:
         pickle.dump(dictionary, file, pickle.HIGHEST_PROTOCOL)

@@ -1,11 +1,11 @@
+# SPDX-FileCopyrightText: 2014-2024 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright 2014-2022 Mikhail Rachinskiy
 
 import bpy
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, PointerProperty
 from bpy.types import AddonPreferences, PropertyGroup
-from bpy.props import EnumProperty, BoolProperty, FloatProperty, PointerProperty
 
-from . import ui, mod_update
+from . import ui
 
 
 # Operator properties
@@ -127,7 +127,7 @@ class ToolPropsGroup(ToolProps, PropertyGroup):
 # ------------------------------------------
 
 
-class Preferences(ToolProps, mod_update.Preferences, AddonPreferences):
+class Preferences(ToolProps, AddonPreferences):
     bl_idname = __package__
 
     def draw(self, context):
@@ -144,7 +144,6 @@ class WmProperties(PropertyGroup):
     prefs_active_tab: EnumProperty(
         items=(
             ("TOOLS", "Tools", ""),
-            ("UPDATES", "Updates", ""),
         ),
     )
 

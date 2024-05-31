@@ -1,11 +1,11 @@
+# SPDX-FileCopyrightText: 2014-2024 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Copyright 2014-2022 Mikhail Rachinskiy
 
 from collections.abc import Callable
 
+import bmesh
 import bpy
 from bpy.types import Object
-import bmesh
 from mathutils import bvhtree
 
 

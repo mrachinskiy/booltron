@@ -1,4 +1,4 @@
-Booltron—super add-on for super fast booleans for Blender.
+Booltron—super add-on for superfast booleans for Blender.
 
 Features:
 
@@ -14,6 +14,12 @@ Features:
 How to install
 ==========================
 
+### Available as an [extension](https://extensions.blender.org/add-ons/booltron/) for Blender 4.2 or newer.
+
+---
+
+### For Blender 4.1 or older
+
 1. Download [Booltron 2.8.3][v_latest]<sup>1</sup>
 2. Make sure you have Blender 3.2 or newer.
 3. Open `Preferences` → `Add-ons` category.
@@ -27,6 +33,12 @@ How to install
 
 Установка
 ==========================
+
+### Доступно как [расширение](https://extensions.blender.org/add-ons/booltron/) для Blender 4.2 или новее.
+
+---
+
+### Для Blender 4.1 или старше
 
 1. Загрузите [Booltron 2.8.3][v_latest]<sup>1</sup>
 2. Убедитесь, что у вас установлен Blender 3.2 или новее.
