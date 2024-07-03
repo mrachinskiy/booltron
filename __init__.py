@@ -5,15 +5,14 @@
 if "bpy" in locals():
     _essential.reload_recursive(var.ADDON_DIR, locals())
 else:
-    import bpy
-    from bpy.props import PointerProperty
-
     from . import _essential, var
 
     _essential.check(var.ICONS_DIR)
 
-    from . import (localization, ops_destructive, ops_nondestructive,
-                   preferences, ui)
+    import bpy
+    from bpy.props import PointerProperty
+
+    from . import localization, ops_destructive, ops_nondestructive, preferences, ui
 
 
 classes = (
