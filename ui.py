@@ -145,53 +145,43 @@ class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
 
 
 def prefs_ui(self, context):
-    props_wm = context.window_manager.booltron
-    active_tab = props_wm.prefs_active_tab
-
     layout = self.layout
     layout.use_property_split = True
     layout.use_property_decorate = False
 
-    split = layout.split(factor=0.25)
-    col = split.column()
-    col.use_property_split = False
-    col.scale_y = 1.3
-    col.prop(props_wm, "prefs_active_tab", expand=True)
+    main = layout.column()
 
-    box = split.box()
+    main.label(text="Modifier")
+    col = main.box().column()
+    col.prop(self, "solver")
 
-    if active_tab == "TOOLS":
-        box = box.column()
+    if self.solver == "FAST":
+        col.prop(self, "threshold")
+    else:
+        col.prop(self, "use_self")
+        col.prop(self, "use_hole_tolerant")
 
-        box.label(text="Modifier")
-        col = box.box().column()
-        col.prop(self, "solver")
+    main.separator()
 
-        if self.solver == "FAST":
-            col.prop(self, "threshold")
-        else:
-            col.prop(self, "use_self")
-            col.prop(self, "use_hole_tolerant")
+    main.label(text="Secondary Object")
+    col = main.box().column()
 
-        box.separator(factor=2)
+    row = col.row(heading="Randomize Location")
+    row.prop(self, "use_loc_rnd", text="")
+    sub = row.row()
+    sub.active = self.use_loc_rnd
+    sub.prop(self, "loc_offset", text="")
 
-        box.label(text="Secondary Object")
-        col = box.box().column()
-        row = col.row(heading="Randomize Location")
-        row.prop(self, "use_loc_rnd", text="")
-        sub = row.row()
-        sub.active = self.use_loc_rnd
-        sub.prop(self, "loc_offset", text="")
-        col.prop(self, "display_secondary", text="Display As")
+    col.prop(self, "display_secondary", text="Display As")
 
-        box.separator(factor=2)
+    main.separator()
 
-        box.label(text="Combined Object")
-        box.box().prop(self, "display_combined", text="Display As")
+    main.label(text="Combined Object")
+    main.box().prop(self, "display_combined", text="Display As")
 
-        box.separator(factor=2)
+    main.separator()
 
-        box.label(text="Pre-processing")
-        col = box.box().column()
-        col.prop(self, "merge_distance")
-        col.prop(self, "dissolve_distance")
+    main.label(text="Pre-processing")
+    col = main.box().column()
+    col.prop(self, "merge_distance")
+    col.prop(self, "dissolve_distance")
