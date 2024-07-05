@@ -141,11 +141,6 @@ class Preferences(ToolProps, AddonPreferences):
 class WmProperties(PropertyGroup):
     destructive: PointerProperty(type=ToolPropsGroup)
     non_destructive: PointerProperty(type=ToolPropsGroup)
-    prefs_active_tab: EnumProperty(
-        items=(
-            ("TOOLS", "Tools", ""),
-        ),
-    )
 
 
 # Scene properties
