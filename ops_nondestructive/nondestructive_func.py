@@ -31,15 +31,14 @@ def execute(self, context):
             ob2 = md.object
             break
     else:
-        ob2_name = f"{ob1.name} COMBINED {self.mode[:3]}"
+        ob2_name = f"{ob1.name} Combined {self.mode.title()}"
         me = bpy.data.meshes.new(ob2_name)
         ob2 = bpy.data.objects.new(ob2_name, me)
 
         for coll in obs[0].users_collection:
             coll.objects.link(ob2)
 
-        mod_name = self.mode[:3] + " COMBINED"
-        boolean_mod(ob1, ob2, self.mode, name=mod_name)
+        boolean_mod(ob1, ob2, self.mode)
 
         ob2["booltron_combined"] = self.mode
 

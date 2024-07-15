@@ -32,12 +32,13 @@ class ModUtils:
         self.use_self = props.use_self
         self.use_hole_tolerant = props.use_hole_tolerant
 
-    def add(self, ob1: Object, ob2: Object, mode: str, name: str = "Boolean", remove_ob2: Optional[bool] = None) -> None:
+    def add(self, ob1: Object, ob2: Object, mode: str, remove_ob2: Optional[bool] = None) -> None:
         if remove_ob2 is None:
             remove_ob2 = self.is_destructive
 
-        md = ob1.modifiers.new(name, "BOOLEAN")
+        md = ob1.modifiers.new(mode.title(), "BOOLEAN")
         md.show_viewport = not self.is_destructive
+        md.show_expanded = False
         md.operation = mode
         md.solver = self.solver
         md.use_self = self.use_self
