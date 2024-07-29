@@ -5,7 +5,7 @@ import bpy
 from bpy.props import BoolProperty, EnumProperty, FloatProperty, PointerProperty
 from bpy.types import AddonPreferences, PropertyGroup
 
-from . import ui
+from . import ui, lib
 
 
 # Operator properties
@@ -14,7 +14,7 @@ from . import ui
 
 class ToolProps:
 
-    # Modifier
+    # Primary
     # ------------------------
 
     solver: EnumProperty(
@@ -74,21 +74,6 @@ class ToolProps:
         default="WIRE",
     )
 
-    # Combined
-    # ------------------------
-
-    display_combined: EnumProperty(
-        name="Display As",
-        description="How to display object in viewport",
-        items=(
-            ("BOUNDS", "Bounds", ""),
-            ("WIRE", "Wire", ""),
-            ("SOLID", "Solid", ""),
-            ("TEXTURED", "Textured", ""),
-        ),
-        default="BOUNDS",
-    )
-
     # Pre-processing
     # ------------------------
 
@@ -113,14 +98,22 @@ class ToolProps:
         unit="LENGTH",
     )
 
-    # Utility
+    # Post-processing
     # ------------------------
 
-    first_run: BoolProperty(default=True)
+    use_cache: BoolProperty(
+        name="Cache",
+        description="Cache modifier result",
+    )
+
+
+# Duplicate solver properties
+for prop in ("solver", "use_self", "use_hole_tolerant", "threshold"):
+    ToolProps.__annotations__[f"{prop}_secondary"] = ToolProps.__annotations__[prop]
 
 
 class ToolPropsGroup(ToolProps, PropertyGroup):
-    pass
+    first_run: BoolProperty(default=True)
 
 
 # Add-on preferences
@@ -148,10 +141,12 @@ class WmProperties(PropertyGroup):
 
 
 def upd_mod_disable(self, context):
+    is_gn_mod = lib.ModGN.is_gn_mod
+
     for ob in context.scene.objects:
         if ob.type == "MESH":
             for md in ob.modifiers:
-                if md.type == "BOOLEAN":
+                if md.type == "BOOLEAN" or is_gn_mod(md):
                     md.show_viewport = self.mod_disable
 
     action = "Enable" if self.mod_disable else "Disable"

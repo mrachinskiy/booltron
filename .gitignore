@@ -1,7 +1,5 @@
 # Release files
-icons/
-mod_update/
-.config/
+assets/
 
 # IDE
 .idea/

@@ -88,6 +88,9 @@ class VIEW3D_MT_booltron(Menu):
         col.operator("object.booltron_nondestructive_union", icon_value=_icon_menu("NONDESTR_UNION"))
         col.operator("object.booltron_nondestructive_intersect", icon_value=_icon_menu("NONDESTR_INTERSECT"))
         col.operator("object.booltron_nondestructive_remove", icon_value=_icon_menu("NONDESTR_REMOVE"))
+        col.operator("object.booltron_nondestructive_cache")
+        col.operator("object.booltron_nondestructive_cache_del")
+        col.operator("object.booltron_nondestructive_instance_copy")
 
 # Panels
 # ---------------------------
@@ -98,13 +101,13 @@ class SidebarSetup:
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
 
-
-class VIEW3D_PT_booltron_destructive(SidebarSetup, Panel):
-    bl_label = "Destructive"
-
     @classmethod
     def poll(cls, context):
         return context.mode in {"OBJECT", "EDIT_MESH", "EDIT_CURVE", "EDIT_TEXT", "SCULPT"}
+
+
+class VIEW3D_PT_booltron_destructive(SidebarSetup, Panel):
+    bl_label = "Destructive"
 
     def draw(self, context):
         layout = self.layout
@@ -119,10 +122,6 @@ class VIEW3D_PT_booltron_destructive(SidebarSetup, Panel):
 
 class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
     bl_label = "Non-destructive"
-
-    @classmethod
-    def poll(cls, context):
-        return context.mode in {"OBJECT", "EDIT_MESH", "EDIT_CURVE", "EDIT_TEXT", "SCULPT"}
 
     def draw_header(self, context):
         layout = self.layout
@@ -139,6 +138,12 @@ class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
 
         layout.operator("object.booltron_nondestructive_remove", icon_value=_icon("NONDESTR_REMOVE"))
 
+        row = layout.row(align=True)
+        row.operator("object.booltron_nondestructive_cache")
+        row.operator("object.booltron_nondestructive_cache_del", icon="X", text="")
+
+        layout.operator("object.booltron_nondestructive_instance_copy")
+
 
 # Preferences
 # ---------------------------
@@ -151,20 +156,33 @@ def prefs_ui(self, context):
 
     main = layout.column()
 
-    main.label(text="Modifier")
+    main.label(text="Primary Object")
     col = main.box().column()
     col.prop(self, "solver")
 
-    if self.solver == "FAST":
-        col.prop(self, "threshold")
-    else:
-        col.prop(self, "use_self")
-        col.prop(self, "use_hole_tolerant")
+    sub = col.column()
+    sub.active = self.solver == "EXACT"
+    sub.prop(self, "use_self")
+    sub.prop(self, "use_hole_tolerant")
+
+    sub = col.column()
+    sub.active = self.solver == "FAST"
+    sub.prop(self, "threshold")
 
     main.separator()
 
     main.label(text="Secondary Object")
     col = main.box().column()
+    col.prop(self, "solver_secondary")
+
+    sub = col.column()
+    sub.active = self.solver_secondary == "EXACT"
+    sub.prop(self, "use_self_secondary")
+    sub.prop(self, "use_hole_tolerant_secondary")
+
+    sub = col.column()
+    sub.active = self.solver_secondary == "FAST"
+    sub.prop(self, "threshold_secondary")
 
     row = col.row(heading="Randomize Location")
     row.prop(self, "use_loc_rnd", text="")
@@ -176,12 +194,12 @@ def prefs_ui(self, context):
 
     main.separator()
 
-    main.label(text="Combined Object")
-    main.box().prop(self, "display_combined", text="Display As")
-
-    main.separator()
-
     main.label(text="Pre-processing")
     col = main.box().column()
     col.prop(self, "merge_distance")
     col.prop(self, "dissolve_distance")
+
+    main.separator()
+
+    main.label(text="Modifier")
+    main.box().prop(self, "use_cache")

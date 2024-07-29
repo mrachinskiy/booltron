@@ -1,15 +1,14 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Booltron 2.6\n"
-"POT-Creation-Date: 2021-10-26\n"
-"PO-Revision-Date: 2021-10-26\n"
+"Project-Id-Version: Booltron 3.0.0\n"
+"POT-Creation-Date: 2024-07-28\n"
+"PO-Revision-Date: 2024-07-28\n"
 "Last-Translator: Mikhail Rachinskiy\n"
 "Language-Team: Mikhail Rachinskiy\n"
+"Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru_RU\n"
-"X-Generator: Poedit 3.0\n"
 
 msgid "Location Offset"
 msgstr "Сдвиг позиции"
@@ -23,14 +22,23 @@ msgstr "Деструктивные"
 msgid "Non-destructive"
 msgstr "Недеструктивные"
 
+msgid "Primary Object"
+msgstr "Основной объект"
+
 msgid "Secondary Object"
 msgstr "Вспомогательный объект"
 
-msgid "Combined Object"
-msgstr "Объединённый объект"
-
 msgid "Pre-processing"
 msgstr "Предварительная обработка"
+
+msgid "+ New Modifier"
+msgstr "+ Новый модификатор"
+
+msgid "Self Intersection"
+msgstr "Самопересечение"
+
+msgid "Hole Tolerant"
+msgstr "Устойчивость к отверстиям"
 
 msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
 msgstr "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевой операции"
@@ -71,14 +79,26 @@ msgstr "Исключить выделенные вспомогательные �
 msgid "Disable boolean modifiers on all objects"
 msgstr "Отключить модификаторы Boolean на всех объектах"
 
+msgid "Cache modifier result for selected objects"
+msgstr "Кэшировать результат модификатора выделенных объектов"
+
+msgid "Cache modifier result"
+msgstr "Кэшировать результат модификатора"
+
+msgid "Clear modifier cache for selected objects"
+msgstr "Очистить кэш модификатора выделенных объектов"
+
+msgid "Create instance mesh copy of selected objects"
+msgstr "Создать instance mesh копию выделенных объектов"
+
 msgid "Boolean operation result is non-manifold"
 msgstr "Результат булевой операции non-manifold"
 
 msgid "At least two objects must be selected"
 msgstr "Как минимум два объекта должны быть выделены"
 
-msgid "At least two Mesh objects must be selected"
-msgstr "Как минимум два Mesh объекта должны быть выделены"
+msgid "File not saved"
+msgstr "Файл не сохранён"
 
 msgctxt "Operator"
 msgid "Union"
@@ -99,3 +119,15 @@ msgstr "Разрезать"
 msgctxt "Operator"
 msgid "Dismiss"
 msgstr "Исключить"
+
+msgctxt "Operator"
+msgid "Cache Modifier"
+msgstr "Кэш модификатора"
+
+msgctxt "Operator"
+msgid "Clear Cache"
+msgstr "Очистить кэш"
+
+msgctxt "Operator"
+msgid "Instance Copy"
+msgstr "Instance копия"
