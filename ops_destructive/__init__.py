@@ -1,11 +1,25 @@
 # SPDX-FileCopyrightText: 2014-2024 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import bpy
 from bpy.props import BoolProperty, FloatVectorProperty
 from bpy.types import Operator
 
+from .. import preferences, var
+
+
+def _cursor_state(func):
+    def wrapper(self, context):
+        context.window.cursor_set("WAIT")
+        result = func(self, context)
+        context.window.cursor_set("DEFAULT")
+        return result
+    return wrapper
+
 
 class Destructive:
+    mode: str
+    is_overlap = False
     keep_objects: BoolProperty(
         name="Keep Objects",
         description=(
@@ -14,7 +28,6 @@ class Destructive:
         ),
         options={"SKIP_SAVE"},
     )
-    is_overlap = False
 
     def draw(self, context):
         props = context.window_manager.booltron.destructive
@@ -22,7 +35,7 @@ class Destructive:
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        layout.label(text="Modifier")
+        layout.label(text="Primary Object")
         col = layout.box().column()
         col.prop(props, "solver")
 
@@ -36,11 +49,20 @@ class Destructive:
 
         layout.label(text="Secondary Object")
         col = layout.box().column()
+        col.prop(props, "solver_secondary")
+
+        if props.solver_secondary == "FAST":
+            col.prop(props, "threshold_secondary")
+        else:
+            col.prop(props, "use_self_secondary")
+            col.prop(props, "use_hole_tolerant_secondary")
+
         row = col.row(heading="Randomize Location")
         row.prop(props, "use_loc_rnd", text="")
         sub = row.row()
         sub.enabled = props.use_loc_rnd
         sub.prop(props, "loc_offset", text="")
+
         col.prop(self, "keep_objects")
 
         layout.separator()
@@ -52,13 +74,72 @@ class Destructive:
 
         layout.separator()
 
+    @_cursor_state
     def execute(self, context):
-        from . import destructive_func
-        return destructive_func.execute(self, context)
+        from ..lib import meshlib, modlib, objectlib
+
+        Mesh = meshlib.Utils(self.report)
+        boolean = modlib.ModBoolean().add
+
+        ob1, obs = objectlib.prepare_objects(self.keep_objects)
+        ob2 = obs.pop()
+
+        if obs:
+            if self.is_overlap:
+                Mesh.prepare(ob2, select=True)
+                for ob3 in obs:
+                    Mesh.prepare(ob3, select=True)
+                    boolean(ob2, ob3, "SECONDARY")
+            else:
+                obs.append(ob2)
+                with context.temp_override(active_object=ob2, selected_editable_objects=obs):
+                    bpy.ops.object.join()
+
+        if not self.is_overlap:
+            Mesh.prepare(ob2, select=True)
+
+        Mesh.prepare(ob1, select=False)
+        boolean(ob1, ob2, self.mode)
+
+        Mesh.check(ob1)
+
+        return {"FINISHED"}
 
     def invoke(self, context, event):
-        from . import destructive_func
-        return destructive_func.invoke(self, context, event)
+        if context.mode != "OBJECT":
+            bpy.ops.object.mode_set(mode="OBJECT")
+            bpy.ops.ed.undo_push()
+
+        for ob in context.selected_objects:
+            if ob.type not in {"MESH", "CURVE", "SURFACE", "META", "FONT"}:
+                ob.select_set(False)
+
+        obs = context.selected_objects
+
+        if len(obs) < 2:
+            self.report({"ERROR"}, "At least two objects must be selected")
+            return {"CANCELLED"}
+
+        if len(obs) > 2 and self.mode != "SLICE":
+            from ..lib import meshlib
+            obs.remove(context.object)
+            self.is_overlap = meshlib.detect_overlap(obs)
+
+        props = context.window_manager.booltron.destructive
+
+        if props.first_run:
+            props.first_run = False
+            prefs = context.preferences.addons[var.ADDON_ID].preferences
+            for prop in preferences.ToolProps.__annotations__:
+                setattr(props, prop, getattr(prefs, prop))
+
+        self.keep_objects = event.alt
+
+        if event.ctrl:
+            wm = context.window_manager
+            return wm.invoke_props_dialog(self)
+
+        return self.execute(context)
 
 
 class OBJECT_OT_destructive_union(Destructive, Operator):
@@ -116,6 +197,50 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
         layout.separator()
 
+    @_cursor_state
     def execute(self, context):
-        from . import destructive_func
-        return destructive_func.execute_slice(self, context)
+        from ..lib import meshlib, modlib, objectlib
+
+        Mesh = meshlib.Utils(self.report)
+        boolean = modlib.ModBoolean().add
+
+        ob1, obs = objectlib.prepare_objects(self.keep_objects)
+
+        Mesh.prepare(ob1, select=False)
+
+        for ob2 in obs:
+
+            Mesh.prepare(ob2, select=True)
+
+            # Create copy of main object
+            # ---------------------------------
+
+            ob1_copy = ob1.copy()
+            ob1_copy.data = ob1.data.copy()
+            objectlib.ob_link(ob1_copy, ob1.users_collection)
+            ob1_copy.select_set(True)
+
+            # Main object difference
+            # ---------------------------------
+
+            ob2.matrix_basis.translation += self.overlap_distance / 2
+
+            boolean(ob1, ob2, "DIFFERENCE", remove_ob2=False)
+
+            if Mesh.check(ob1):
+                return {"FINISHED"}
+
+            # Main object copy intersect
+            # ---------------------------------
+
+            ob2.matrix_basis.translation -= self.overlap_distance
+
+            boolean(ob1_copy, ob2, "INTERSECT")
+
+            if Mesh.check(ob1_copy):
+                return {"FINISHED"}
+
+        ob1.select_set(False)
+        context.view_layer.objects.active = ob1_copy
+
+        return {"FINISHED"}

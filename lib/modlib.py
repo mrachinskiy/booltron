@@ -25,28 +25,39 @@ def _find_connected(node: GeometryNode) -> Iterator[GeometryNode]:
 
 
 class ModBoolean:
-    __slots__ = "solver", "threshold", "use_self", "use_hole_tolerant"
+    __slots__ = (
+        "solver",
+        "use_self",
+        "use_hole_tolerant",
+        "threshold",
+        "solver_secondary",
+        "use_self_secondary",
+        "use_hole_tolerant_secondary",
+        "threshold_secondary",
+    )
 
     def __init__(self) -> None:
         props = bpy.context.window_manager.booltron.destructive
-        self.solver = props.solver
-        self.threshold = props.threshold
-        self.use_self = props.use_self
-        self.use_hole_tolerant = props.use_hole_tolerant
+        for prop in self.__slots__:
+            setattr(self, prop, getattr(props, prop))
 
-    def add(self, ob1: Object, ob2: Object, mode: str, remove_ob2: bool | None = None) -> None:
-        if remove_ob2 is None:
-            remove_ob2 = True
-
+    def add(self, ob1: Object, ob2: Object, mode: str, remove_ob2: bool = True) -> None:
         md = ob1.modifiers.new(mode.title(), "BOOLEAN")
         md.show_viewport = False
-        md.show_expanded = False
-        md.operation = mode
-        md.solver = self.solver
-        md.use_self = self.use_self
-        md.use_hole_tolerant = self.use_hole_tolerant
-        md.double_threshold = self.threshold
         md.object = ob2
+
+        if mode == "SECONDARY":
+            md.operation = "UNION"
+            md.solver = self.solver
+            md.use_self = self.use_self
+            md.use_hole_tolerant = self.use_hole_tolerant
+            md.double_threshold = self.threshold
+        else:
+            md.operation = mode
+            md.solver = self.solver_secondary
+            md.use_self = self.use_self_secondary
+            md.use_hole_tolerant = self.use_hole_tolerant_secondary
+            md.double_threshold = self.threshold_secondary
 
         with bpy.context.temp_override(object=ob1):
             bpy.ops.object.modifier_apply(modifier=md.name)
