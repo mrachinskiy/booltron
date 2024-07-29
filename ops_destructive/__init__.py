@@ -14,8 +14,6 @@ class Destructive:
         ),
         options={"SKIP_SAVE"},
     )
-    first_run: BoolProperty(default=True, options={"HIDDEN"})
-    is_destructive = True
     is_overlap = False
 
     def draw(self, context):

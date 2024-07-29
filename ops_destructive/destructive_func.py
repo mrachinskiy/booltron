@@ -4,8 +4,8 @@
 import bpy
 from bpy.types import Object
 
-from .. import lib, var
-from . import mesh_lib
+from .. import var
+from ..lib import meshlib, modlib, objectlib
 
 
 def _cursor_state(func):
@@ -51,15 +51,15 @@ def _prepare_objects(keep_objects: bool) -> tuple[Object, list[Object]]:
     bpy.ops.object.convert(target="MESH")
 
     if props.use_loc_rnd:
-        lib.object_offset(obs, props.loc_offset)
+        objectlib.object_offset(obs, props.loc_offset)
 
     return ob1, obs
 
 
 @_cursor_state
 def execute(self, context):
-    Mesh = mesh_lib.Utils(self.report)
-    boolean_mod = lib.ModUtils(self.is_destructive).add
+    Mesh = meshlib.Utils(self.report)
+    boolean_mod = modlib.ModBoolean().add
 
     ob1, obs = _prepare_objects(self.keep_objects)
     ob2 = obs.pop()
@@ -103,7 +103,7 @@ def invoke(self, context, event):
 
     if len(obs) > 2 and self.mode != "SLICE":
         obs.remove(context.object)
-        self.is_overlap = mesh_lib.detect_overlap(obs)
+        self.is_overlap = meshlib.detect_overlap(obs)
 
     props = context.window_manager.booltron.destructive
 
@@ -128,8 +128,8 @@ def invoke(self, context, event):
 
 @_cursor_state
 def execute_slice(self, context):
-    Mesh = mesh_lib.Utils(self.report)
-    boolean_mod = lib.ModUtils(self.is_destructive).add
+    Mesh = meshlib.Utils(self.report)
+    boolean_mod = modlib.ModBoolean().add
 
     space_data = context.space_data
     use_local_view = bool(space_data.local_view)

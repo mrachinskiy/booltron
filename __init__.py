@@ -5,7 +5,8 @@
 if "bpy" in locals():
     _essential.reload_recursive(var.ADDON_DIR, locals())
 else:
-    from . import _essential, var
+    from . import var
+    from .lib import _essential
 
     _essential.check(var.ICONS_DIR)
 
@@ -31,6 +32,9 @@ classes = (
     ops_nondestructive.OBJECT_OT_nondestructive_difference,
     ops_nondestructive.OBJECT_OT_nondestructive_intersect,
     ops_nondestructive.OBJECT_OT_nondestructive_remove,
+    ops_nondestructive.OBJECT_OT_nondestructive_cache,
+    ops_nondestructive.OBJECT_OT_nondestructive_cache_del,
+    ops_nondestructive.OBJECT_OT_nondestructive_instance_copy,
 )
 
 
