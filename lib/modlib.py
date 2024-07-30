@@ -79,7 +79,7 @@ class ModGN:
         "merge_distance",
     )
 
-    def __init__(self, mode: str) -> None:
+    def __init__(self, mode: str, override: dict[str, str | bool] | None = None) -> None:
         props = bpy.context.window_manager.booltron.non_destructive
         self.mode = mode
 
@@ -101,6 +101,10 @@ class ModGN:
 
         self.loc_offset = props.loc_offset if props.use_loc_rnd else 0.0
         self.merge_distance = props.merge_distance
+
+        if override is not None:
+            for k, v in override.items():
+                setattr(self, k, v)
 
     def add(self, ob1: Object, obs: list[Object]) -> Modifier:
         name = f"{ob1.name} {self.mode.title()}"
@@ -163,6 +167,7 @@ class ModGN:
         md["Socket_2"] = self.loc_offset
         md.show_expanded = False
         md.show_in_editmode = False
+        md.show_group_selector = False
         md.node_group = ng
 
         return md
@@ -181,6 +186,8 @@ class ModGN:
             if node.type == "OBJECT_INFO":
                 ng_ob = node.inputs[0].default_value
                 if ng_ob is None:
+                    for _node in list(_find_connected(node)):
+                        nodes.remove(_node)
                     nodes.remove(node)
                 else:
                     existing_obs.add(ng_ob)
