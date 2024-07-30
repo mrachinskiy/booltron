@@ -5,7 +5,7 @@ import bpy
 from bpy.props import BoolProperty, EnumProperty, FloatProperty, PointerProperty
 from bpy.types import AddonPreferences, PropertyGroup
 
-from . import ui, lib
+from . import ui
 
 
 # Operator properties
@@ -141,7 +141,9 @@ class WmProperties(PropertyGroup):
 
 
 def upd_mod_disable(self, context):
-    is_gn_mod = lib.ModGN.is_gn_mod
+    from .lib import modlib
+
+    is_gn_mod = modlib.ModGN.is_gn_mod
 
     for ob in context.scene.objects:
         if ob.type == "MESH":
