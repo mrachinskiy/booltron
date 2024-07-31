@@ -136,7 +136,9 @@ class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
         col.operator("object.booltron_nondestructive_union", icon_value=_icon("NONDESTR_UNION"))
         col.operator("object.booltron_nondestructive_intersect", icon_value=_icon("NONDESTR_INTERSECT"))
 
-        layout.operator("object.booltron_nondestructive_remove", icon_value=_icon("NONDESTR_REMOVE"))
+        row = layout.row(align=True)
+        row.operator("object.booltron_secondary_del", icon_value=_icon("NONDESTR_REMOVE"))
+        row.operator("object.booltron_secondary_select", icon_value=_icon("NONDESTR_SELECT"), text="Select")
 
         row = layout.row(align=True)
         row.operator("object.booltron_nondestructive_cache")

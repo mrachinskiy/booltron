@@ -3,13 +3,17 @@
 
 import bpy
 from bpy.props import EnumProperty
-from bpy.types import Operator, Object
+from bpy.types import Object, Operator
 
 from .. import preferences, var
 from .cache import (
     OBJECT_OT_nondestructive_cache,
     OBJECT_OT_nondestructive_cache_del,
     OBJECT_OT_nondestructive_instance_copy,
+)
+from .utils import (
+     OBJECT_OT_secondary_del,
+     OBJECT_OT_secondary_select,
 )
 
 
@@ -164,58 +168,3 @@ class OBJECT_OT_nondestructive_intersect(Nondestructive, Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     mode = "INTERSECT"
-
-
-class OBJECT_OT_nondestructive_remove(Operator):
-    bl_label = "Dismiss"
-    bl_description = "Dismiss selected secondary objects from boolean operation"
-    bl_idname = "object.booltron_nondestructive_remove"
-    bl_options = {"REGISTER", "UNDO"}
-
-    def execute(self, context):
-        from ..lib import modlib
-
-        ModGN = modlib.ModGN
-
-        obs = {ob for ob in context.selected_objects if "booltron_combined" not in ob}
-        gn_mods = []
-        is_combined_empty = False
-
-        if not obs:
-            return {"CANCELLED"}
-
-        for ob in context.scene.objects:
-            if "booltron_combined" in ob:
-
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN" and (not md.object or md.object in obs):
-                        ob.modifiers.remove(md)
-
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN":
-                        break
-                else:
-                    is_combined_empty = True
-                    bpy.data.meshes.remove(ob.data)
-
-            else:
-
-                for md in ob.modifiers:
-                    if ModGN.is_gn_mod(md) and ModGN.has_obs(md, obs):
-                        gn_mods.append(md)
-
-        for md in gn_mods:
-            ModGN.remove(md, obs)
-
-        if is_combined_empty:
-            for ob in context.scene.objects:
-                if ob.type != "MESH":
-                    continue
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN" and not md.object:
-                        ob.modifiers.remove(md)
-
-        for ob in obs:
-            ob.display_type = "TEXTURED"
-
-        return {"FINISHED"}
