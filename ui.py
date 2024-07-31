@@ -48,7 +48,7 @@ def _icon(name: str, override: Optional[float] = None) -> int:
     else:
         value = bpy.context.preferences.themes[0].user_interface.wcol_tool.text.v
 
-    theme = "DARK" if value < 0.5 else "LIGHT"
+    theme = "LIGHT" if value < 0.5 else "DARK"
     return _previews[theme + name].icon_id
 
 
