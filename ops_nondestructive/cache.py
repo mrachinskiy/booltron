@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import bpy
+from bpy.props import BoolProperty
 from bpy.types import Operator
 
 
@@ -51,6 +52,9 @@ class OBJECT_OT_nondestructive_instance_copy(Operator):
     bl_label = "Instance Copy"
     bl_description = "Create instance mesh copy of selected objects"
     bl_idname = "object.booltron_nondestructive_instance_copy"
+    bl_options = {"REGISTER", "UNDO"}
+
+    use_instance: BoolProperty(name="As Instance", options={"SKIP_SAVE"})
 
     def execute(self, context):
         from ..lib import objectlib
@@ -60,8 +64,13 @@ class OBJECT_OT_nondestructive_instance_copy(Operator):
 
         ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
         ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+        ng.interface.new_socket("As Instance", in_out="INPUT", socket_type="NodeSocketBool")
 
         nodes = ng.nodes
+
+        in_ = nodes.new("NodeGroupInput")
+        in_.location.x = -600
+        in_.select = False
 
         out = nodes.new("NodeGroupOutput")
         out.location.x = 200
@@ -83,6 +92,7 @@ class OBJECT_OT_nondestructive_instance_copy(Operator):
             transf.location.x = -200
             transf.select = False
 
+            ng.links.new(in_.outputs[0], ob_info.inputs[1])
             ng.links.new(ob_info.outputs[4], transf.inputs[0])
             ng.links.new(ob_info.outputs[0], transf.inputs[4])
             ng.links.new(transf.outputs[0], j.inputs[0])
@@ -94,10 +104,18 @@ class OBJECT_OT_nondestructive_instance_copy(Operator):
         context.view_layer.objects.active = ob
 
         md = ob.modifiers.new(name, "NODES")
+        md["Socket_1"] = self.use_instance
         md.show_expanded = False
+        md.show_group_selector = False
         md.node_group = ng
 
         for ob in obs:
             ob.select_set(False)
 
         return {"FINISHED"}
+
+    def invoke(self, context, event):
+        if event.alt:
+            self.use_instance = True
+
+        return self.execute(context)
