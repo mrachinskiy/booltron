@@ -79,6 +79,9 @@ msgstr "Не удалять выделенные объекты после бу�
 msgid "Dismiss selected secondary objects from boolean operation"
 msgstr "Исключить выделенные вспомогательные объекты из булевой операции"
 
+msgid "Select secondary objects used by given modifier"
+msgstr "Выделить вспомогательные объекты используемые данным модификатором"
+
 msgid "Disable boolean modifiers on all objects"
 msgstr "Отключить модификаторы Boolean на всех объектах"
 
@@ -102,6 +105,9 @@ msgstr "Результат булевой операции non-manifold"
 
 msgid "At least two objects must be selected"
 msgstr "Как минимум два объекта должны быть выделены"
+
+msgid "Object does not have Booltron modifiers"
+msgstr "Объект не имеет модификаторов Booltron"
 
 msgid "File not saved"
 msgstr "Файл не сохранён"
