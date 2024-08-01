@@ -33,6 +33,8 @@ class OBJECT_OT_secondary_del(Operator):
 
         for md in mods:
             md.show_viewport = True
+            if ModGN.is_baked(md):
+                ModGN.bake(md)
 
         return {"FINISHED"}
 
