@@ -11,7 +11,12 @@ from .bake import (OBJECT_OT_instance_copy, OBJECT_OT_modifier_bake,
 from .utils import OBJECT_OT_secondary_del, OBJECT_OT_secondary_select
 
 
+modifiers: tuple[tuple[str, str, str]]
+
+
 def _iter_modifiers(ob: Object, mode: str) -> None:
+    global modifiers
+
     from ..lib import modlib
     ModGN = modlib.ModGN
 
@@ -22,15 +27,14 @@ def _iter_modifiers(ob: Object, mode: str) -> None:
 
     mods.append(("__NEW__", "+ New Modifier", ""))
 
-    Nondestructive.modifiers = tuple(mods)
+    modifiers = tuple(mods)
 
 
 class Nondestructive:
     mode: str
-    modifiers: tuple[tuple[str, str, str]]
     modifier_name: EnumProperty(
         name="Modifier",
-        items=lambda x, y: Nondestructive.modifiers,
+        items=lambda x, y: modifiers,
         options={"SKIP_SAVE"},
     )
 
