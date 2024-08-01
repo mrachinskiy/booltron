@@ -87,10 +87,15 @@ class VIEW3D_MT_booltron(Menu):
         col.operator("object.booltron_nondestructive_difference", icon_value=_icon_menu("NONDESTR_DIFFERENCE"))
         col.operator("object.booltron_nondestructive_union", icon_value=_icon_menu("NONDESTR_UNION"))
         col.operator("object.booltron_nondestructive_intersect", icon_value=_icon_menu("NONDESTR_INTERSECT"))
-        col.operator("object.booltron_nondestructive_remove", icon_value=_icon_menu("NONDESTR_REMOVE"))
-        col.operator("object.booltron_nondestructive_cache")
-        col.operator("object.booltron_nondestructive_cache_del")
-        col.operator("object.booltron_nondestructive_instance_copy")
+        col.operator("object.booltron_secondary_del", icon_value=_icon_menu("NONDESTR_REMOVE"))
+        col.operator("object.booltron_secondary_select", icon_value=_icon("NONDESTR_SELECT"))
+
+        col.separator()
+
+        col.operator("object.booltron_modifier_bake")
+        col.operator("object.booltron_modifier_bake_del")
+        col.operator("object.booltron_instance_copy")
+
 
 # Panels
 # ---------------------------
