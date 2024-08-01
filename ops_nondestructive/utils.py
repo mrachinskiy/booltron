@@ -23,18 +23,15 @@ class OBJECT_OT_secondary_del(Operator):
         if not obs:
             return {"CANCELLED"}
 
-        mods = []
         for ob in context.scene.objects:
+            bake_invalidate = False
             for md in ob.modifiers[:]:
-                if ModGN.is_gn_mod(md) and ModGN.has_obs(md, obs):
-                    md.show_viewport = False
-                    if not ModGN.remove(md, obs):
-                        mods.append(md)
-
-        for md in mods:
-            md.show_viewport = True
-            if ModGN.is_baked(md):
-                ModGN.bake(md)
+                if ModGN.is_gn_mod(md):
+                    if ModGN.has_obs(md, obs):
+                        md = ModGN.remove(md, obs)
+                        bake_invalidate = True
+                    if md is not None and ModGN.is_baked(md) and bake_invalidate:
+                        ModGN.bake(md)
 
         return {"FINISHED"}
 
