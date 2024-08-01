@@ -143,14 +143,7 @@ class WmProperties(PropertyGroup):
 def upd_mod_disable(self, context):
     from .lib import modlib
 
-    is_gn_mod = modlib.ModGN.is_gn_mod
-
-    for ob in context.scene.objects:
-        if ob.type == "MESH":
-            for md in ob.modifiers:
-                if md.type == "BOOLEAN" or is_gn_mod(md):
-                    md.show_viewport = self.mod_disable
-
+    modlib.disable_mods(self.mod_disable)
     action = "Enable" if self.mod_disable else "Disable"
     bpy.ops.ed.undo_push(message=f"Non-destructive [{action}]")
 

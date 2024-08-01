@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2014-2024 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import bpy
 from bpy.props import BoolProperty, StringProperty
 from bpy.types import Operator
 
@@ -14,49 +13,26 @@ class OBJECT_OT_secondary_del(Operator):
 
     def execute(self, context):
         from ..lib import modlib
+        from . import versioning
+
+        versioning.detect_and_migrate()
 
         ModGN = modlib.ModGN
-
-        obs = {ob for ob in context.selected_objects if "booltron_combined" not in ob}
-        gn_mods = []
-        is_combined_empty = False
+        obs = frozenset(context.selected_objects)
 
         if not obs:
             return {"CANCELLED"}
 
+        mods = []
         for ob in context.scene.objects:
-            if "booltron_combined" in ob:
+            for md in ob.modifiers[:]:
+                if ModGN.is_gn_mod(md) and ModGN.has_obs(md, obs):
+                    md.show_viewport = False
+                    if not ModGN.remove(md, obs):
+                        mods.append(md)
 
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN" and (not md.object or md.object in obs):
-                        ob.modifiers.remove(md)
-
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN":
-                        break
-                else:
-                    is_combined_empty = True
-                    bpy.data.meshes.remove(ob.data)
-
-            else:
-
-                for md in ob.modifiers:
-                    if ModGN.is_gn_mod(md) and ModGN.has_obs(md, obs):
-                        gn_mods.append(md)
-
-        for md in gn_mods:
-            ModGN.remove(md, obs)
-
-        if is_combined_empty:
-            for ob in context.scene.objects:
-                if ob.type != "MESH":
-                    continue
-                for md in ob.modifiers:
-                    if md.type == "BOOLEAN" and not md.object:
-                        ob.modifiers.remove(md)
-
-        for ob in obs:
-            ob.display_type = "TEXTURED"
+        for md in mods:
+            md.show_viewport = True
 
         return {"FINISHED"}
 

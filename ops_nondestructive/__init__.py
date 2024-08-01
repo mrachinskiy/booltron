@@ -92,6 +92,9 @@ class Nondestructive:
 
     def execute(self, context):
         from ..lib import modlib
+        from . import versioning
+
+        versioning.detect_and_migrate()
 
         ob1 = context.object
         obs = context.selected_objects

@@ -10,6 +10,14 @@ from bpy.types import BlendData, GeometryNode, Modifier, NodeGroup, Object
 from .. import var
 
 
+def disable_mods(value: bool) -> None:
+    for ob in bpy.context.scene.objects:
+        if ob.type == "MESH":
+            for md in ob.modifiers:
+                if md.type == "BOOLEAN" or ModGN.is_gn_mod(md):
+                    md.show_viewport = value
+
+
 def _ng_import(filepath: Path, ng_name: str) -> BlendData:
     with bpy.data.libraries.load(str(filepath)) as (data_from, data_to):
         data_to.node_groups = [ng_name]
@@ -255,9 +263,7 @@ class ModGN:
         return rnd_loc
 
     @staticmethod
-    def remove(md: Modifier, obs: set[Object]) -> None:
-        md.show_viewport = False
-
+    def remove(md: Modifier, obs: set[Object]) -> bool:
         nodes = md.node_group.nodes
 
         for node in nodes[:]:
@@ -267,19 +273,19 @@ class ModGN:
                     for _node in list(_find_connected(node)):
                         nodes.remove(_node)
                     nodes.remove(node)
+                    ob.display_type = "TEXTURED"
 
         for node in nodes:
             if node.type == "OBJECT_INFO":
-                break
-        else:
-            ob = md.id_data
-            ng = md.node_group
-            ob.modifiers.remove(md)
-            bpy.data.node_groups.remove(ng)
-            return
+                return False
 
-        md.show_viewport = True
+        ob = md.id_data
+        ng = md.node_group
         ModGN.bake_del(md)
+        ob.modifiers.remove(md)
+        bpy.data.node_groups.remove(ng)
+
+        return True
 
     @staticmethod
     def has_obs(md: Modifier, obs: set[Object]) -> bool:
