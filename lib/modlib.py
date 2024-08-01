@@ -264,7 +264,8 @@ class ModGN:
         return rnd_loc
 
     @staticmethod
-    def remove(md: Modifier, obs: set[Object]) -> bool:
+    def remove(md: Modifier, obs: set[Object]) -> Modifier | None:
+        md.show_viewport = False
         nodes = md.node_group.nodes
 
         for node in nodes[:]:
@@ -278,15 +279,14 @@ class ModGN:
 
         for node in nodes:
             if node.type == "OBJECT_INFO":
-                return False
+                md.show_viewport = True
+                return md
 
         ob = md.id_data
         ng = md.node_group
         ModGN.bake_del(md)
         ob.modifiers.remove(md)
         bpy.data.node_groups.remove(ng)
-
-        return True
 
     @staticmethod
     def has_obs(md: Modifier, obs: set[Object]) -> bool:
@@ -312,7 +312,7 @@ class ModGN:
 
     @staticmethod
     def bake_del(md) -> None:
-        if bpy.data.is_saved:
+        if bpy.data.is_saved and ModGN.is_baked(md):
             bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
 
     @staticmethod

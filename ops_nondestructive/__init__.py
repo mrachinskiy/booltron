@@ -113,8 +113,10 @@ class Nondestructive:
         else:
             md = Mod.extend(ob1.modifiers[self.modifier_name], obs)
 
-        if props.use_bake or Mod.is_baked(md):
-            Mod.bake(md)
+        i = ob1.modifiers[:].index(md)
+        for md in ob1.modifiers[i:]:
+            if Mod.is_gn_mod and (Mod.is_baked(md) or props.use_bake):
+                Mod.bake(md)
 
         return {"FINISHED"}
 
