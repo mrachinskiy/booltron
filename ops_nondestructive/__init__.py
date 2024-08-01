@@ -115,7 +115,7 @@ class Nondestructive:
 
         i = ob1.modifiers[:].index(md)
         for md in ob1.modifiers[i:]:
-            if Mod.is_gn_mod and (Mod.is_baked(md) or props.use_bake):
+            if Mod.is_gn_mod(md) and (Mod.is_baked(md) or props.use_bake):
                 Mod.bake(md)
 
         return {"FINISHED"}
