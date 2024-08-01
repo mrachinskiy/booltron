@@ -6,8 +6,8 @@ from bpy.props import BoolProperty
 from bpy.types import Operator
 
 
-class Cache:
-    clear: bool
+class Bake:
+    delete: bool
 
     def execute(self, context):
         from ..lib import modlib
@@ -17,10 +17,10 @@ class Cache:
         for ob in context.selected_objects:
             for md in ob.modifiers:
                 if ModGN.is_gn_mod(md):
-                    if self.clear:
-                        ModGN.cache_del(md)
+                    if self.delete:
+                        ModGN.bake_del(md)
                     else:
-                        ModGN.cache(md)
+                        ModGN.bake(md)
 
         return {"FINISHED"}
 
@@ -32,35 +32,44 @@ class Cache:
         return self.execute(context)
 
 
-class OBJECT_OT_nondestructive_cache(Cache, Operator):
-    bl_label = "Cache Modifier"
-    bl_description = "Cache modifier result for selected objects"
-    bl_idname = "object.booltron_nondestructive_cache"
+class OBJECT_OT_modifier_bake(Bake, Operator):
+    bl_label = "Bake Modifier"
+    bl_description = "Bake modifier result for selected objects"
+    bl_idname = "object.booltron_modifier_bake"
 
-    clear = False
-
-
-class OBJECT_OT_nondestructive_cache_del(Cache, Operator):
-    bl_label = "Clear Cache"
-    bl_description = "Clear modifier cache for selected objects"
-    bl_idname = "object.booltron_nondestructive_cache_del"
-
-    clear = True
+    delete = False
 
 
-class OBJECT_OT_nondestructive_instance_copy(Operator):
+class OBJECT_OT_modifier_bake_del(Bake, Operator):
+    bl_label = "Delete Bake"
+    bl_description = "Delete modifier bake for selected objects"
+    bl_idname = "object.booltron_modifier_bake_del"
+
+    delete = True
+
+
+class OBJECT_OT_instance_copy(Operator):
     bl_label = "Instance Copy"
     bl_description = "Create instance mesh copy of selected objects"
-    bl_idname = "object.booltron_nondestructive_instance_copy"
+    bl_idname = "object.booltron_instance_copy"
     bl_options = {"REGISTER", "UNDO"}
 
-    use_instance: BoolProperty(name="As Instance", options={"SKIP_SAVE"})
+    use_instance: BoolProperty(
+        name="As Instance",
+        description="Shortcut: hold Alt when using the tool",
+        options={"SKIP_SAVE"},
+    )
 
     def execute(self, context):
         from ..lib import objectlib
 
-        name = f"Instance {context.object.name}"
+        ob1 = context.object
         obs = context.selected_objects
+
+        if ob1 is None:
+            ob1 = obs[0]
+
+        name = f"Instance {ob1.name}"
 
         ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
         ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
@@ -99,7 +108,7 @@ class OBJECT_OT_nondestructive_instance_copy(Operator):
 
         me = bpy.data.meshes.new(name)
         ob = bpy.data.objects.new(name, me)
-        objectlib.ob_link(ob, context.object.users_collection)
+        objectlib.ob_link(ob, ob1.users_collection)
         ob.select_set(True)
         context.view_layer.objects.active = ob
 
@@ -115,6 +124,9 @@ class OBJECT_OT_nondestructive_instance_copy(Operator):
         return {"FINISHED"}
 
     def invoke(self, context, event):
+        if not context.selected_objects:
+            return {"CANCELLED"}
+
         if event.alt:
             self.use_instance = True
 

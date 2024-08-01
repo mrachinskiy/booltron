@@ -274,12 +274,12 @@ class ModGN:
         else:
             ob = md.id_data
             ng = md.node_group
-            ModGN.cache_del(md)
             ob.modifiers.remove(md)
             bpy.data.node_groups.remove(ng)
             return
 
         md.show_viewport = True
+        ModGN.bake_del(md)
 
     @staticmethod
     def has_obs(md: Modifier, obs: set[Object]) -> bool:
@@ -299,11 +299,11 @@ class ModGN:
         return md.node_group["booltron"] == mode
 
     @staticmethod
-    def cache(md) -> None:
+    def bake(md) -> None:
         if bpy.data.is_saved:
             bpy.ops.object.geometry_node_bake_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
 
     @staticmethod
-    def cache_del(md) -> None:
+    def bake_del(md) -> None:
         if bpy.data.is_saved:
             bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)

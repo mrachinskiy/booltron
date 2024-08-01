@@ -24,6 +24,7 @@ classes = (
     ui.VIEW3D_MT_booltron,
     ui.VIEW3D_PT_booltron_destructive,
     ui.VIEW3D_PT_booltron_nondestructive,
+    ui.VIEW3D_PT_booltron_bake,
     ops_destructive.OBJECT_OT_destructive_union,
     ops_destructive.OBJECT_OT_destructive_difference,
     ops_destructive.OBJECT_OT_destructive_intersect,
@@ -31,11 +32,11 @@ classes = (
     ops_nondestructive.OBJECT_OT_nondestructive_union,
     ops_nondestructive.OBJECT_OT_nondestructive_difference,
     ops_nondestructive.OBJECT_OT_nondestructive_intersect,
+    ops_nondestructive.OBJECT_OT_modifier_bake,
+    ops_nondestructive.OBJECT_OT_modifier_bake_del,
+    ops_nondestructive.OBJECT_OT_instance_copy,
     ops_nondestructive.OBJECT_OT_secondary_del,
     ops_nondestructive.OBJECT_OT_secondary_select,
-    ops_nondestructive.OBJECT_OT_nondestructive_cache,
-    ops_nondestructive.OBJECT_OT_nondestructive_cache_del,
-    ops_nondestructive.OBJECT_OT_nondestructive_instance_copy,
 )
 
 
