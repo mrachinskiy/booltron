@@ -1,11 +1,11 @@
 schema_version = "1.0.0"
 id = "booltron"
-version = "2.9.0"
+version = "3.0.0"
 name = "Booltron"
 tagline = "Super add-on for superfast booleans"
 maintainer = "Mikhail Rachinskiy"
 type = "add-on"
-tags = ["Object", "Mesh", "Modeling"]
+tags = ["Modeling", "Object"]
 blender_version_min = "4.2.0"
 website = "https://github.com/mrachinskiy/booltron"
 license = ["SPDX:GPL-3.0-or-later"]
