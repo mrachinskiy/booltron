@@ -101,9 +101,9 @@ class ToolProps:
     # Post-processing
     # ------------------------
 
-    use_cache: BoolProperty(
-        name="Cache",
-        description="Cache modifier result",
+    use_bake: BoolProperty(
+        name="Bake",
+        description="Bake modifier result",
     )
 
 

@@ -40,6 +40,9 @@ msgstr "Самопересечение"
 msgid "Hole Tolerant"
 msgstr "Устойчивость к отверстиям"
 
+msgid "As Instance"
+msgstr "Как instance"
+
 msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
 msgstr "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевой операции"
 
@@ -79,17 +82,20 @@ msgstr "Исключить выделенные вспомогательные �
 msgid "Disable boolean modifiers on all objects"
 msgstr "Отключить модификаторы Boolean на всех объектах"
 
-msgid "Cache modifier result for selected objects"
-msgstr "Кэшировать результат модификатора выделенных объектов"
+msgid "Bake modifier result for selected objects"
+msgstr "Запечь результат модификатора выделенных объектов"
 
-msgid "Cache modifier result"
-msgstr "Кэшировать результат модификатора"
+msgid "Bake modifier result"
+msgstr "Запечь результат модификатора"
 
-msgid "Clear modifier cache for selected objects"
-msgstr "Очистить кэш модификатора выделенных объектов"
+msgid "Delete modifier bake for selected objects"
+msgstr "Удалить запекание модификатора выделенных объектов"
 
 msgid "Create instance mesh copy of selected objects"
 msgstr "Создать instance mesh копию выделенных объектов"
+
+msgid "Shortcut: hold Alt when using the tool"
+msgstr "Горячая клавиша: удерживайте клавишу Alt при использовании инструмента"
 
 msgid "Boolean operation result is non-manifold"
 msgstr "Результат булевой операции non-manifold"
@@ -121,12 +127,12 @@ msgid "Dismiss"
 msgstr "Исключить"
 
 msgctxt "Operator"
-msgid "Cache Modifier"
-msgstr "Кэш модификатора"
+msgid "Bake Modifier"
+msgstr "Запечь модификатор"
 
 msgctxt "Operator"
-msgid "Clear Cache"
-msgstr "Очистить кэш"
+msgid "Delete Bake"
+msgstr "Удалить запекание"
 
 msgctxt "Operator"
 msgid "Instance Copy"

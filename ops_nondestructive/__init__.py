@@ -6,10 +6,10 @@ from bpy.props import EnumProperty
 from bpy.types import Object, Operator
 
 from .. import preferences, var
-from .cache import (
-    OBJECT_OT_nondestructive_cache,
-    OBJECT_OT_nondestructive_cache_del,
-    OBJECT_OT_nondestructive_instance_copy,
+from .bake import (
+    OBJECT_OT_modifier_bake,
+    OBJECT_OT_modifier_bake_del,
+    OBJECT_OT_instance_copy,
 )
 from .utils import (
      OBJECT_OT_secondary_del,
@@ -82,10 +82,10 @@ class Nondestructive:
 
         sub = col.row()
         if bpy.data.is_saved:
-            sub.prop(props, "use_cache")
+            sub.prop(props, "use_bake")
         else:
             sub.alert = True
-            sub.prop(props, "use_cache", text="")
+            sub.prop(props, "use_bake", text="")
             sub.label(text="File not saved", icon="ERROR")
 
         layout.separator()
@@ -112,8 +112,8 @@ class Nondestructive:
         else:
             Mod.extend(ob1.modifiers[self.modifier_name], obs)
 
-        if props.use_cache:
-            Mod.cache(md)
+        if props.use_bake:
+            Mod.bake(md)
 
         return {"FINISHED"}
 

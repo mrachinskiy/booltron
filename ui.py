@@ -140,11 +140,21 @@ class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
         row.operator("object.booltron_secondary_del", icon_value=_icon("NONDESTR_REMOVE"))
         row.operator("object.booltron_secondary_select", icon_value=_icon("NONDESTR_SELECT"), text="Select")
 
-        row = layout.row(align=True)
-        row.operator("object.booltron_nondestructive_cache")
-        row.operator("object.booltron_nondestructive_cache_del", icon="X", text="")
 
-        layout.operator("object.booltron_nondestructive_instance_copy")
+class VIEW3D_PT_booltron_bake(SidebarSetup, Panel):
+    bl_label = "Bake"
+    bl_options = {"DEFAULT_CLOSED"}
+    bl_parent_id = "VIEW3D_PT_booltron_nondestructive"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.active = context.scene.booltron.mod_disable
+
+        row = layout.row(align=True)
+        row.operator("object.booltron_modifier_bake")
+        row.operator("object.booltron_modifier_bake_del", icon="TRASH", text="")
+
+        layout.operator("object.booltron_instance_copy")
 
 
 # Preferences
@@ -204,4 +214,4 @@ def prefs_ui(self, context):
     main.separator()
 
     main.label(text="Modifier")
-    main.box().prop(self, "use_cache")
+    main.box().prop(self, "use_bake")
