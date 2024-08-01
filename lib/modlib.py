@@ -180,7 +180,7 @@ class ModGN:
 
         return md
 
-    def extend(self, md: Modifier, obs: list[Object]) -> None:
+    def extend(self, md: Modifier, obs: list[Object]) -> Modifier:
         md.show_viewport = False
 
         ng = md.node_group
@@ -225,6 +225,7 @@ class ModGN:
                 ng.links.new(node.outputs[0], secondary.inputs[1])
 
         md.show_viewport = True
+        return md
 
     def _ob_add(self, ng: NodeGroup, in_: GeometryNode, ob: Object) -> GeometryNode:
         nodes = ng.nodes

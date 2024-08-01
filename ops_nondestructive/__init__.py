@@ -6,15 +6,9 @@ from bpy.props import EnumProperty
 from bpy.types import Object, Operator
 
 from .. import preferences, var
-from .bake import (
-    OBJECT_OT_modifier_bake,
-    OBJECT_OT_modifier_bake_del,
-    OBJECT_OT_instance_copy,
-)
-from .utils import (
-     OBJECT_OT_secondary_del,
-     OBJECT_OT_secondary_select,
-)
+from .bake import (OBJECT_OT_instance_copy, OBJECT_OT_modifier_bake,
+                   OBJECT_OT_modifier_bake_del)
+from .utils import OBJECT_OT_secondary_del, OBJECT_OT_secondary_select
 
 
 def _iter_modifiers(ob: Object, mode: str) -> None:
@@ -113,7 +107,7 @@ class Nondestructive:
         if self.modifier_name == "__NEW__":
             md = Mod.add(ob1, obs)
         else:
-            Mod.extend(ob1.modifiers[self.modifier_name], obs)
+            md = Mod.extend(ob1.modifiers[self.modifier_name], obs)
 
         if props.use_bake:
             Mod.bake(md)
