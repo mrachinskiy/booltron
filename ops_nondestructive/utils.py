@@ -66,7 +66,7 @@ class OBJECT_OT_secondary_select(Operator):
                     ob.select_set(True)
                     active = ob
 
-        if not self.use_extend:
+        if not self.use_extend and active is not None:
             context.view_layer.objects.active = active
 
         return {"FINISHED"}
