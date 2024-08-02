@@ -10,9 +10,7 @@ class Bake:
     delete: bool
 
     def execute(self, context):
-        from ..lib import modlib
-
-        ModGN = modlib.ModGN
+        from ..lib.modlib import ModGN
 
         for ob in context.selected_objects:
             for md in ob.modifiers:

@@ -17,8 +17,7 @@ modifiers: tuple[tuple[str, str, str]]
 def _iter_modifiers(ob: Object, mode: str) -> None:
     global modifiers
 
-    from ..lib import modlib
-    ModGN = modlib.ModGN
+    from ..lib.modlib import ModGN
 
     mods = []
     for md in ob.modifiers:
