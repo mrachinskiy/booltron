@@ -54,12 +54,11 @@ class OBJECT_OT_secondary_select(Operator):
             layout.operator(op.bl_idname, text=name, translate=False).modifier_name = name
 
     def execute(self, context):
-        md = context.object.modifiers[self.modifier_name]
-
         if not self.use_extend:
             for ob in context.selected_objects:
                 ob.select_set(False)
 
+        md = context.object.modifiers[self.modifier_name]
         active = None
         for node in md.node_group.nodes:
             if node.type == "OBJECT_INFO":
@@ -68,7 +67,8 @@ class OBJECT_OT_secondary_select(Operator):
                     ob.select_set(True)
                     active = ob
 
-        context.view_layer.objects.active = active
+        if not self.use_extend:
+            context.view_layer.objects.active = active
 
         return {"FINISHED"}
 
