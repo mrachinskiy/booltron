@@ -105,7 +105,7 @@ class Nondestructive:
         Mod = modlib.ModGN(self.mode)
 
         for ob in obs:
-            ob.display_type = props.display_secondary
+            modlib.secondary_visibility_set(ob, props.display_secondary)
 
         if self.modifier_name == "__NEW__":
             md = Mod.add(ob1, obs)
