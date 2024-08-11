@@ -32,6 +32,28 @@ def _find_connected(node: GeometryNode) -> Iterator[GeometryNode]:
                 yield from _find_connected(link.to_node)
 
 
+def secondary_visibility_set(ob: Object, display_type="TEXTURED") -> None:
+    visible = display_type == "TEXTURED"
+
+    ob.display_type = display_type
+    ob.hide_render = not visible
+
+    # Common
+    ob.visible_camera = visible
+    ob.visible_shadow = visible
+
+    # Cycles
+    ob.visible_diffuse = visible
+    ob.visible_glossy = visible
+    ob.visible_transmission = visible
+    ob.visible_volume_scatter = visible
+
+    # EEVEE
+    ob.hide_probe_volume = not visible
+    ob.hide_probe_sphere = not visible
+    ob.hide_probe_plane = not visible
+
+
 class ModBoolean:
     __slots__ = (
         "solver",
@@ -275,7 +297,7 @@ class ModGN:
                     for _node in list(_find_connected(node)):
                         nodes.remove(_node)
                     nodes.remove(node)
-                    ob.display_type = "TEXTURED"
+                    secondary_visibility_set(ob)
 
         for node in nodes:
             if node.type == "OBJECT_INFO":
