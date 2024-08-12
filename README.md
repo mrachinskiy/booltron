@@ -5,10 +5,11 @@ Features:
 * Faster boolean operations with large number of objects.
 * Destructive and non-destructive workflows.
 * Works with Curve and Text objects.
+* Bake modifier result.
 * Various adjustment options to get better results from boolean operations.
 * Checks for non-manifold.
 
-**[Watch demo video.](https://youtu.be/KxbJSUQpw7I)**
+**[Watch demo video.](https://youtu.be/3C_hsqLzBcI)**
 
 
 How to install
@@ -24,7 +25,6 @@ How to install
 2. Make sure you have Blender 3.2 or newer.
 3. Open `Preferences` → `Add-ons` category.
 4. Use `Install` to install add-on from downloaded zip archive.<sup>2</sup>
-5. Read [quick tips](#quick-tips).
 
 <sup>1</sup> Note for mac users: Safari browser will automatically unpack downloaded zip archive, to prevent that go `Safari` → `Preferences` → `General` and uncheck `Open "safe" files after downloading` option.
 
@@ -44,41 +44,10 @@ How to install
 2. Убедитесь, что у вас установлен Blender 3.2 или новее.
 3. Откройте `Preferences` → `Add-ons`
 4. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.<sup>2</sup>
-5. Ознакомьтесь с [кратким руководством](#краткое-руководство).
 
 <sup>1</sup> Примечание для пользователей mac: браузер Safari автоматически распаковывает скачиваемые zip архивы, чтобы это предотвратить в настройках `Safari` → `Preferences` → `General` отключите опцию `Open "safe" files after downloading`.
 
 <sup>2</sup> Если при активации аддона возникает ошибка, значит вы пытаетесь установить репозиторий вместо релиза. Для загрузки релиза используйте ссылку, приведённую в первом шаге данного руководства.
-
-
-Quick tips
-==========================
-
-Destructive:
-
-* Supports Text and Curve objects.
-* `Ctrl + tool`: invoke tool settings popup before execution.
-* `Alt + tool`: execute tool with `Keep Objects` setting enabled.
-
-Non-destructive:
-
-* Supports only Mesh objects.
-* Unifies secondary boolean objects into one combined object for faster boolean operations.
-
-
-Краткое руководство
-==========================
-
-Деструктивные:
-
-* Поддерживают Text и Curve объекты.
-* `Ctrl + инструмент`: вызвать всплывающее меню настроек инструмента перед его использованием.
-* `Alt + инструмент`: использовать инструмент с настройкой `Сохранить объекты`.
-
-Недеструктивные:
-
-* Поддерживают только Mesh объекты.
-* Объединяют вспомогательные булевы объекты в один комбинированный объект для более быстрых булевых операций.
 
 
 Contributing
