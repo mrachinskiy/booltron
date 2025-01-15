@@ -1,0 +1,146 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Booltron 3.0.0\n"
+"POT-Creation-Date: 2024-07-28\n"
+"PO-Revision-Date: 2025-01-15 16:48+0100\n"
+"Last-Translator: Mikhail Rachinskiy\n"
+"Language-Team: Mikhail Rachinskiy\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+
+msgid "Location Offset"
+msgstr "Location Offset"
+
+msgid "Keep Objects"
+msgstr "Conserver les objets"
+
+msgid "Destructive"
+msgstr "Destructif"
+
+msgid "Non-destructive"
+msgstr "Non-Destructif"
+
+msgid "Primary Object"
+msgstr "Élément principal"
+
+msgid "Secondary Object"
+msgstr "Élément secondaire"
+
+msgid "Pre-processing"
+msgstr "Traitement préliminaire"
+
+msgid "+ New Modifier"
+msgstr "+ Nouveau Modificateur"
+
+msgid "Self Intersection"
+msgstr "Intersection interne"
+
+msgid "Hole Tolerant"
+msgstr "Tolérance aux trous"
+
+msgid "As Instance"
+msgstr "En tant qu'instance"
+
+msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
+msgstr "Déplacer légèrement les objets pour éviter les erreurs de géométrie coplanaire pendant les opérations booléennes"
+
+msgid "Location offset is randomly generated for each object in range [-x, +x] input value"
+msgstr "Le décalage d'emplacement est généré aléatoirement pour chaque objet dans la plage [-x, +x] des valeurs d'entrée"
+
+msgid "Displace secondary object to create overlap between slices"
+msgstr "Déplacer l'objet secondaire pour créer une superposition entre les tranches"
+
+msgid "Combine selected objects"
+msgstr "Combiner les objets sélectionnés"
+
+msgid "Subtract selected objects from active object"
+msgstr "Soustraire les objets sélectionnés de l'objet actif"
+
+msgid "Keep the common part between active and selected objects"
+msgstr "Conserver la partie commune entre les objets actifs et sélectionnés"
+
+msgid "Combine active (primary) and selected (secondary) objects"
+msgstr "Combiner les objets actifs (primaires) et sélectionnés (secondaires)"
+
+msgid "Subtract selected (secondary) objects from active (primary) object"
+msgstr "Soustraire les objets sélectionnés (secondaires) de l'objet actif (primaire)"
+
+msgid "Keep the common part between active (primary) and selected (secondary) objects"
+msgstr "Conserver la partie commune entre les objets actifs (primaires) et sélectionnés (secondaires)"
+
+msgid "Slice active object along the volume of selected objects"
+msgstr "Couper l'objet actif le long du volume des objets sélectionnés"
+
+msgid "Do not remove selected objects after boolean operation (Shortcut: hold Alt when using the tool)"
+msgstr "Ne pas supprimer les objets sélectionnés après l'opération booléenne (Raccourci : maintenez Alt en utilisant l'outil)"
+
+msgid "Dismiss selected secondary objects from boolean operation"
+msgstr "Exclure les objets secondaires sélectionnés de l'opération booléenne"
+
+msgid "Select secondary objects used by given modifier"
+msgstr "Sélectionner les objets secondaires utilisés par le modificateur spécifié"
+
+msgid "Disable boolean modifiers on all objects"
+msgstr "Désactiver les modificateurs booléens sur tous les objets"
+
+msgid "Bake modifier result for selected objects"
+msgstr "Appliquer le résultat du modificateur pour les objets sélectionnés"
+
+msgid "Bake modifier result"
+msgstr "Appliquer le résultat du modificateur"
+
+msgid "Delete modifier bake for selected objects"
+msgstr "Supprimer l'application du modificateur pour les objets sélectionnés"
+
+msgid "Create instance mesh copy of selected objects"
+msgstr "Créer une copie du maillage des objets sélectionnés"
+
+msgid "Shortcut: hold Alt when using the tool"
+msgstr "Raccourci : maintenez Alt lors de l'utilisation de l'outil"
+
+msgid "Boolean operation result is non-manifold"
+msgstr "Le résultat de l'opération booléenne est non-manifold"
+
+msgid "At least two objects must be selected"
+msgstr "Au moins deux objets doivent être sélectionnés"
+
+msgid "Object does not have Booltron modifiers"
+msgstr "L'objet n'a pas de modificateurs Booltron"
+
+msgid "File not saved"
+msgstr "Fichier non sauvegardé"
+
+msgctxt "Operator"
+msgid "Union"
+msgstr "Union"
+
+msgctxt "Operator"
+msgid "Difference"
+msgstr "Différence"
+
+msgctxt "Operator"
+msgid "Intersect"
+msgstr "Intersection"
+
+msgctxt "Operator"
+msgid "Slice"
+msgstr "Coupe"
+
+msgctxt "Operator"
+msgid "Dismiss"
+msgstr "Rejeter"
+
+msgctxt "Operator"
+msgid "Bake Modifier"
+msgstr "Appliquer un modificateur"
+
+msgctxt "Operator"
+msgid "Delete Bake"
+msgstr ""
+
+msgctxt "Operator"
+msgid "Instance Copy"
+msgstr "Copie d'instance"
