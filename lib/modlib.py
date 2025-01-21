@@ -199,6 +199,8 @@ class ModGN:
         md.show_in_editmode = False
         md.show_group_selector = False
         md.node_group = ng
+        if hasattr(md, "bake_target"):  # VER < Blender 4.3
+            md.bake_target = "DISK"
 
         return md
 
@@ -334,8 +336,7 @@ class ModGN:
 
     @staticmethod
     def bake_del(md) -> None:
-        if bpy.data.is_saved and ModGN.is_baked(md):
-            bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
+        bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
 
     @staticmethod
     def is_baked(md) -> None:
