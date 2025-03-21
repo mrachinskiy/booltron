@@ -3,12 +3,12 @@
 
 
 if "bpy" in locals():
-    _essential.reload_recursive(var.ADDON_DIR, locals())
+    essentials.reload_recursive(var.ADDON_DIR, locals())
 else:
     from . import var
-    from .lib import _essential
+    from .lib import essentials
 
-    _essential.check(var.ICONS_DIR)
+    essentials.check(var.ICONS_DIR)
 
     import bpy
     from bpy.props import PointerProperty
@@ -16,26 +16,8 @@ else:
     from . import localization, ops_destructive, ops_nondestructive, preferences, ui
 
 
-classes = (
-    preferences.ToolPropsGroup,
-    preferences.Preferences,
-    preferences.WmProperties,
-    preferences.SceneProperties,
-    ui.VIEW3D_MT_booltron,
-    ui.VIEW3D_PT_booltron_destructive,
-    ui.VIEW3D_PT_booltron_nondestructive,
-    ops_destructive.OBJECT_OT_destructive_union,
-    ops_destructive.OBJECT_OT_destructive_difference,
-    ops_destructive.OBJECT_OT_destructive_intersect,
-    ops_destructive.OBJECT_OT_destructive_slice,
-    ops_nondestructive.OBJECT_OT_nondestructive_union,
-    ops_nondestructive.OBJECT_OT_nondestructive_difference,
-    ops_nondestructive.OBJECT_OT_nondestructive_intersect,
-    ops_nondestructive.OBJECT_OT_modifier_bake,
-    ops_nondestructive.OBJECT_OT_modifier_bake_del,
-    ops_nondestructive.OBJECT_OT_instance_copy,
-    ops_nondestructive.OBJECT_OT_secondary_del,
-    ops_nondestructive.OBJECT_OT_secondary_select,
+classes = essentials.get_classes(
+    (preferences, ui, ops_destructive, ops_nondestructive)
 )
 
 
