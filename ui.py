@@ -145,21 +145,14 @@ class VIEW3D_PT_booltron_nondestructive(SidebarSetup, Panel):
         row.operator("object.booltron_secondary_del", icon_value=_icon("NONDESTR_REMOVE"))
         row.operator("object.booltron_secondary_select", icon_value=_icon("NONDESTR_SELECT"), text="Select")
 
+        header, panel = layout.panel("bake", default_closed=True)
+        header.label(text="Bake")
+        if panel:
+            row = panel.row(align=True)
+            row.operator("object.booltron_modifier_bake")
+            row.operator("object.booltron_modifier_bake_del", icon="TRASH", text="")
 
-class VIEW3D_PT_booltron_bake(SidebarSetup, Panel):
-    bl_label = "Bake"
-    bl_options = {"DEFAULT_CLOSED"}
-    bl_parent_id = "VIEW3D_PT_booltron_nondestructive"
-
-    def draw(self, context):
-        layout = self.layout
-        layout.active = context.scene.booltron.mod_disable
-
-        row = layout.row(align=True)
-        row.operator("object.booltron_modifier_bake")
-        row.operator("object.booltron_modifier_bake_del", icon="TRASH", text="")
-
-        layout.operator("object.booltron_instance_copy")
+            panel.operator("object.booltron_instance_copy")
 
 
 # Preferences
