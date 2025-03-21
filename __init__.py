@@ -24,7 +24,6 @@ classes = (
     ui.VIEW3D_MT_booltron,
     ui.VIEW3D_PT_booltron_destructive,
     ui.VIEW3D_PT_booltron_nondestructive,
-    ui.VIEW3D_PT_booltron_bake,
     ops_destructive.OBJECT_OT_destructive_union,
     ops_destructive.OBJECT_OT_destructive_difference,
     ops_destructive.OBJECT_OT_destructive_intersect,
