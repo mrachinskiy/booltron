@@ -204,7 +204,7 @@ class ModGN:
 
         return md
 
-    def extend(self, md: Modifier, obs: list[Object]) -> Modifier:
+    def extend(self, md: Modifier, obs: list[Object]) -> None:
         md.show_viewport = False
 
         ng = md.node_group
@@ -213,14 +213,14 @@ class ModGN:
         seed = 0
 
         existing_obs = set()
-        for node in nodes[:]:
+        _del = set()
+        for node in nodes:
 
             if node.type == "OBJECT_INFO":
                 ng_ob = node.inputs[0].default_value
                 if ng_ob is None:
-                    for _node in list(_find_connected(node)):
-                        nodes.remove(_node)
-                    nodes.remove(node)
+                    _del.add(node)
+                    _del.update(_find_connected(node))
                 else:
                     existing_obs.add(ng_ob)
 
@@ -242,6 +242,9 @@ class ModGN:
             elif node.type == "GROUP_INPUT":
                 in_ = node
 
+        for node in _del:
+            nodes.remove(node)
+
         for ob in obs:
             if ob not in existing_obs:
                 node = self._ob_add(ng, in_, ob)
@@ -249,7 +252,6 @@ class ModGN:
                 ng.links.new(node.outputs[0], secondary.inputs[1])
 
         md.show_viewport = True
-        return md
 
     def _ob_add(self, ng: NodeGroup, in_: GeometryNode, ob: Object) -> GeometryNode:
         nodes = ng.nodes
@@ -288,29 +290,35 @@ class ModGN:
         return rnd_loc
 
     @staticmethod
-    def remove(md: Modifier, obs: set[Object]) -> Modifier | None:
+    def remove(md: Modifier, obs: set[Object]) -> bool:
         md.show_viewport = False
         nodes = md.node_group.nodes
 
-        for node in nodes[:]:
+        _del = set()
+
+        for node in nodes:
             if node.type == "OBJECT_INFO":
                 ob = node.inputs[0].default_value
                 if ob is None or ob in obs:
-                    for _node in list(_find_connected(node)):
-                        nodes.remove(_node)
-                    nodes.remove(node)
-                    secondary_visibility_set(ob)
+                    _del.add(node)
+                    _del.update(_find_connected(node))
+                    if ob is not None:
+                        secondary_visibility_set(ob)
+
+        for node in _del:
+            nodes.remove(node)
 
         for node in nodes:
             if node.type == "OBJECT_INFO":
                 md.show_viewport = True
-                return md
+                return False
 
         ob = md.id_data
         ng = md.node_group
         ModGN.bake_del(md)
         ob.modifiers.remove(md)
         bpy.data.node_groups.remove(ng)
+        return True
 
     @staticmethod
     def has_obs(md: Modifier, obs: set[Object]) -> bool:
