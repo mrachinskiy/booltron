@@ -16,9 +16,8 @@ def detect_and_migrate() -> bool:
 
 
 def _replace_mod(ob: Object, md_old: Modifier, md_new: Modifier):
-        _mods = ob.modifiers[:]
-        index_old = _mods.index(md_old)
-        index_new = _mods.index(md_new)
+        index_old = ob.modifiers.find(md_old.name)
+        index_new = ob.modifiers.find(md_new.name)
 
         ob.modifiers.move(index_new, index_old)
         ob.modifiers.remove(md_old)

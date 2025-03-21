@@ -338,14 +338,14 @@ class ModGN:
         return md.node_group["booltron"] == mode
 
     @staticmethod
-    def bake(md) -> None:
+    def bake(md: Modifier) -> None:
         if bpy.data.is_saved:
             bpy.ops.object.geometry_node_bake_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
 
     @staticmethod
-    def bake_del(md) -> None:
+    def bake_del(md: Modifier) -> None:
         bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
 
     @staticmethod
-    def is_baked(md) -> None:
+    def is_baked(md: Modifier) -> bool:
         return bool(md.bake_directory) and Path(bpy.path.abspath(md.bake_directory)).exists()

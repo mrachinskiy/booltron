@@ -113,7 +113,7 @@ class Nondestructive:
             md = ob1.modifiers[self.modifier_name]
             Mod.extend(md, obs)
 
-        i = ob1.modifiers[:].index(md)
+        i = ob1.modifiers.find(md.name)
         for md in ob1.modifiers[i:]:
             if Mod.is_gn_mod(md) and (Mod.is_baked(md) or props.use_bake):
                 Mod.bake(md)
