@@ -110,7 +110,8 @@ class Nondestructive:
         if self.modifier_name == "__NEW__":
             md = Mod.add(ob1, obs)
         else:
-            md = Mod.extend(ob1.modifiers[self.modifier_name], obs)
+            md = ob1.modifiers[self.modifier_name]
+            Mod.extend(md, obs)
 
         i = ob1.modifiers[:].index(md)
         for md in ob1.modifiers[i:]:

@@ -27,9 +27,10 @@ class OBJECT_OT_secondary_del(Operator):
             for md in ob.modifiers[:]:
                 if ModGN.is_gn_mod(md):
                     if ModGN.has_obs(md, obs):
-                        md = ModGN.remove(md, obs)
                         bake_invalidate = True
-                    if md is not None and ModGN.is_baked(md) and bake_invalidate:
+                        if ModGN.remove(md, obs):
+                            continue
+                    if bake_invalidate and ModGN.is_baked(md):
                         ModGN.bake(md)
 
         return {"FINISHED"}
