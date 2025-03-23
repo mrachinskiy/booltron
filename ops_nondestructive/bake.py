@@ -70,14 +70,15 @@ class OBJECT_OT_instance_copy(Operator):
         name = f"Instance {ob1.name}"
 
         ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
-        ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
-        ng.interface.new_socket("As Instance", in_out="INPUT", socket_type="NodeSocketBool")
+        inst_in_socket = ng.interface.new_socket("As Instance", in_out="INPUT", socket_type="NodeSocketBool")
+        geo_out_socket = ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
 
         nodes = ng.nodes
 
         in_ = nodes.new("NodeGroupInput")
         in_.location.x = -600
         in_.select = False
+        in_inst = in_.outputs[inst_in_socket.identifier]
 
         out = nodes.new("NodeGroupOutput")
         out.location.x = 200
@@ -86,11 +87,11 @@ class OBJECT_OT_instance_copy(Operator):
         j = nodes.new("GeometryNodeJoinGeometry")
         j.select = False
 
-        ng.links.new(j.outputs[0], out.inputs[0])
+        ng.links.new(j.outputs["Geometry"], out.inputs[geo_out_socket.identifier])
 
         for ob in obs:
             ob_info = nodes.new("GeometryNodeObjectInfo")
-            ob_info.inputs[0].default_value = ob
+            ob_info.inputs["Object"].default_value = ob
             ob_info.location.x = -400
             ob_info.select = False
 
@@ -99,10 +100,10 @@ class OBJECT_OT_instance_copy(Operator):
             transf.location.x = -200
             transf.select = False
 
-            ng.links.new(in_.outputs[0], ob_info.inputs[1])
-            ng.links.new(ob_info.outputs[4], transf.inputs[0])
-            ng.links.new(ob_info.outputs[0], transf.inputs[4])
-            ng.links.new(transf.outputs[0], j.inputs[0])
+            ng.links.new(in_inst, ob_info.inputs["As Instance"])
+            ng.links.new(ob_info.outputs["Geometry"], transf.inputs["Geometry"])
+            ng.links.new(ob_info.outputs["Transform"], transf.inputs["Transform"])
+            ng.links.new(transf.outputs["Geometry"], j.inputs["Geometry"])
 
         me = bpy.data.meshes.new(name)
         ob = bpy.data.objects.new(name, me)
@@ -111,7 +112,7 @@ class OBJECT_OT_instance_copy(Operator):
         context.view_layer.objects.active = ob
 
         md = ob.modifiers.new(name, "NODES")
-        md["Socket_1"] = self.use_instance
+        md[inst_in_socket.identifier] = self.use_instance
         md.show_expanded = False
         md.show_group_selector = False
         md.node_group = ng

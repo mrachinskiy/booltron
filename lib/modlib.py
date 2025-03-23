@@ -5,7 +5,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import bpy
-from bpy.types import BlendData, GeometryNode, Modifier, NodeGroup, Object
+from bpy.types import BlendData, GeometryNode, GeometryNodeGroup, Modifier, NodeGroup, NodeSocket, Object
 
 from .. import var
 
@@ -140,8 +140,8 @@ class ModGN:
         name = f"{ob1.name} {self.mode.title()}"
         ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
         ng["booltron"] = self.mode
-        ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
-        ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+        geo_in_socket = ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+        geo_out_socket = ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
         rnd_loc_socket = ng.interface.new_socket("Randomize Location", in_out="INPUT", socket_type="NodeSocketFloat")
         rnd_loc_socket.subtype = "DISTANCE"
         rnd_loc_socket.min_value = 0.0
@@ -152,49 +152,51 @@ class ModGN:
         in_ = nodes.new("NodeGroupInput")
         in_.location.x = -200
         in_.select = False
+        in_geo = in_.outputs[geo_in_socket.identifier]
+        in_rnd = in_.outputs[rnd_loc_socket.identifier]
 
         out = nodes.new("NodeGroupOutput")
         out.location.x = 400
         out.select = False
+        out_geo = out.inputs[geo_out_socket.identifier]
 
         bake = nodes.new("GeometryNodeBake")
         bake.location.x = 200
         bake.select = False
 
-        ng.links.new(bake.outputs[0], out.inputs[0])
+        ng.links.new(bake.outputs["Item_0"], out_geo)
 
         primary = nodes.new("GeometryNodeMeshBoolean")
         primary.name = "PRIMARY"
         primary.operation = self.mode
         primary.solver = self.solver
-        primary.inputs[2].default_value = self.use_self
-        primary.inputs[3].default_value = self.use_hole_tolerant
+        primary.inputs["Self Intersection"].default_value = self.use_self
+        primary.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant
         primary.select = False
 
-
-        ng.links.new(in_.outputs[0], primary.inputs[0 if self.mode == "DIFFERENCE" else 1])
-        ng.links.new(primary.outputs[0], bake.inputs[0])
+        ng.links.new(in_geo, primary.inputs["Mesh 1" if self.mode == "DIFFERENCE" else "Mesh 2"])
+        ng.links.new(primary.outputs["Mesh"], bake.inputs["Item_0"])
 
         secondary = nodes.new("GeometryNodeMeshBoolean")
         secondary.name = "SECONDARY"
         secondary.operation = "UNION"
         secondary.solver = self.solver_secondary
-        secondary.inputs[2].default_value = self.use_self_secondary
-        secondary.inputs[3].default_value = self.use_hole_tolerant_secondary
+        secondary.inputs["Self Intersection"].default_value = self.use_self_secondary
+        secondary.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant_secondary
         secondary.location.y = -250
         secondary.select = False
 
-        ng.links.new(secondary.outputs[0], primary.inputs[1])
+        ng.links.new(secondary.outputs["Mesh"], primary.inputs["Mesh 2"])
 
         seed = 0
         for ob in obs:
-            node = self._ob_add(ng, in_, ob)
-            node.inputs[2].default_value = seed
-            ng.links.new(node.outputs[0], secondary.inputs[1])
+            node_rnd_group = self._ob_add(ng, in_rnd, ob)
+            node_rnd_group.inputs["Seed"].default_value = seed
+            ng.links.new(node_rnd_group.outputs["Geometry"], secondary.inputs["Mesh 2"])
             seed += 1
 
         md = ob1.modifiers.new(self.mode.title(), "NODES")
-        md["Socket_2"] = self.loc_offset
+        md[rnd_loc_socket.identifier] = self.loc_offset
         md.show_expanded = False
         md.show_in_editmode = False
         md.show_group_selector = False
@@ -217,7 +219,7 @@ class ModGN:
         for node in nodes:
 
             if node.type == "OBJECT_INFO":
-                ng_ob = node.inputs[0].default_value
+                ng_ob = node.inputs["Object"].default_value
                 if ng_ob is None:
                     _del.add(node)
                     _del.update(_find_connected(node))
@@ -227,54 +229,51 @@ class ModGN:
             elif node.type == "MESH_BOOLEAN":
                 if node.name == "PRIMARY":
                     node.solver = self.solver
-                    node.inputs[2].default_value = self.use_self
-                    node.inputs[3].default_value = self.use_hole_tolerant
+                    node.inputs["Self Intersection"].default_value = self.use_self
+                    node.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant
                 elif node.name == "SECONDARY":
                     secondary = node
                     node.solver = self.solver_secondary
-                    node.inputs[2].default_value = self.use_self_secondary
-                    node.inputs[3].default_value = self.use_hole_tolerant_secondary
+                    node.inputs["Self Intersection"].default_value = self.use_self_secondary
+                    node.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant_secondary
 
             elif ng_rnd_loc and node.type == "GROUP" and node.node_tree is ng_rnd_loc:
-                if (ng_seed := node.inputs[2].default_value) >= seed:
+                if (ng_seed := node.inputs["Seed"].default_value) >= seed:
                     seed = ng_seed + 1
 
             elif node.type == "GROUP_INPUT":
-                in_ = node
+                in_rnd = node.outputs["Socket_2"]
 
         for node in _del:
             nodes.remove(node)
 
         for ob in obs:
             if ob not in existing_obs:
-                node = self._ob_add(ng, in_, ob)
-                node.inputs[2].default_value = seed
-                ng.links.new(node.outputs[0], secondary.inputs[1])
+                node_rnd_group = self._ob_add(ng, in_rnd, ob)
+                node_rnd_group.inputs["Seed"].default_value = seed
+                ng.links.new(node_rnd_group.outputs["Geometry"], secondary.inputs["Mesh 2"])
 
         md.show_viewport = True
 
-    def _ob_add(self, ng: NodeGroup, in_: GeometryNode, ob: Object) -> GeometryNode:
+    def _ob_add(self, ng: NodeGroup, rnd_sock: NodeSocket, ob: Object) -> GeometryNodeGroup:
         nodes = ng.nodes
 
         node = nodes.new("GeometryNodeObjectInfo")
-        node.inputs[0].default_value = ob
+        node.inputs["Object"].default_value = ob
         node.transform_space = "RELATIVE"
         node.location = -400, -250
         node.select = False
-        node_output_index = 4
 
         if ob.type != "MESH":
             node.location = -600, -500
 
             weld = nodes.new("GeometryNodeMergeByDistance")
-            weld.inputs[2].default_value = self.merge_distance
+            weld.inputs["Distance"].default_value = self.merge_distance
             weld.location = -400, -500
             weld.select = False
 
-            ng.links.new(node.outputs[4], weld.inputs[0])
-
+            ng.links.new(node.outputs["Geometry"], weld.inputs["Geometry"])
             node = weld
-            node_output_index = 0
 
         if (ng_rnd_loc := bpy.data.node_groups.get("Randomize Location")) is None:
             ng_rnd_loc = _ng_import(var.ASSET_NODES_FILEPATH, "Randomize Location")
@@ -284,8 +283,8 @@ class ModGN:
         rnd_loc.location = -200, node.location.y
         rnd_loc.select = False
 
-        ng.links.new(in_.outputs[1], rnd_loc.inputs[1])
-        ng.links.new(node.outputs[node_output_index], rnd_loc.inputs[0])
+        ng.links.new(rnd_sock, rnd_loc.inputs["Offset"])
+        ng.links.new(node.outputs["Geometry"], rnd_loc.inputs["Geometry"])
 
         return rnd_loc
 
@@ -298,7 +297,7 @@ class ModGN:
 
         for node in nodes:
             if node.type == "OBJECT_INFO":
-                ob = node.inputs[0].default_value
+                ob = node.inputs["Object"].default_value
                 if ob is None or ob in obs:
                     _del.add(node)
                     _del.update(_find_connected(node))
@@ -324,7 +323,7 @@ class ModGN:
     def has_obs(md: Modifier, obs: set[Object]) -> bool:
         for node in md.node_group.nodes:
             if node.type == "OBJECT_INFO":
-                if node.inputs[0].default_value in obs:
+                if node.inputs["Object"].default_value in obs:
                     return True
 
         return False
