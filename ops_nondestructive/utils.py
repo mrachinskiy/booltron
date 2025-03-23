@@ -62,7 +62,7 @@ class OBJECT_OT_secondary_select(Operator):
         active = None
         for node in md.node_group.nodes:
             if node.type == "OBJECT_INFO":
-                ob = node.inputs[0].default_value
+                ob = node.inputs["Object"].default_value
                 if ob is not None and ob.visible_get():
                     ob.select_set(True)
                     active = ob
