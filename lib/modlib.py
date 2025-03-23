@@ -344,7 +344,10 @@ class ModGN:
 
     @staticmethod
     def bake_del(md: Modifier) -> None:
-        bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
+        try:  # VER == 4.2; silence poll error message
+            bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
+        except:
+            pass
 
     @staticmethod
     def is_baked(md: Modifier) -> bool:
