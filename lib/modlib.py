@@ -211,8 +211,11 @@ class ModGN:
 
         ng = md.node_group
         nodes = ng.nodes
-        ng_rnd_loc = bpy.data.node_groups.get("Randomize Location")
+
         seed = 0
+        ng_rnd_loc = bpy.data.node_groups.get("Randomize Location")
+        sock_rnd_loc = ng.interface.items_tree.get("Randomize Location")
+        assert ng_rnd_loc or sock_rnd_loc
 
         existing_obs = set()
         _del = set()
@@ -237,12 +240,14 @@ class ModGN:
                     node.inputs["Self Intersection"].default_value = self.use_self_secondary
                     node.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant_secondary
 
-            elif ng_rnd_loc and node.type == "GROUP" and node.node_tree is ng_rnd_loc:
-                if (ng_seed := node.inputs["Seed"].default_value) >= seed:
-                    seed = ng_seed + 1
+            elif (
+                node.type == "GROUP" and node.node_tree is ng_rnd_loc and
+                (_seed := node.inputs["Seed"].default_value) >= seed
+            ):
+                seed = _seed + 1
 
             elif node.type == "GROUP_INPUT":
-                in_rnd = node.outputs["Socket_2"]
+                in_rnd = node.outputs[sock_rnd_loc.identifier]
 
         for node in _del:
             nodes.remove(node)
@@ -255,7 +260,7 @@ class ModGN:
 
         md.show_viewport = True
 
-    def _ob_add(self, ng: NodeGroup, rnd_sock: NodeSocket, ob: Object) -> GeometryNodeGroup:
+    def _ob_add(self, ng: NodeGroup, in_rnd: NodeSocket, ob: Object) -> GeometryNodeGroup:
         nodes = ng.nodes
 
         node = nodes.new("GeometryNodeObjectInfo")
@@ -267,26 +272,26 @@ class ModGN:
         if ob.type != "MESH":
             node.location = -600, -500
 
-            weld = nodes.new("GeometryNodeMergeByDistance")
-            weld.inputs["Distance"].default_value = self.merge_distance
-            weld.location = -400, -500
-            weld.select = False
+            node_weld = nodes.new("GeometryNodeMergeByDistance")
+            node_weld.inputs["Distance"].default_value = self.merge_distance
+            node_weld.location = -400, -500
+            node_weld.select = False
 
-            ng.links.new(node.outputs["Geometry"], weld.inputs["Geometry"])
-            node = weld
+            ng.links.new(node.outputs["Geometry"], node_weld.inputs["Geometry"])
+            node = node_weld
 
-        if (ng_rnd_loc := bpy.data.node_groups.get("Randomize Location")) is None:
-            ng_rnd_loc = _ng_import(var.ASSET_NODES_FILEPATH, "Randomize Location")
+        if (ng_rnd := bpy.data.node_groups.get("Randomize Location")) is None:
+            ng_rnd = _ng_import(var.ASSET_NODES_FILEPATH, "Randomize Location")
 
-        rnd_loc = nodes.new("GeometryNodeGroup")
-        rnd_loc.node_tree = ng_rnd_loc
-        rnd_loc.location = -200, node.location.y
-        rnd_loc.select = False
+        node_rnd = nodes.new("GeometryNodeGroup")
+        node_rnd.node_tree = ng_rnd
+        node_rnd.location = -200, node.location.y
+        node_rnd.select = False
 
-        ng.links.new(rnd_sock, rnd_loc.inputs["Offset"])
-        ng.links.new(node.outputs["Geometry"], rnd_loc.inputs["Geometry"])
+        ng.links.new(in_rnd, node_rnd.inputs["Offset"])
+        ng.links.new(node.outputs["Geometry"], node_rnd.inputs["Geometry"])
 
-        return rnd_loc
+        return node_rnd
 
     @staticmethod
     def remove(md: Modifier, obs: set[Object]) -> bool:
