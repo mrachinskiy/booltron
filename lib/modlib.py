@@ -136,7 +136,7 @@ class ModGN:
             for k, v in override.items():
                 setattr(self, k, v)
 
-    def add(self, ob1: Object, obs: list[Object]) -> Modifier:
+    def add(self, ob1: Object, obs: list[Object], md: Modifier | None = None) -> Modifier:
         name = f"{ob1.name} {self.mode.title()}"
         ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
         ng["booltron"] = self.mode
@@ -195,7 +195,8 @@ class ModGN:
             ng.links.new(node_rnd_group.outputs["Geometry"], secondary.inputs["Mesh 2"])
             seed += 1
 
-        md = ob1.modifiers.new(self.mode.title(), "NODES")
+        if not md:
+            md = ob1.modifiers.new(self.mode.title(), "NODES")
         md[rnd_loc_socket.identifier] = self.loc_offset
         md.show_expanded = False
         md.show_in_editmode = False
@@ -212,51 +213,16 @@ class ModGN:
         ng = md.node_group
         nodes = ng.nodes
 
-        seed = 0
-        ng_rnd_loc = bpy.data.node_groups.get("Randomize Location")
-        sock_rnd_loc = ng.interface.items_tree.get("Randomize Location")
-        assert ng_rnd_loc or sock_rnd_loc
-
         existing_obs = set()
-        _del = set()
         for node in nodes:
-
             if node.type == "OBJECT_INFO":
                 ng_ob = node.inputs["Object"].default_value
-                if ng_ob is None:
-                    _del.add(node)
-                    _del.update(_find_connected(node))
-                else:
+                if ng_ob:
                     existing_obs.add(ng_ob)
+        existing_obs.update(obs)
 
-            elif node.type == "MESH_BOOLEAN":
-                if node.name == "PRIMARY":
-                    node.solver = self.solver
-                    node.inputs["Self Intersection"].default_value = self.use_self
-                    node.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant
-                elif node.name == "SECONDARY":
-                    secondary = node
-                    node.solver = self.solver_secondary
-                    node.inputs["Self Intersection"].default_value = self.use_self_secondary
-                    node.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant_secondary
-
-            elif (
-                node.type == "GROUP" and node.node_tree is ng_rnd_loc and
-                (_seed := node.inputs["Seed"].default_value) >= seed
-            ):
-                seed = _seed + 1
-
-            elif node.type == "GROUP_INPUT":
-                in_rnd = node.outputs[sock_rnd_loc.identifier]
-
-        for node in _del:
-            nodes.remove(node)
-
-        for ob in obs:
-            if ob not in existing_obs:
-                node_rnd_group = self._ob_add(ng, in_rnd, ob)
-                node_rnd_group.inputs["Seed"].default_value = seed
-                ng.links.new(node_rnd_group.outputs["Geometry"], secondary.inputs["Mesh 2"])
+        bpy.data.node_groups.remove(ng)
+        self.add(md.id_data, existing_obs, md)
 
         md.show_viewport = True
 
