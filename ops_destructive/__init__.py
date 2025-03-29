@@ -62,7 +62,6 @@ class Destructive:
         row = col.row()
         row.use_property_split = False
         row.prop(props, "use_loc_rnd")
-
         sub = col.column()
         sub.enabled = props.use_loc_rnd
         sub.prop(props, "loc_offset", text="Offset")
