@@ -150,7 +150,6 @@ class ModGN:
         sock_ofst.min_value = 0.0
         sock_ofst.force_non_field = True
         sock_seed = ng.interface.new_socket("Seed", in_out="INPUT", socket_type="NodeSocketInt", parent=panel_rnd)
-        sock_seed.min_value = 0
         sock_seed.force_non_field = True
 
         nodes = ng.nodes

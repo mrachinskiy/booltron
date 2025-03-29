@@ -62,14 +62,14 @@ class Nondestructive:
             col.prop(props, "use_self_secondary")
             col.prop(props, "use_hole_tolerant_secondary")
 
+        col.prop(props, "merge_distance")
+        col.prop(props, "display_secondary")
+
         row = col.row(heading="Randomize Location")
         row.prop(props, "use_loc_rnd", text="")
         sub = row.row()
         sub.enabled = props.use_loc_rnd
         sub.prop(props, "loc_offset", text="")
-
-        col.prop(props, "merge_distance")
-        col.prop(props, "display_secondary")
 
         layout.separator()
 
