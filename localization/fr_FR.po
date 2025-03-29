@@ -49,6 +49,9 @@ msgstr "Déplacer légèrement les objets pour éviter les erreurs de géométri
 msgid "Location offset is randomly generated for each object in range [-x, +x] input value"
 msgstr "Le décalage d'emplacement est généré aléatoirement pour chaque objet dans la plage [-x, +x] des valeurs d'entrée"
 
+msgid "Get different offset values"
+msgstr ""
+
 msgid "Displace secondary object to create overlap between slices"
 msgstr "Déplacer l'objet secondaire pour créer une superposition entre les tranches"
 

@@ -64,6 +64,7 @@ class ToolProps:
     )
     seed: IntProperty(
         name="Seed",
+        description="Get different offset values",
     )
     display_secondary: EnumProperty(
         name="Display As",

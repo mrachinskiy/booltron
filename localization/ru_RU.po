@@ -49,6 +49,9 @@ msgstr "Сдвинуть объекты на небольшое расстоян
 msgid "Location offset is randomly generated for each object in range [-x, +x] input value"
 msgstr "Сдвиг позиции генерируется в случайном порядке для каждого объекта в диапазоне [-x, +x] указанного значения"
 
+msgid "Get different offset values"
+msgstr "Получить другие значения сдвига"
+
 msgid "Displace secondary object to create overlap between slices"
 msgstr "Сместить вспомогательный объект для создания перекрытия между срезами"
 
