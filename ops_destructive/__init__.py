@@ -57,13 +57,16 @@ class Destructive:
             col.prop(props, "use_self_secondary")
             col.prop(props, "use_hole_tolerant_secondary")
 
-        row = col.row(heading="Randomize Location")
-        row.prop(props, "use_loc_rnd", text="")
-        sub = row.row()
-        sub.enabled = props.use_loc_rnd
-        sub.prop(props, "loc_offset", text="")
-
         col.prop(self, "keep_objects")
+
+        row = col.row()
+        row.use_property_split = False
+        row.prop(props, "use_loc_rnd")
+
+        sub = col.column()
+        sub.enabled = props.use_loc_rnd
+        sub.prop(props, "loc_offset", text="Offset")
+        sub.prop(props, "seed")
 
         layout.separator()
 
@@ -78,10 +81,11 @@ class Destructive:
     def execute(self, context):
         from ..lib import meshlib, modlib, objectlib
 
+        props = context.window_manager.booltron.destructive
         Mesh = meshlib.Utils(self.report)
         boolean = modlib.ModBoolean().add
 
-        ob1, obs = objectlib.prepare_objects(self.keep_objects)
+        ob1, obs = objectlib.prepare_objects(self.keep_objects, props.seed)
         ob2 = obs.pop()
 
         if obs:
@@ -201,10 +205,11 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
     def execute(self, context):
         from ..lib import meshlib, modlib, objectlib
 
+        props = context.window_manager.booltron.destructive
         Mesh = meshlib.Utils(self.report)
         boolean = modlib.ModBoolean().add
 
-        ob1, obs = objectlib.prepare_objects(self.keep_objects)
+        ob1, obs = objectlib.prepare_objects(self.keep_objects, props.seed)
 
         Mesh.prepare(ob1, select=False)
 

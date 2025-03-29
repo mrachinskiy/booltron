@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import bpy
-from bpy.props import BoolProperty, EnumProperty, FloatProperty, PointerProperty
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, PointerProperty
 from bpy.types import AddonPreferences, PropertyGroup
 
 from . import ui
@@ -61,6 +61,9 @@ class ToolProps:
         step=0.01,
         precision=3,
         unit="LENGTH",
+    )
+    seed: IntProperty(
+        name="Seed",
     )
     display_secondary: EnumProperty(
         name="Display As",
