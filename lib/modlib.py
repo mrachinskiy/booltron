@@ -57,13 +57,13 @@ def secondary_visibility_set(ob: Object, display_type="TEXTURED") -> None:
 class ModBoolean:
     __slots__ = (
         "solver",
+        "threshold",
         "use_self",
         "use_hole_tolerant",
-        "threshold",
         "solver_secondary",
+        "threshold_secondary",
         "use_self_secondary",
         "use_hole_tolerant_secondary",
-        "threshold_secondary",
     )
 
     def __init__(self) -> None:
@@ -105,32 +105,24 @@ class ModGN:
         "solver_secondary",
         "use_self_secondary",
         "use_hole_tolerant_secondary",
-        "loc_offset",
         "merge_distance",
+        "use_loc_rnd",
+        "loc_offset",
+        "seed",
     )
 
     def __init__(self, mode: str, override: dict[str, str | bool] | None = None) -> None:
         props = bpy.context.window_manager.booltron.non_destructive
         self.mode = mode
 
-        self.solver = props.solver
-        self.use_self = props.use_self
-        self.use_hole_tolerant = props.use_hole_tolerant
+        for prop in self.__slots__[1:]:
+            setattr(self, prop, getattr(props, prop))
+
         if props.solver == "FAST":
             self.solver = "FLOAT"
-            self.use_self = False
-            self.use_hole_tolerant = False
 
-        self.solver_secondary = props.solver_secondary
-        self.use_self_secondary = props.use_self_secondary
-        self.use_hole_tolerant_secondary = props.use_hole_tolerant_secondary
         if props.solver_secondary == "FAST":
             self.solver_secondary = "FLOAT"
-            self.use_self_secondary = False
-            self.use_hole_tolerant_secondary = False
-
-        self.loc_offset = props.loc_offset if props.use_loc_rnd else 0.0
-        self.merge_distance = props.merge_distance
 
         if override is not None:
             for k, v in override.items():
@@ -176,8 +168,9 @@ class ModGN:
         primary.name = "PRIMARY"
         primary.operation = self.mode
         primary.solver = self.solver
-        primary.inputs["Self Intersection"].default_value = self.use_self
-        primary.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant
+        if self.solver == "EXACT":
+            primary.inputs["Self Intersection"].default_value = self.use_self
+            primary.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant
         primary.select = False
 
         ng.links.new(in_geo, primary.inputs["Mesh 1" if self.mode == "DIFFERENCE" else "Mesh 2"])
@@ -187,8 +180,9 @@ class ModGN:
         secondary.name = "SECONDARY"
         secondary.operation = "UNION"
         secondary.solver = self.solver_secondary
-        secondary.inputs["Self Intersection"].default_value = self.use_self_secondary
-        secondary.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant_secondary
+        if self.solver_secondary == "EXACT":
+            secondary.inputs["Self Intersection"].default_value = self.use_self_secondary
+            secondary.inputs["Hole Tolerant"].default_value = self.use_hole_tolerant_secondary
         secondary.location.y = -250
         secondary.select = False
 
@@ -202,7 +196,9 @@ class ModGN:
 
         if not md:
             md = ob1.modifiers.new(self.mode.title(), "NODES")
-        md[sock_ofst.identifier] = self.loc_offset
+        if self.use_loc_rnd:
+            md[sock_ofst.identifier] = self.loc_offset
+            md[sock_seed.identifier] = self.seed
         md.show_expanded = False
         md.show_in_editmode = False
         md.show_group_selector = False

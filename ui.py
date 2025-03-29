@@ -169,38 +169,20 @@ def prefs_ui(self, context):
     main.label(text="Primary Object")
     col = main.box().column()
     col.prop(self, "solver")
-
-    sub = col.column()
-    sub.active = self.solver == "EXACT"
-    sub.prop(self, "use_self")
-    sub.prop(self, "use_hole_tolerant")
-
-    sub = col.column()
-    sub.active = self.solver == "FAST"
-    sub.prop(self, "threshold")
+    col.prop(self, "threshold")
+    col.prop(self, "use_self")
+    col.prop(self, "use_hole_tolerant")
 
     main.separator()
 
     main.label(text="Secondary Object")
     col = main.box().column()
     col.prop(self, "solver_secondary")
-
-    sub = col.column()
-    sub.active = self.solver_secondary == "EXACT"
-    sub.prop(self, "use_self_secondary")
-    sub.prop(self, "use_hole_tolerant_secondary")
-
-    sub = col.column()
-    sub.active = self.solver_secondary == "FAST"
-    sub.prop(self, "threshold_secondary")
-
-    row = col.row(heading="Randomize Location")
-    row.prop(self, "use_loc_rnd", text="")
-    sub = row.row()
-    sub.active = self.use_loc_rnd
-    sub.prop(self, "loc_offset", text="")
-
+    col.prop(self, "threshold_secondary")
+    col.prop(self, "use_self_secondary")
+    col.prop(self, "use_hole_tolerant_secondary")
     col.prop(self, "display_secondary", text="Display As")
+    col.prop(self, "loc_offset", text="Randomize Location")
 
     main.separator()
 
