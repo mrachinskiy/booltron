@@ -13,12 +13,12 @@ from . import ui
 
 
 _solver_items = (
-    ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
-    ("EXACT", "Exact", "Advanced solver for the best result"),
+    ("FLOAT", "Float", "Good performance, doesn't work on coplanar geometry"),
+    ("EXACT", "Exact", "Slowest, handles self intersection"),
 )
 
 if bpy.app.version >= (4, 5, 0):  # VER
-    _solver_items = (("MANIFOLD", "Manifold", "Fast solver that works only on manifold meshes but gives better results"),) + _solver_items
+    _solver_items = (("MANIFOLD", "Manifold", "Fastest, works only on manifold meshes"),) + _solver_items
 
 
 class ToolProps:

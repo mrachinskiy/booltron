@@ -71,6 +71,11 @@ class ModBoolean:
         for prop in self.__slots__:
             setattr(self, prop, getattr(props, prop))
 
+        if self.solver == "FLOAT":
+            self.solver = "FAST"
+        if self.solver_secondary == "FLOAT":
+            self.solver_secondary = "FAST"
+
     def add(self, ob1: Object, ob2: Object, mode: str, remove_ob2: bool = True) -> None:
         md = ob1.modifiers.new(mode.title(), "BOOLEAN")
         md.show_viewport = False
@@ -117,12 +122,6 @@ class ModGN:
 
         for prop in self.__slots__[1:]:
             setattr(self, prop, getattr(props, prop))
-
-        if props.solver == "FAST":
-            self.solver = "FLOAT"
-
-        if props.solver_secondary == "FAST":
-            self.solver_secondary = "FLOAT"
 
         if override is not None:
             for k, v in override.items():

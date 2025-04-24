@@ -43,7 +43,13 @@ msgstr "Tolérance aux trous"
 msgid "As Instance"
 msgstr "En tant qu'instance"
 
-msgid "Fast solver that works only on manifold meshes but gives better results"
+msgid "Fastest, works only on manifold meshes"
+msgstr ""
+
+msgid "Good performance, doesn't work on coplanar geometry"
+msgstr ""
+
+msgid "Slowest, handles self intersection"
 msgstr ""
 
 msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
