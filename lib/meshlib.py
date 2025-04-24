@@ -75,3 +75,21 @@ def detect_overlap(obs: list[Object]) -> bool:
 
     bm.free()
     return bool(overlap)
+
+
+def is_nonmanifold(obs: list[Object]) -> bool:
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    bm = bmesh.new()
+
+    for ob in obs:
+        ob_eval = ob.evaluated_get(depsgraph)
+        bm.from_mesh(ob_eval.to_mesh())
+        ob_eval.to_mesh_clear()
+
+    for e in bm.edges:
+        if not e.is_manifold:
+            bm.free()
+            return True
+
+    bm.free()
+    return False

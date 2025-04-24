@@ -90,7 +90,7 @@ class Nondestructive:
         layout.separator()
 
     def execute(self, context):
-        from ..lib import modlib
+        from ..lib import modlib, meshlib
         from . import versioning
 
         versioning.detect_and_migrate()
@@ -100,10 +100,16 @@ class Nondestructive:
         if ob1.select_get():
             obs.remove(ob1)
 
+        props = context.window_manager.booltron.non_destructive
+
+        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
+            if meshlib.is_nonmanifold(obs + [ob1]):
+                self.report({"ERROR"}, "Non-manifold input, choose different solver")
+                return {"FINISHED"}
+
         # Secondary objects
         # ----------------------------------
 
-        props = context.window_manager.booltron.non_destructive
         Mod = modlib.ModGN(self.mode)
 
         for ob in obs:

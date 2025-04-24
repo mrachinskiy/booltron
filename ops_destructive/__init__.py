@@ -41,7 +41,7 @@ class Destructive:
 
         if props.solver == "FAST":
             col.prop(props, "threshold")
-        else:
+        elif props.solver == "EXACT":
             col.prop(props, "use_self")
             col.prop(props, "use_hole_tolerant")
 
@@ -53,7 +53,7 @@ class Destructive:
 
         if props.solver_secondary == "FAST":
             col.prop(props, "threshold_secondary")
-        else:
+        elif props.solver_secondary == "EXACT":
             col.prop(props, "use_self_secondary")
             col.prop(props, "use_hole_tolerant_secondary")
 
@@ -85,25 +85,30 @@ class Destructive:
         boolean = modlib.ModBoolean().add
 
         ob1, obs = objectlib.prepare_objects(self.keep_objects, props.seed)
-        ob2 = obs.pop()
 
+        Mesh.prepare(ob1)
+        for ob in obs:
+            Mesh.prepare(ob, select=True)
+
+        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
+            if meshlib.is_nonmanifold(obs + [ob1]):
+                self.report({"ERROR"}, "Non-manifold input, choose different solver")
+                if self.keep_objects:
+                    for ob in obs:
+                        bpy.data.meshes.remove(ob.data)
+                return {"FINISHED"}
+
+        ob2 = obs.pop()
         if obs:
             if self.is_overlap:
-                Mesh.prepare(ob2, select=True)
                 for ob3 in obs:
-                    Mesh.prepare(ob3, select=True)
                     boolean(ob2, ob3, "SECONDARY")
             else:
                 obs.append(ob2)
                 with context.temp_override(active_object=ob2, selected_editable_objects=obs):
                     bpy.ops.object.join()
 
-        if not self.is_overlap:
-            Mesh.prepare(ob2, select=True)
-
-        Mesh.prepare(ob1, select=False)
         boolean(ob1, ob2, self.mode)
-
         Mesh.check(ob1)
 
         return {"FINISHED"}
@@ -210,11 +215,19 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
         ob1, obs = objectlib.prepare_objects(self.keep_objects, props.seed)
 
-        Mesh.prepare(ob1, select=False)
+        Mesh.prepare(ob1)
+        for ob in obs:
+            Mesh.prepare(ob, select=True)
+
+        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
+            if meshlib.is_nonmanifold(obs + [ob1]):
+                self.report({"ERROR"}, "Non-manifold input, choose different solver")
+                if self.keep_objects:
+                    for ob in obs:
+                        bpy.data.meshes.remove(ob.data)
+                return {"FINISHED"}
 
         for ob2 in obs:
-
-            Mesh.prepare(ob2, select=True)
 
             # Create copy of main object
             # ---------------------------------
