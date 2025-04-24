@@ -43,8 +43,14 @@ msgstr "Устойчивость к отверстиям"
 msgid "As Instance"
 msgstr "Как экземпляр"
 
-msgid "Fast solver that works only on manifold meshes but gives better results"
-msgstr "Быстрый решатель, работает только с развёртываемой геометрией, но выдаёт лучший результат"
+msgid "Fastest, works only on manifold meshes"
+msgstr "Самый быстрый, работает только с развёртываемой геометрией"
+
+msgid "Good performance, doesn't work on coplanar geometry"
+msgstr "Хорошая производительность, не работает с копланарной геометрией"
+
+msgid "Slowest, handles self intersection"
+msgstr "Самый медленный, справляется с самопересечением"
 
 msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
 msgstr "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с копланарной геометрией во время булевой операции"
