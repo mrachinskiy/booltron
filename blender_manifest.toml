@@ -1,6 +1,6 @@
 schema_version = "1.0.0"
 id = "booltron"
-version = "3.0.2"
+version = "3.1.0"
 name = "Booltron"
 tagline = "Super add-on for superfast booleans"
 maintainer = "Mikhail Rachinskiy"
