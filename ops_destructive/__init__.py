@@ -49,13 +49,15 @@ class Destructive:
 
         layout.label(text="Secondary Object")
         col = layout.box().column()
-        col.prop(props, "solver_secondary")
 
-        if props.solver_secondary == "FAST":
-            col.prop(props, "threshold_secondary")
-        elif props.solver_secondary == "EXACT":
-            col.prop(props, "use_self_secondary")
-            col.prop(props, "use_hole_tolerant_secondary")
+        if self.mode != "SLICE":
+            col.prop(props, "solver_secondary")
+
+            if props.solver_secondary == "FAST":
+                col.prop(props, "threshold_secondary")
+            elif props.solver_secondary == "EXACT":
+                col.prop(props, "use_self_secondary")
+                col.prop(props, "use_hole_tolerant_secondary")
 
         col.prop(self, "keep_objects")
 
