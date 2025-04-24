@@ -24,7 +24,7 @@ def ob_link(ob: Object, colls: tuple[Collection]) -> None:
     for coll in colls:
         coll.objects.link(ob)
 
-    if (sd := bpy.context.space_data).local_view:
+    if (sd := bpy.context.space_data) and sd.local_view:
         ob.local_view_set(sd, True)
 
 

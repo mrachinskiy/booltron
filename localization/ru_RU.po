@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Booltron 3.0.0\n"
-"POT-Creation-Date: 2024-07-28\n"
-"PO-Revision-Date: 2024-07-28\n"
+"Project-Id-Version: Booltron 3.1.0\n"
+"POT-Creation-Date: 2025-04-24\n"
+"PO-Revision-Date: 2025-04-24\n"
 "Last-Translator: Mikhail Rachinskiy\n"
 "Language-Team: Mikhail Rachinskiy\n"
 "Language: ru_RU\n"
@@ -41,10 +41,13 @@ msgid "Hole Tolerant"
 msgstr "Устойчивость к отверстиям"
 
 msgid "As Instance"
-msgstr "Как instance"
+msgstr "Как экземпляр"
+
+msgid "Fast solver that works only on manifold meshes but gives better results"
+msgstr "Быстрый решатель, работает только с развёртываемой геометрией, но выдаёт лучший результат"
 
 msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
-msgstr "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с coplanar геометрией во время булевой операции"
+msgstr "Сдвинуть объекты на небольшое расстояние, чтобы избежать ошибок с копланарной геометрией во время булевой операции"
 
 msgid "Location offset is randomly generated for each object in range [-x, +x] input value"
 msgstr "Сдвиг позиции генерируется в случайном порядке для каждого объекта в диапазоне [-x, +x] указанного значения"
@@ -86,7 +89,7 @@ msgid "Select secondary objects used by given modifier"
 msgstr "Выделить вспомогательные объекты используемые данным модификатором"
 
 msgid "Disable boolean modifiers on all objects"
-msgstr "Отключить модификаторы Boolean на всех объектах"
+msgstr "Отключить логические модификаторы на всех объектах"
 
 msgid "Bake modifier result for selected objects"
 msgstr "Запечь результат модификатора выделенных объектов"
@@ -98,13 +101,16 @@ msgid "Delete modifier bake for selected objects"
 msgstr "Удалить запекание модификатора выделенных объектов"
 
 msgid "Create instance mesh copy of selected objects"
-msgstr "Создать instance mesh копию выделенных объектов"
+msgstr "Создать экземпляр мэш копию выделенных объектов"
 
 msgid "Shortcut: hold Alt when using the tool"
 msgstr "Горячая клавиша: удерживайте клавишу Alt при использовании инструмента"
 
 msgid "Boolean operation result is non-manifold"
-msgstr "Результат булевой операции non-manifold"
+msgstr "Результат булевой операции неразвёртываемый"
+
+msgid "Non-manifold input, choose different solver"
+msgstr "Неразвёртываемая геометрия на вводе, выберите другой решатель"
 
 msgid "At least two objects must be selected"
 msgstr "Как минимум два объекта должны быть выделены"
@@ -145,4 +151,4 @@ msgstr "Удалить запекание"
 
 msgctxt "Operator"
 msgid "Instance Copy"
-msgstr "Instance копия"
+msgstr "Экземпляр копия"

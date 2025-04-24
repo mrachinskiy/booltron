@@ -12,6 +12,15 @@ from . import ui
 # ------------------------------------------
 
 
+_solver_items = (
+    ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
+    ("EXACT", "Exact", "Advanced solver for the best result"),
+)
+
+if bpy.app.version >= (4, 5, 0):  # VER
+    _solver_items = (("MANIFOLD", "Manifold", "Fast solver that works only on manifold meshes but gives better results"),) + _solver_items
+
+
 class ToolProps:
 
     # Primary
@@ -20,11 +29,7 @@ class ToolProps:
     solver: EnumProperty(
         name="Solver",
         description="Method for calculating booleans",
-        items=(
-            ("FAST", "Fast", "Simple solver for the best performance, without support for overlapping geometry"),
-            ("EXACT", "Exact", "Advanced solver for the best result"),
-        ),
-        default="FAST",
+        items=_solver_items,
     )
     use_self: BoolProperty(
         name="Self Intersection",
