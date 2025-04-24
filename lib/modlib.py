@@ -78,16 +78,16 @@ class ModBoolean:
 
         if mode == "SECONDARY":
             md.operation = "UNION"
-            md.solver = self.solver
-            md.use_self = self.use_self
-            md.use_hole_tolerant = self.use_hole_tolerant
-            md.double_threshold = self.threshold
-        else:
-            md.operation = mode
             md.solver = self.solver_secondary
             md.use_self = self.use_self_secondary
             md.use_hole_tolerant = self.use_hole_tolerant_secondary
             md.double_threshold = self.threshold_secondary
+        else:
+            md.operation = mode
+            md.solver = self.solver
+            md.use_self = self.use_self
+            md.use_hole_tolerant = self.use_hole_tolerant
+            md.double_threshold = self.threshold
 
         with bpy.context.temp_override(object=ob1):
             bpy.ops.object.modifier_apply(modifier=md.name)
