@@ -61,13 +61,10 @@ class Destructive:
 
         col.prop(self, "keep_objects")
 
-        row = col.row()
-        row.use_property_split = False
-        row.prop(props, "use_loc_rnd")
-        sub = col.column()
-        sub.enabled = props.use_loc_rnd
-        sub.prop(props, "loc_offset", text="Offset")
-        sub.prop(props, "seed")
+        col.prop(props, "use_loc_rnd")
+        if props.use_loc_rnd:
+            col.prop(props, "loc_offset", text="Offset")
+            col.prop(props, "seed")
 
         layout.separator()
 
