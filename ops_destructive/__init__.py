@@ -5,8 +5,6 @@ import bpy
 from bpy.props import BoolProperty, FloatVectorProperty
 from bpy.types import Operator
 
-from .. import preferences
-
 
 def _cursor_state(func):
     def wrapper(self, context):
@@ -17,7 +15,7 @@ def _cursor_state(func):
     return wrapper
 
 
-class Destructive(preferences.ToolProps):
+class Destructive:
     mode: str
     is_overlap = True
     keep_objects: BoolProperty(
@@ -75,12 +73,13 @@ class Destructive(preferences.ToolProps):
     def execute(self, context):
         from ..lib import meshlib, modlib, objectlib
 
+        props = context.window_manager.booltron.destructive
+
         ob1, obs = objectlib.prepare_objects(self.keep_objects)
+        meshlib.prepare((ob1,), props.merge_distance, props.dissolve_distance)
+        meshlib.prepare(obs, props.merge_distance, props.dissolve_distance, select=True)
 
-        meshlib.prepare((ob1,), self.merge_distance, self.dissolve_distance)
-        meshlib.prepare(obs, self.merge_distance, self.dissolve_distance, select=True)
-
-        if self.solver == "MANIFOLD" or self.solver_secondary == "MANIFOLD":
+        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
             if meshlib.is_nonmanifold_eval(obs + [ob1]):
                 self.report({"ERROR"}, "Non-manifold input, choose different solver")
                 if self.keep_objects:
@@ -88,7 +87,7 @@ class Destructive(preferences.ToolProps):
                         bpy.data.meshes.remove(ob.data)
                 return {"FINISHED"}
 
-        Mod = modlib.ModGN(self.mode, self.asdict())
+        Mod = modlib.ModGN(self.mode, props.asdict())
         if self.is_overlap or len(obs) == 1:
             Mod.add_and_apply(ob1, obs)
         else:
@@ -127,7 +126,6 @@ class Destructive(preferences.ToolProps):
             props.first_run = False
             props.set_from_prefs()
         props.use_loc_rnd = False
-        self.set_from_props(props)
 
         self.keep_objects = event.alt
 
@@ -198,7 +196,6 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
         from ..lib import meshlib, modlib, objectlib
 
         ob1, obs = objectlib.prepare_objects(self.keep_objects)
-
         meshlib.prepare((ob1,), self.merge_distance, self.dissolve_distance)
         meshlib.prepare(obs, self.merge_distance, self.dissolve_distance, select=True)
 
@@ -226,7 +223,7 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
             ob2.matrix_basis.translation += self.overlap_distance / 2
 
-            modlib.ModGN("DIFFERENCE", self.asdict()).add_and_apply(ob1, (ob2,), remove_obs=False)
+            modlib.ModGN("DIFFERENCE", props.asdict()).add_and_apply(ob1, (ob2,), remove_obs=False)
 
             if meshlib.is_nonmanifold(ob1):
                 self.report({"ERROR"}, "Boolean operation result is non-manifold")
@@ -237,7 +234,7 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
             ob2.matrix_basis.translation -= self.overlap_distance
 
-            modlib.ModGN("INTERSECT", self.asdict()).add_and_apply(ob1_copy, (ob2,))
+            modlib.ModGN("INTERSECT", props.asdict()).add_and_apply(ob1_copy, (ob2,))
 
             if meshlib.is_nonmanifold(ob1_copy):
                 self.report({"ERROR"}, "Boolean operation result is non-manifold")

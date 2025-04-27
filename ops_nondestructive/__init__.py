@@ -29,7 +29,7 @@ def _iter_modifiers(ob: Object, mode: str) -> None:
     modifiers = tuple(mods)
 
 
-class Nondestructive(preferences.ToolProps):
+class Nondestructive:
     mode: str
     modifier_name: EnumProperty(
         name="Modifier",
@@ -98,7 +98,6 @@ class Nondestructive(preferences.ToolProps):
             obs.remove(ob1)
 
         props = context.window_manager.booltron.non_destructive
-
         if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
             if meshlib.is_nonmanifold_eval(obs + [ob1]):
                 self.report({"ERROR"}, "Non-manifold input, choose different solver")
@@ -107,7 +106,7 @@ class Nondestructive(preferences.ToolProps):
         # Secondary objects
         # ----------------------------------
 
-        Mod = modlib.ModGN(self.mode, self.asdict())
+        Mod = modlib.ModGN(self.mode, props.asdict())
 
         for ob in obs:
             modlib.secondary_visibility_set(ob, props.display_secondary)
@@ -139,7 +138,6 @@ class Nondestructive(preferences.ToolProps):
             props.first_run = False
             props.set_from_prefs()
         props.use_loc_rnd = False
-        self.set_from_props(props)
 
         _iter_modifiers(context.object, self.mode)
 
