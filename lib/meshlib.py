@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: 2014-2025 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from collections.abc import Callable
-
 import bmesh
 import bpy
 from bpy.types import Object
@@ -15,22 +13,14 @@ def _delete_loose(bm: bmesh.types.BMesh) -> None:
             bm.verts.remove(v)
 
 
-class Utils:
-    __slots__ = "merge_distance", "dissolve_distance", "report"
-
-    def __init__(self, report: Callable) -> None:
-        self.report = report
-        props = bpy.context.window_manager.booltron.destructive
-        self.merge_distance = props.merge_distance
-        self.dissolve_distance = props.dissolve_distance
-
-    def prepare(self, ob: Object, select: bool = False) -> None:
+def prepare(obs: list[Object], merge_distance: float, dissolve_distance: float, select: bool = False) -> None:
+    for ob in obs:
         me = ob.data
         bm = bmesh.new()
         bm.from_mesh(me)
 
-        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=self.merge_distance)
-        bmesh.ops.dissolve_degenerate(bm, edges=bm.edges, dist=self.dissolve_distance)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=merge_distance)
+        bmesh.ops.dissolve_degenerate(bm, edges=bm.edges, dist=dissolve_distance)
         _delete_loose(bm)
         bmesh.ops.holes_fill(bm, edges=bm.edges)
 
@@ -39,19 +29,6 @@ class Utils:
 
         bm.to_mesh(me)
         bm.free()
-
-    def check(self, ob: Object) -> bool:
-        bm = bmesh.new()
-        bm.from_mesh(ob.data)
-
-        for e in bm.edges:
-            if not e.is_manifold:
-                self.report({"ERROR"}, "Boolean operation result is non-manifold")
-                bm.free()
-                return True
-
-        bm.free()
-        return False
 
 
 def detect_overlap(obs: list[Object]) -> bool:
@@ -77,7 +54,20 @@ def detect_overlap(obs: list[Object]) -> bool:
     return bool(overlap)
 
 
-def is_nonmanifold(obs: list[Object]) -> bool:
+def is_nonmanifold(ob: Object) -> bool:
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+
+    for e in bm.edges:
+        if not e.is_manifold:
+            bm.free()
+            return True
+
+    bm.free()
+    return False
+
+
+def is_nonmanifold_eval(obs: list[Object]) -> bool:
     depsgraph = bpy.context.evaluated_depsgraph_get()
     bm = bmesh.new()
 

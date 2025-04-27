@@ -100,7 +100,7 @@ class Nondestructive(preferences.ToolProps):
         props = context.window_manager.booltron.non_destructive
 
         if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
-            if meshlib.is_nonmanifold(obs + [ob1]):
+            if meshlib.is_nonmanifold_eval(obs + [ob1]):
                 self.report({"ERROR"}, "Non-manifold input, choose different solver")
                 return {"FINISHED"}
 
@@ -150,15 +150,6 @@ class Nondestructive(preferences.ToolProps):
         return self.execute(context)
 
 
-class OBJECT_OT_nondestructive_union(Nondestructive, Operator):
-    bl_label = "Union"
-    bl_description = "Combine active (primary) and selected (secondary) objects"
-    bl_idname = "object.booltron_nondestructive_union"
-    bl_options = {"REGISTER", "UNDO"}
-
-    mode = "UNION"
-
-
 class OBJECT_OT_nondestructive_difference(Nondestructive, Operator):
     bl_label = "Difference"
     bl_description = "Subtract selected (secondary) objects from active (primary) object"
@@ -166,6 +157,15 @@ class OBJECT_OT_nondestructive_difference(Nondestructive, Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     mode = "DIFFERENCE"
+
+
+class OBJECT_OT_nondestructive_union(Nondestructive, Operator):
+    bl_label = "Union"
+    bl_description = "Combine active (primary) and selected (secondary) objects"
+    bl_idname = "object.booltron_nondestructive_union"
+    bl_options = {"REGISTER", "UNDO"}
+
+    mode = "UNION"
 
 
 class OBJECT_OT_nondestructive_intersect(Nondestructive, Operator):
