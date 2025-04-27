@@ -169,7 +169,6 @@ def prefs_ui(self, context):
     main.label(text="Primary Object")
     col = main.box().column()
     col.prop(self, "solver")
-    col.prop(self, "threshold")
     col.prop(self, "use_self")
     col.prop(self, "use_hole_tolerant")
 
@@ -178,7 +177,6 @@ def prefs_ui(self, context):
     main.label(text="Secondary Object")
     col = main.box().column()
     col.prop(self, "solver_secondary")
-    col.prop(self, "threshold_secondary")
     col.prop(self, "use_self_secondary")
     col.prop(self, "use_hole_tolerant_secondary")
     col.prop(self, "display_secondary", text="Display As")

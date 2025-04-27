@@ -7,6 +7,8 @@
 import bpy
 from bpy.types import Modifier, Object
 
+from .. import var
+
 
 def detect_and_migrate() -> bool:
     for ob in bpy.context.scene.objects:
@@ -28,6 +30,9 @@ def _migrate_scene() -> None:
 
     modlib.disable_mods(False)
 
+    prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
+    settings = prefs.asdict()
+
     combined_obs = set()
     for ob in bpy.context.scene.objects:
 
@@ -37,11 +42,10 @@ def _migrate_scene() -> None:
         for md in ob.modifiers[:]:
             if md.type == "BOOLEAN" and md.object is not None and "booltron_combined" in md.object:
                 secondary_obs = []
-                override = {
-                    "solver": md.solver,
-                    "use_self": md.use_self,
-                    "use_hole_tolerant": md.use_hole_tolerant,
-                }
+                override = settings.copy()
+                override["solver"] = md.solver
+                override["use_self"] = md.use_self
+                override["use_hole_tolerant"] = md.use_hole_tolerant
 
                 for md_secondary in md.object.modifiers:
                     if md_secondary.type == "BOOLEAN" and md_secondary.object is not None:

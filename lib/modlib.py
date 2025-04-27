@@ -54,53 +54,6 @@ def secondary_visibility_set(ob: Object, display_type="TEXTURED") -> None:
     ob.hide_probe_plane = not visible
 
 
-class ModBoolean:
-    __slots__ = (
-        "solver",
-        "threshold",
-        "use_self",
-        "use_hole_tolerant",
-        "solver_secondary",
-        "threshold_secondary",
-        "use_self_secondary",
-        "use_hole_tolerant_secondary",
-    )
-
-    def __init__(self) -> None:
-        props = bpy.context.window_manager.booltron.destructive
-        for prop in self.__slots__:
-            setattr(self, prop, getattr(props, prop))
-
-        if self.solver == "FLOAT":
-            self.solver = "FAST"
-        if self.solver_secondary == "FLOAT":
-            self.solver_secondary = "FAST"
-
-    def add(self, ob1: Object, ob2: Object, mode: str, remove_ob2: bool = True) -> None:
-        md = ob1.modifiers.new(mode.title(), "BOOLEAN")
-        md.show_viewport = False
-        md.object = ob2
-
-        if mode == "SECONDARY":
-            md.operation = "UNION"
-            md.solver = self.solver_secondary
-            md.use_self = self.use_self_secondary
-            md.use_hole_tolerant = self.use_hole_tolerant_secondary
-            md.double_threshold = self.threshold_secondary
-        else:
-            md.operation = mode
-            md.solver = self.solver
-            md.use_self = self.use_self
-            md.use_hole_tolerant = self.use_hole_tolerant
-            md.double_threshold = self.threshold
-
-        with bpy.context.temp_override(object=ob1):
-            bpy.ops.object.modifier_apply(modifier=md.name)
-
-        if remove_ob2:
-            bpy.data.meshes.remove(ob2.data)
-
-
 class ModGN:
     __slots__ = (
         "mode",
@@ -116,18 +69,13 @@ class ModGN:
         "seed",
     )
 
-    def __init__(self, mode: str, override: dict[str, str | bool] | None = None) -> None:
-        props = bpy.context.window_manager.booltron.non_destructive
+    def __init__(self, mode: str, settings: dict[str, str | float | bool]) -> None:
         self.mode = mode
 
         for prop in self.__slots__[1:]:
-            setattr(self, prop, getattr(props, prop))
+            setattr(self, prop, settings.get(prop))
 
-        if override is not None:
-            for k, v in override.items():
-                setattr(self, k, v)
-
-    def add(self, ob1: Object, obs: list[Object], md: Modifier | None = None) -> Modifier:
+    def add(self, ob1: Object, obs: list[Object], md: Modifier | None = None, show_viewport: bool = True) -> Modifier:
         name = f"{ob1.name} {self.mode.title()}"
         ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
         ng["booltron"] = self.mode
@@ -198,6 +146,7 @@ class ModGN:
         if self.use_loc_rnd:
             md[sock_ofst.identifier] = self.loc_offset
             md[sock_seed.identifier] = self.seed
+        md.show_viewport = show_viewport
         md.show_expanded = False
         md.show_in_editmode = False
         md.show_group_selector = False
@@ -206,6 +155,19 @@ class ModGN:
             md.bake_target = "DISK"
 
         return md
+
+    def add_and_apply(self, ob1: Object, obs: list[Object], remove_obs: bool = True) -> None:
+        md = self.add(ob1, obs, show_viewport=False)
+        ng = md.node_group
+
+        with bpy.context.temp_override(object=ob1):
+            bpy.ops.object.modifier_apply(modifier=md.name)
+
+        bpy.data.node_groups.remove(ng)
+
+        if remove_obs:
+            for ob in obs:
+                bpy.data.meshes.remove(ob.data)
 
     def extend(self, md: Modifier, obs: list[Object]) -> None:
         md.show_viewport = False
@@ -220,7 +182,7 @@ class ModGN:
         ng_obs.update(obs)
 
         bpy.data.node_groups.remove(ng)
-        self.add(md.id_data, ng_obs, md)
+        self.add(md.id_data, ng_obs, md=md)
 
         md.show_viewport = True
 
