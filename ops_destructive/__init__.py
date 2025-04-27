@@ -77,13 +77,11 @@ class Destructive(preferences.ToolProps):
 
         ob1, obs = objectlib.prepare_objects(self.keep_objects)
 
-        Mesh = meshlib.Utils(self.report)
-        Mesh.prepare(ob1)
-        for ob in obs:
-            Mesh.prepare(ob, select=True)
+        meshlib.prepare((ob1,), self.merge_distance, self.dissolve_distance)
+        meshlib.prepare(obs, self.merge_distance, self.dissolve_distance, select=True)
 
         if self.solver == "MANIFOLD" or self.solver_secondary == "MANIFOLD":
-            if meshlib.is_nonmanifold(obs + [ob1]):
+            if meshlib.is_nonmanifold_eval(obs + [ob1]):
                 self.report({"ERROR"}, "Non-manifold input, choose different solver")
                 if self.keep_objects:
                     for ob in obs:
@@ -99,7 +97,8 @@ class Destructive(preferences.ToolProps):
                 bpy.ops.object.join()
             Mod.add_and_apply(ob1, (ob2,))
 
-        Mesh.check(ob1)
+        if meshlib.is_nonmanifold(ob1):
+            self.report({"ERROR"}, "Boolean operation result is non-manifold")
 
         return {"FINISHED"}
 
@@ -139,15 +138,6 @@ class Destructive(preferences.ToolProps):
         return self.execute(context)
 
 
-class OBJECT_OT_destructive_union(Destructive, Operator):
-    bl_label = "Union"
-    bl_description = "Combine selected objects"
-    bl_idname = "object.booltron_destructive_union"
-    bl_options = {"REGISTER", "UNDO"}
-
-    mode = "UNION"
-
-
 class OBJECT_OT_destructive_difference(Destructive, Operator):
     bl_label = "Difference"
     bl_description = "Subtract selected objects from active object"
@@ -155,6 +145,15 @@ class OBJECT_OT_destructive_difference(Destructive, Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     mode = "DIFFERENCE"
+
+
+class OBJECT_OT_destructive_union(Destructive, Operator):
+    bl_label = "Union"
+    bl_description = "Combine selected objects"
+    bl_idname = "object.booltron_destructive_union"
+    bl_options = {"REGISTER", "UNDO"}
+
+    mode = "UNION"
 
 
 class OBJECT_OT_destructive_intersect(Destructive, Operator):
@@ -198,17 +197,14 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
     def execute(self, context):
         from ..lib import meshlib, modlib, objectlib
 
+        ob1, obs = objectlib.prepare_objects(self.keep_objects)
+
+        meshlib.prepare((ob1,), self.merge_distance, self.dissolve_distance)
+        meshlib.prepare(obs, self.merge_distance, self.dissolve_distance, select=True)
+
         props = context.window_manager.booltron.destructive
-        Mesh = meshlib.Utils(self.report)
-
-        ob1, obs = objectlib.prepare_objects(self.keep_objects, props.seed)
-
-        Mesh.prepare(ob1)
-        for ob in obs:
-            Mesh.prepare(ob, select=True)
-
         if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
-            if meshlib.is_nonmanifold(obs + [ob1]):
+            if meshlib.is_nonmanifold_eval(obs + [ob1]):
                 self.report({"ERROR"}, "Non-manifold input, choose different solver")
                 if self.keep_objects:
                     for ob in obs:
@@ -232,7 +228,8 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
             modlib.ModGN("DIFFERENCE", self.asdict()).add_and_apply(ob1, (ob2,), remove_obs=False)
 
-            if Mesh.check(ob1):
+            if meshlib.is_nonmanifold(ob1):
+                self.report({"ERROR"}, "Boolean operation result is non-manifold")
                 return {"FINISHED"}
 
             # Main object copy intersect
@@ -242,7 +239,8 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
             modlib.ModGN("INTERSECT", self.asdict()).add_and_apply(ob1_copy, (ob2,))
 
-            if Mesh.check(ob1_copy):
+            if meshlib.is_nonmanifold(ob1_copy):
+                self.report({"ERROR"}, "Boolean operation result is non-manifold")
                 return {"FINISHED"}
 
         ob1.select_set(False)
