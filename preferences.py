@@ -5,7 +5,7 @@ import bpy
 from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, PointerProperty
 from bpy.types import AddonPreferences, PropertyGroup
 
-from . import ui
+from . import ui, var
 
 
 # Operator properties
@@ -38,14 +38,6 @@ class ToolProps:
     use_hole_tolerant: BoolProperty(
         name="Hole Tolerant",
         description="Better results when there are holes (slower)",
-    )
-    threshold: FloatProperty(
-        name="Overlap Threshold",
-        description="Threshold for checking overlapping geometry",
-        default=0.000001,
-        min=0.0,
-        step=0.0001,
-        precision=6,
     )
 
     # Secondary
@@ -115,9 +107,21 @@ class ToolProps:
         description="Bake modifier result",
     )
 
+    def asdict(self) -> dict[str, str | float | bool]:
+        return {prop: getattr(self, prop) for prop in ToolProps.__annotations__}
+
+    def set_from_prefs(self) -> None:
+        prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
+        for prop in ToolProps.__annotations__:
+            setattr(self, prop, getattr(prefs, prop))
+
+    def set_from_props(self, props: PropertyGroup) -> None:
+        for prop in ToolProps.__annotations__:
+            setattr(self, prop, getattr(props, prop))
+
 
 # Duplicate solver properties
-for prop in ("solver", "use_self", "use_hole_tolerant", "threshold"):
+for prop in ("solver", "use_self", "use_hole_tolerant"):
     ToolProps.__annotations__[f"{prop}_secondary"] = ToolProps.__annotations__[prop]
 
 

@@ -5,7 +5,7 @@ import bpy
 from bpy.props import EnumProperty
 from bpy.types import Object, Operator
 
-from .. import preferences, var
+from .. import preferences
 from .bake import (OBJECT_OT_instance_copy, OBJECT_OT_modifier_bake,
                    OBJECT_OT_modifier_bake_del)
 from .utils import OBJECT_OT_secondary_del, OBJECT_OT_secondary_select
@@ -29,7 +29,7 @@ def _iter_modifiers(ob: Object, mode: str) -> None:
     modifiers = tuple(mods)
 
 
-class Nondestructive:
+class Nondestructive(preferences.ToolProps):
     mode: str
     modifier_name: EnumProperty(
         name="Modifier",
@@ -107,7 +107,7 @@ class Nondestructive:
         # Secondary objects
         # ----------------------------------
 
-        Mod = modlib.ModGN(self.mode)
+        Mod = modlib.ModGN(self.mode, self.asdict())
 
         for ob in obs:
             modlib.secondary_visibility_set(ob, props.display_secondary)
@@ -135,13 +135,11 @@ class Nondestructive:
             return {"CANCELLED"}
 
         props = context.window_manager.booltron.non_destructive
-
         if props.first_run:
             props.first_run = False
-            prefs = context.preferences.addons[var.ADDON_ID].preferences
-            for prop in preferences.ToolProps.__annotations__:
-                setattr(props, prop, getattr(prefs, prop))
+            props.set_from_prefs()
         props.use_loc_rnd = False
+        self.set_from_props(props)
 
         _iter_modifiers(context.object, self.mode)
 

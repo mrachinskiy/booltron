@@ -5,7 +5,7 @@ import bpy
 from bpy.props import BoolProperty, FloatVectorProperty
 from bpy.types import Operator
 
-from .. import preferences, var
+from .. import preferences
 
 
 def _cursor_state(func):
@@ -17,9 +17,9 @@ def _cursor_state(func):
     return wrapper
 
 
-class Destructive:
+class Destructive(preferences.ToolProps):
     mode: str
-    is_overlap = False
+    is_overlap = True
     keep_objects: BoolProperty(
         name="Keep Objects",
         description=(
@@ -39,9 +39,7 @@ class Destructive:
         col = layout.box().column()
         col.prop(props, "solver")
 
-        if props.solver == "FAST":
-            col.prop(props, "threshold")
-        elif props.solver == "EXACT":
+        if props.solver == "EXACT":
             col.prop(props, "use_self")
             col.prop(props, "use_hole_tolerant")
 
@@ -53,9 +51,7 @@ class Destructive:
         if self.mode != "SLICE":
             col.prop(props, "solver_secondary")
 
-            if props.solver_secondary == "FAST":
-                col.prop(props, "threshold_secondary")
-            elif props.solver_secondary == "EXACT":
+            if props.solver_secondary == "EXACT":
                 col.prop(props, "use_self_secondary")
                 col.prop(props, "use_hole_tolerant_secondary")
 
@@ -79,17 +75,14 @@ class Destructive:
     def execute(self, context):
         from ..lib import meshlib, modlib, objectlib
 
-        props = context.window_manager.booltron.destructive
+        ob1, obs = objectlib.prepare_objects(self.keep_objects)
+
         Mesh = meshlib.Utils(self.report)
-        boolean = modlib.ModBoolean().add
-
-        ob1, obs = objectlib.prepare_objects(self.keep_objects, props.seed)
-
         Mesh.prepare(ob1)
         for ob in obs:
             Mesh.prepare(ob, select=True)
 
-        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
+        if self.solver == "MANIFOLD" or self.solver_secondary == "MANIFOLD":
             if meshlib.is_nonmanifold(obs + [ob1]):
                 self.report({"ERROR"}, "Non-manifold input, choose different solver")
                 if self.keep_objects:
@@ -97,17 +90,15 @@ class Destructive:
                         bpy.data.meshes.remove(ob.data)
                 return {"FINISHED"}
 
-        ob2 = obs.pop()
-        if obs:
-            if self.is_overlap:
-                for ob3 in obs:
-                    boolean(ob2, ob3, "SECONDARY")
-            else:
-                obs.append(ob2)
-                with context.temp_override(active_object=ob2, selected_editable_objects=obs):
-                    bpy.ops.object.join()
+        Mod = modlib.ModGN(self.mode, self.asdict())
+        if self.is_overlap or len(obs) == 1:
+            Mod.add_and_apply(ob1, obs)
+        else:
+            ob2 = obs[0]
+            with context.temp_override(active_object=ob2, selected_editable_objects=obs):
+                bpy.ops.object.join()
+            Mod.add_and_apply(ob1, (ob2,))
 
-        boolean(ob1, ob2, self.mode)
         Mesh.check(ob1)
 
         return {"FINISHED"}
@@ -133,12 +124,11 @@ class Destructive:
             self.is_overlap = meshlib.detect_overlap(obs)
 
         props = context.window_manager.booltron.destructive
-
         if props.first_run:
             props.first_run = False
-            prefs = context.preferences.addons[var.ADDON_ID].preferences
-            for prop in preferences.ToolProps.__annotations__:
-                setattr(props, prop, getattr(prefs, prop))
+            props.set_from_prefs()
+        props.use_loc_rnd = False
+        self.set_from_props(props)
 
         self.keep_objects = event.alt
 
@@ -210,7 +200,6 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
         props = context.window_manager.booltron.destructive
         Mesh = meshlib.Utils(self.report)
-        boolean = modlib.ModBoolean().add
 
         ob1, obs = objectlib.prepare_objects(self.keep_objects, props.seed)
 
@@ -241,7 +230,7 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
             ob2.matrix_basis.translation += self.overlap_distance / 2
 
-            boolean(ob1, ob2, "DIFFERENCE", remove_ob2=False)
+            modlib.ModGN("DIFFERENCE", self.asdict()).add_and_apply(ob1, (ob2,), remove_obs=False)
 
             if Mesh.check(ob1):
                 return {"FINISHED"}
@@ -251,7 +240,7 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
             ob2.matrix_basis.translation -= self.overlap_distance
 
-            boolean(ob1_copy, ob2, "INTERSECT")
+            modlib.ModGN("INTERSECT", self.asdict()).add_and_apply(ob1_copy, (ob2,))
 
             if Mesh.check(ob1_copy):
                 return {"FINISHED"}
