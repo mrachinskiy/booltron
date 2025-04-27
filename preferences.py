@@ -110,15 +110,6 @@ class ToolProps:
     def asdict(self) -> dict[str, str | float | bool]:
         return {prop: getattr(self, prop) for prop in ToolProps.__annotations__}
 
-    def set_from_prefs(self) -> None:
-        prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
-        for prop in ToolProps.__annotations__:
-            setattr(self, prop, getattr(prefs, prop))
-
-    def set_from_props(self, props: PropertyGroup) -> None:
-        for prop in ToolProps.__annotations__:
-            setattr(self, prop, getattr(props, prop))
-
 
 # Duplicate solver properties
 for prop in ("solver", "use_self", "use_hole_tolerant"):
@@ -127,6 +118,11 @@ for prop in ("solver", "use_self", "use_hole_tolerant"):
 
 class ToolPropsGroup(ToolProps, PropertyGroup):
     first_run: BoolProperty(default=True)
+
+    def set_from_prefs(self) -> None:
+        prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
+        for prop in ToolProps.__annotations__:
+            setattr(self, prop, getattr(prefs, prop))
 
 
 # Add-on preferences
