@@ -12,7 +12,7 @@ class OBJECT_OT_secondary_del(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        from ..lib.modlib import ModGN
+        from ...lib.modlib import ModGN
         from . import versioning
 
         versioning.detect_and_migrate()
@@ -73,7 +73,7 @@ class OBJECT_OT_secondary_select(Operator):
         return {"FINISHED"}
 
     def invoke(self, context, event):
-        from ..lib.modlib import ModGN
+        from ...lib.modlib import ModGN
 
         if context.object is None:
             return {"CANCELLED"}

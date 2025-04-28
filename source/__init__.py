@@ -13,10 +13,10 @@ else:
     import bpy
     from bpy.props import PointerProperty
 
-    from . import localization, ops_destructive, ops_nondestructive, preferences, ui
+    from . import localization, operators, preferences, ui
 
 
-classes = essentials.get_classes((preferences, ui, ops_destructive, ops_nondestructive))
+classes = essentials.get_classes((preferences, ui, operators))
 
 
 def register():

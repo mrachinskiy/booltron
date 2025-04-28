@@ -16,7 +16,7 @@ modifiers: tuple[tuple[str, str, str]] = (("__NEW__", "", ""),)
 def _iter_modifiers(ob: Object, mode: str) -> None:
     global modifiers
 
-    from ..lib.modlib import ModGN
+    from ...lib.modlib import ModGN
 
     mods = []
     for md in ob.modifiers:
@@ -86,7 +86,7 @@ class Nondestructive:
         layout.separator()
 
     def execute(self, context):
-        from ..lib import modlib, meshlib
+        from ...lib import modlib, meshlib
         from . import versioning
 
         versioning.detect_and_migrate()

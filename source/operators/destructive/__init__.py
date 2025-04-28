@@ -71,7 +71,7 @@ class Destructive:
 
     @_cursor_state
     def execute(self, context):
-        from ..lib import meshlib, modlib, objectlib
+        from ...lib import meshlib, modlib, objectlib
 
         props = context.window_manager.booltron.destructive
 
@@ -117,7 +117,7 @@ class Destructive:
             return {"CANCELLED"}
 
         if len(obs) > 2 and self.mode != "SLICE":
-            from ..lib import meshlib
+            from ...lib import meshlib
             obs.remove(context.object)
             self.is_overlap = meshlib.detect_overlap(obs)
 
@@ -193,7 +193,7 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
     @_cursor_state
     def execute(self, context):
-        from ..lib import meshlib, modlib, objectlib
+        from ...lib import meshlib, modlib, objectlib
 
         props = context.window_manager.booltron.destructive
 
