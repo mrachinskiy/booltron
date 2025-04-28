@@ -7,7 +7,7 @@
 import bpy
 from bpy.types import Modifier, Object
 
-from .. import var
+from ... import var
 
 
 def detect_and_migrate() -> bool:
@@ -26,7 +26,7 @@ def _replace_mod(ob: Object, md_old: Modifier, md_new: Modifier):
 
 
 def _migrate_scene() -> None:
-    from ..lib import modlib
+    from ...lib import modlib
 
     modlib.disable_mods(False)
 
