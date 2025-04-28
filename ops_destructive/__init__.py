@@ -195,11 +195,12 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
     def execute(self, context):
         from ..lib import meshlib, modlib, objectlib
 
-        ob1, obs = objectlib.prepare_objects(self.keep_objects)
-        meshlib.prepare((ob1,), self.merge_distance, self.dissolve_distance)
-        meshlib.prepare(obs, self.merge_distance, self.dissolve_distance, select=True)
-
         props = context.window_manager.booltron.destructive
+
+        ob1, obs = objectlib.prepare_objects(self.keep_objects)
+        meshlib.prepare((ob1,), props.merge_distance, props.dissolve_distance)
+        meshlib.prepare(obs, props.merge_distance, props.dissolve_distance, select=True)
+
         if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
             if meshlib.is_nonmanifold_eval(obs + [ob1]):
                 self.report({"ERROR"}, "Non-manifold input, choose different solver")
