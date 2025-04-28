@@ -9,6 +9,9 @@ assets/
 __pycache__/
 *.pickle
 
+# Logs
+*.log
+
 # =========================
 # Operating System Files
 # =========================
