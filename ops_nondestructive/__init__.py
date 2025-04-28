@@ -5,13 +5,12 @@ import bpy
 from bpy.props import EnumProperty
 from bpy.types import Object, Operator
 
-from .. import preferences
 from .bake import (OBJECT_OT_instance_copy, OBJECT_OT_modifier_bake,
                    OBJECT_OT_modifier_bake_del)
 from .utils import OBJECT_OT_secondary_del, OBJECT_OT_secondary_select
 
 
-modifiers: tuple[tuple[str, str, str]]
+modifiers: tuple[tuple[str, str, str]] = (("__NEW__", "", ""),)
 
 
 def _iter_modifiers(ob: Object, mode: str) -> None:
