@@ -236,7 +236,7 @@ class ModGN:
         nodes = md.node_group.nodes
         has_obs = False
 
-        for link in nodes["SECONDARY"].inputs["Mesh"].links:
+        for link in nodes["SECONDARY"].inputs["Mesh 2"].links:
             _del = {x.type: x for x in _walk_tree(link.from_node)}
 
             if (node := _del.get("OBJECT_INFO")) and (ob := node.inputs["Object"].default_value):
