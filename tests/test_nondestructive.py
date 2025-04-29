@@ -21,7 +21,7 @@ def set_up() -> None:
     ob2.select_set(True)
 
 
-def cleanup():
+def cleanup() -> None:
     for me in bpy.data.meshes:
         bpy.data.meshes.remove(me)
 
@@ -29,7 +29,7 @@ def cleanup():
         bpy.data.node_groups.remove(ng)
 
 
-def _dissmiss():
+def test_dissmiss() -> None:
     bpy.ops.object.booltron_nondestructive_difference()
     ng_name = bpy.context.object.modifiers[0].node_group.name
 
@@ -38,7 +38,7 @@ def _dissmiss():
     assert bpy.data.node_groups.get(ng_name) == None
 
 
-def _select():
+def test_select() -> None:
     bpy.ops.object.booltron_nondestructive_difference()
     md_name = bpy.context.object.modifiers[0].name
 
@@ -50,13 +50,26 @@ def _select():
     assert bpy.context.object.select_get() == True
 
 
+def test_mod_disable() -> None:
+    bpy.ops.object.booltron_nondestructive_difference()
+    mds = bpy.context.object.modifiers
+    md = mds.new("Boolean", "BOOLEAN")
+
+    bpy.context.scene.booltron.mod_disable = False
+
+    assert len(mds) == 2
+    for md in mds:
+        assert md.show_viewport == False
+
+
 def main() -> None:
     tools = (
         bpy.ops.object.booltron_nondestructive_difference,
         bpy.ops.object.booltron_nondestructive_union,
         bpy.ops.object.booltron_nondestructive_intersect,
-        _dissmiss,
-        _select,
+        test_dissmiss,
+        test_select,
+        test_mod_disable,
     )
 
     for tool in tools:

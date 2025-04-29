@@ -60,7 +60,7 @@ def set_up(solver: str) -> None:
         ob2_copy.select_set(True)
 
 
-def cleanup():
+def cleanup() -> None:
     for me in bpy.data.meshes:
         bpy.data.meshes.remove(me)
 
