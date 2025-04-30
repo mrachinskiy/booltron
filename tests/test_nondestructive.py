@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import sys
+import tempfile
 import traceback
+from pathlib import Path
 
 import bpy
 
@@ -62,6 +64,22 @@ def test_mod_disable() -> None:
         assert md.show_viewport == False
 
 
+def test_bake() -> None:
+    with tempfile.TemporaryDirectory() as tempdir:
+        path = Path(tempdir)
+        bpy.ops.wm.save_mainfile(filepath=str(path / "temp.blend"))
+
+        bpy.ops.object.booltron_nondestructive_difference()
+        bpy.ops.object.booltron_modifier_bake()
+
+        assert (path / "blendcache_temp").exists() == True
+        assert (path / "blendcache_temp" / "OB49_Difference").exists() == True
+
+        bpy.ops.object.booltron_modifier_bake_del()
+
+        assert (path / "blendcache_temp" / "OB49_Difference").exists() == False
+
+
 def main() -> None:
     tools = (
         bpy.ops.object.booltron_nondestructive_difference,
@@ -70,12 +88,14 @@ def main() -> None:
         test_dissmiss,
         test_select,
         test_mod_disable,
+        test_bake,
     )
 
     for tool in tools:
         set_up()
         tool()
         cleanup()
+
 
 try:
     main()
