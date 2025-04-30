@@ -88,6 +88,7 @@ class Destructive:
                 return {"FINISHED"}
 
         Mod = modlib.ModGN(self.mode, props.asdict())
+
         if self.is_overlap or len(obs) == 1:
             Mod.add_and_apply(ob1, obs)
         else:
@@ -209,6 +210,9 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
                         bpy.data.meshes.remove(ob.data)
                 return {"FINISHED"}
 
+        ModDiff = modlib.ModGN("DIFFERENCE", props.asdict())
+        ModIntr = modlib.ModGN("INTERSECT", props.asdict())
+
         for ob2 in obs:
 
             # Create copy of main object
@@ -224,7 +228,7 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
             ob2.matrix_basis.translation += self.overlap_distance / 2
 
-            modlib.ModGN("DIFFERENCE", props.asdict()).add_and_apply(ob1, (ob2,), remove_obs=False)
+            ModDiff.add_and_apply(ob1, (ob2,), remove_obs=False)
 
             if meshlib.is_nonmanifold(ob1):
                 self.report({"ERROR"}, "Boolean operation result is non-manifold")
@@ -235,7 +239,7 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
 
             ob2.matrix_basis.translation -= self.overlap_distance
 
-            modlib.ModGN("INTERSECT", props.asdict()).add_and_apply(ob1_copy, (ob2,))
+            ModIntr.add_and_apply(ob1_copy, (ob2,))
 
             if meshlib.is_nonmanifold(ob1_copy):
                 self.report({"ERROR"}, "Boolean operation result is non-manifold")
