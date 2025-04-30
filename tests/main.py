@@ -6,10 +6,10 @@ import subprocess
 from pathlib import Path
 
 TEST_VERSIONS = {
-    (4, 2),
-    (4, 3),
-    (4, 4),
-    (4, 5),
+    "4.2",
+    "4.3",
+    "4.4",
+    "4.5",
 }
 
 # Color codes
@@ -21,20 +21,6 @@ RESET = "\033[0m"
 # Messages
 FAILED = RED + INVERSE + "FAILED" + RESET
 PASSED = GREEN + INVERSE + "PASSED" + RESET
-
-
-def error(text: str) -> str:
-    return RED + text + RESET
-
-
-def ver_tuple(ver: str) -> tuple[int]:
-    return tuple(int(x) for x in ver.split("-")[1].replace(".", ""))
-
-
-blender_paths = []
-for entry in Path().home().iterdir():
-    if entry.is_dir() and entry.name.startswith("blender") and ver_tuple(entry.name) in TEST_VERSIONS:
-        blender_paths.append(entry / "blender.exe")
 
 
 def input_test_perf() -> bool:
@@ -51,24 +37,36 @@ def input_test_perf() -> bool:
     return _input.strip().lower() == "y"
 
 
-use_test_perf = input_test_perf()
-os.system("cls")
+def main() -> None:
+    use_test_perf = input_test_perf()
+    os.system("cls")
 
+    blender_apps = []
+    for entry in Path().home().iterdir():
+        if entry.is_dir() and entry.name.startswith("blender") and entry.name.split("-")[1] in TEST_VERSIONS:
+            blender_apps.append(entry)
 
-print("======================================================")
+    tests = []
+    for entry in Path(__file__).parent.iterdir():
+        if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test"):
+            if not use_test_perf and entry.stem == "test_performance":
+                continue
+            tests.append(entry)
 
-for entry in Path(__file__).parent.iterdir():
-    if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test"):
-        if not use_test_perf and entry.stem == "test_performance":
-            continue
-        for blender in blender_paths:
-            cmd = [blender, "-b", "-P", entry]
+    print(INVERSE + "BEGIN" + RESET)
+
+    for blender in blender_apps:
+        for test in tests:
+            cmd = [blender / "blender.exe", "-b", "-P", test]
             proc = subprocess.run(cmd, capture_output=True)
             if proc.returncode:
-                print(f"{error(blender.parent.name)} {error(entry.stem)} {FAILED}")
+                print(f"{RED + blender.name} {test.stem + RESET} {FAILED}")
                 print(proc.stderr.decode().strip())
-                break
+                return
             else:
-                print(f"{blender.parent.name} {entry.stem} {PASSED}")
+                print(f"{blender.name} {test.stem} {PASSED}")
 
-input("======================================================\n")
+    input(INVERSE + "END" + RESET)
+
+
+main()
