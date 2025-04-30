@@ -105,16 +105,22 @@ class Nondestructive:
         # Secondary objects
         # ----------------------------------
 
-        Mod = modlib.ModGN(self.mode, props.asdict())
-
         for ob in obs:
             modlib.secondary_visibility_set(ob, props.display_secondary)
+
+        # Modifier
+        # ----------------------------------
+
+        Mod = modlib.ModGN(self.mode, props.asdict())
 
         if self.modifier_name == "__NEW__":
             md = Mod.add(ob1, obs)
         else:
             md = ob1.modifiers[self.modifier_name]
             Mod.extend(md, obs)
+
+        # Bake
+        # ----------------------------------
 
         i = ob1.modifiers.find(md.name)
         for md in ob1.modifiers[i:]:
