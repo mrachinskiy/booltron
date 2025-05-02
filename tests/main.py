@@ -42,10 +42,11 @@ def main() -> None:
 
     tests = []
     for entry in Path(__file__).parent.iterdir():
-        if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test"):
-            if not use_test_perf and entry.stem == "test_performance":
-                continue
+        if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test") and entry.stem != "test_performance":
             tests.append(entry)
+
+    if use_test_perf:
+        tests = [Path(__file__).parent / "test_performance.py"]
 
     print(INVERSE + "BEGIN" + RESET)
 
