@@ -8,6 +8,12 @@ Features:
 * Bake modifier result.
 * Various adjustment options to get better results from boolean operations.
 * Checks for non-manifold.
+* Translated to multiple languages:
+  * ![100%](https://geps.dev/progress/100) English
+  * ![100%](https://geps.dev/progress/100) Russian
+  * ![100%](https://geps.dev/progress/100) Spanish
+  * ![87%](https://geps.dev/progress/87) French
+  * Your language is missing or incomplete? [Contribute translation](#translations).
 
 **[Watch demo video.](https://youtu.be/3C_hsqLzBcI)**
 
@@ -56,9 +62,19 @@ Contributing
 ### Did you find a bug?
 
 * Ensure the bug can be reproduced in the latest add-on version.
-* If error occurs on add-on installation or activation you probably trying to install add-on repository instead of release, check [how to install](#how-to-install) guide for proper installation process.
-* [Open new bug report][new_bug_report], be sure to include Blender and add-on versions, and screenshot showing the error message.
+* [Open new bug report][report_bug], be sure to include Blender and add-on versions, and screenshot showing the error message.
+
+### Translations
+
+* It is advised that you use a dedicated `.po` editor like [Poedit](https://poedit.net).
+  * To create new transltation in Poedit use `File` → `New from POT/PO file`, then pick `.po` file from add-on `localization` folder (doesn't matter which one).
+  * To complete existing transltation in Poedit use `File` → `Open`, then pick `.po` file for specific language from add-on `localization` folder.
+* Translating tips:
+  * The UI convention for English language is to use Title Case formatting for property names and button titles, to know formatting convention for your language just see how Blender handles it and follow the rule.
+  * Preserve empty braces `{}` in translation, they used as placeholders for additional information and will not appear in UI.
+* After translation is done submit it back through [issues][submit_translation].
 
 
 [v2_9_0]: https://github.com/mrachinskiy/booltron/releases/download/v2.9.0-blender3.2.0/booltron-2_9_0.zip
-[new_bug_report]: https://github.com/mrachinskiy/booltron/issues/new?template=bug_report.md
+[report_bug]: https://github.com/mrachinskiy/booltron/issues/new?template=bug_report.md
+[submit_translation]: https://github.com/mrachinskiy/booltron/issues/new?labels=translation&template=contribute-translation.md
