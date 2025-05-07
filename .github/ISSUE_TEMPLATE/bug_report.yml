@@ -14,7 +14,6 @@ body:
     id: os
     attributes:
       label: Operating system
-      hide_label: true
       placeholder: Operating system
     validations:
       required: true
@@ -22,7 +21,6 @@ body:
     id: blender_ver
     attributes:
       label: Blender version
-      hide_label: true
       placeholder: Blender version
     validations:
       required: true
@@ -30,7 +28,6 @@ body:
     id: addon_ver
     attributes:
       label: Add-on version
-      hide_label: true
       placeholder: Add-on version
     validations:
       required: true

@@ -13,5 +13,4 @@ body:
   - type: textarea
     id: description
     attributes:
-      label: "Description"
-      hide_label: true
+      label: "Additional information"
