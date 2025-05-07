@@ -62,7 +62,7 @@ Contributing
 ### Did you find a bug?
 
 * Ensure the bug can be reproduced in the latest add-on version.
-* [Open new bug report][report_bug], be sure to include Blender and add-on versions, and screenshot showing the error message.
+* [Open new bug report][submit_issue], be sure to include Blender and add-on versions, and screenshot showing the error message.
 
 ### Translations
 
@@ -72,9 +72,8 @@ Contributing
 * Translating tips:
   * The UI convention for English language is to use Title Case formatting for property names and button titles, to know formatting convention for your language just see how Blender handles it and follow the rule.
   * Preserve empty braces `{}` in translation, they used as placeholders for additional information and will not appear in UI.
-* After translation is done submit it back through [issues][submit_translation].
+* After translation is done submit it back through [issues][submit_issue].
 
 
 [v2_9_0]: https://github.com/mrachinskiy/booltron/releases/download/v2.9.0-blender3.2.0/booltron-2_9_0.zip
-[report_bug]: https://github.com/mrachinskiy/booltron/issues/new?template=bug_report.md
-[submit_translation]: https://github.com/mrachinskiy/booltron/issues/new?labels=translation&template=contribute-translation.md
+[submit_issue]: https://github.com/mrachinskiy/booltron/issues
