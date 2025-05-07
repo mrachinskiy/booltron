@@ -1,0 +1,18 @@
+name: Contribute translation
+about: Contribute or update existing translation
+labels:
+  - "translation"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Instructions
+
+        * Attach `.po` translation file.
+        * Optionally provide your name to be featured in announcement.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      hide_label: true
