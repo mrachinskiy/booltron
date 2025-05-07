@@ -14,27 +14,24 @@ body:
     id: os
     attributes:
       label: Operating system
-      placeholder: Operating system
     validations:
       required: true
   - type: input
     id: blender_ver
     attributes:
       label: Blender version
-      placeholder: Blender version
     validations:
       required: true
   - type: input
     id: addon_ver
     attributes:
       label: Add-on version
-      placeholder: Add-on version
     validations:
       required: true
   - type: textarea
     id: description
     attributes:
       label: "Describe the bug"
-      description: "Write a clear and concise description of what the bug is."
+      placeholder: "Write a clear and concise description of what the bug is."
     validations:
       required: true
