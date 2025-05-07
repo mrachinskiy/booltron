@@ -1,5 +1,5 @@
 name: Bug report
-about: Create a report to help us improve
+description: Create a report to help us improve
 labels:
   - "bug"
 body:
@@ -10,7 +10,6 @@ body:
 
         * Test with `File` → `Defaults` → `Load Factory Settings` to make sure other add-ons do not cause the issue.
         * If applicable, attach blend file or screenshot to help explain your problem.
-
   - type: input
     id: os
     attributes:
@@ -19,7 +18,6 @@ body:
       placeholder: Operating system
     validations:
       required: true
-
   - type: input
     id: blender_ver
     attributes:
@@ -28,7 +26,6 @@ body:
       placeholder: Blender version
     validations:
       required: true
-
   - type: input
     id: addon_ver
     attributes:
@@ -37,7 +34,6 @@ body:
       placeholder: Add-on version
     validations:
       required: true
-
   - type: textarea
     id: description
     attributes:
