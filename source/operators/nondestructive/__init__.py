@@ -61,13 +61,18 @@ class Nondestructive:
             col.prop(props, "use_self_secondary")
             col.prop(props, "use_hole_tolerant_secondary")
 
-        col.prop(props, "merge_distance")
         col.prop(props, "display_secondary")
 
         col.prop(props, "use_loc_rnd")
         if props.use_loc_rnd:
             col.prop(props, "loc_offset", text="Offset")
             col.prop(props, "seed")
+
+        layout.separator()
+
+        layout.label(text="Pre-processing")
+        col = layout.box().column()
+        col.prop(props, "merge_distance")
 
         layout.separator()
 

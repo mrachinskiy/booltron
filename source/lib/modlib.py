@@ -100,6 +100,17 @@ class ModGN:
         in_ofst = in_.outputs[sock_ofst.identifier]
         in_seed = in_.outputs[sock_seed.identifier]
 
+        if ob1.type != "MESH":
+            in_.location.x = -400
+
+            weld = nodes.new("GeometryNodeMergeByDistance")
+            weld.inputs["Distance"].default_value = self.merge_distance
+            weld.location.x = -200
+            weld.select = False
+
+            ng.links.new(in_geo, weld.inputs["Geometry"])
+            in_geo = weld.outputs["Geometry"]
+
         out = nodes.new("NodeGroupOutput")
         out.location.x = 400
         out.select = False
