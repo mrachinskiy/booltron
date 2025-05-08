@@ -13,7 +13,7 @@ def _delete_loose(bm: bmesh.types.BMesh) -> None:
             bm.verts.remove(v)
 
 
-def prepare(obs: list[Object], merge_distance: float, dissolve_distance: float, select: bool = False) -> None:
+def prepare(obs: list[Object], merge_distance: float, dissolve_distance: float, check: bool, select: bool = False) -> bool:
     for ob in obs:
         me = ob.data
         bm = bmesh.new()
@@ -24,11 +24,19 @@ def prepare(obs: list[Object], merge_distance: float, dissolve_distance: float, 
         _delete_loose(bm)
         bmesh.ops.holes_fill(bm, edges=bm.edges)
 
+        if check:
+            for e in bm.edges:
+                if not e.is_manifold:
+                    bm.free()
+                    return True
+
         for f in bm.faces:
             f.select = select
 
         bm.to_mesh(me)
         bm.free()
+
+    return False
 
 
 def detect_overlap(obs: list[Object]) -> bool:
@@ -57,24 +65,6 @@ def detect_overlap(obs: list[Object]) -> bool:
 def is_nonmanifold(ob: Object) -> bool:
     bm = bmesh.new()
     bm.from_mesh(ob.data)
-
-    for e in bm.edges:
-        if not e.is_manifold:
-            bm.free()
-            return True
-
-    bm.free()
-    return False
-
-
-def is_nonmanifold_eval(obs: list[Object]) -> bool:
-    depsgraph = bpy.context.evaluated_depsgraph_get()
-    bm = bmesh.new()
-
-    for ob in obs:
-        ob_eval = ob.evaluated_get(depsgraph)
-        bm.from_mesh(ob_eval.to_mesh())
-        ob_eval.to_mesh_clear()
 
     for e in bm.edges:
         if not e.is_manifold:

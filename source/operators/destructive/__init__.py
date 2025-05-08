@@ -74,18 +74,18 @@ class Destructive:
         from ...lib import meshlib, modlib, objectlib
 
         props = context.window_manager.booltron.destructive
+        check = props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD"
 
         ob1, obs = objectlib.prepare_objects(self.keep_objects)
-        meshlib.prepare((ob1,), props.merge_distance, props.dissolve_distance)
-        meshlib.prepare(obs, props.merge_distance, props.dissolve_distance, select=True)
+        nonmanifold = meshlib.prepare((ob1,), props.merge_distance, props.dissolve_distance, check)
+        nonmanifold |= meshlib.prepare(obs, props.merge_distance, props.dissolve_distance, check, select=True)
 
-        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
-            if meshlib.is_nonmanifold_eval(obs + [ob1]):
-                self.report({"ERROR"}, "Non-manifold input, choose different solver")
-                if self.keep_objects:
-                    for ob in obs:
-                        bpy.data.meshes.remove(ob.data)
-                return {"FINISHED"}
+        if nonmanifold:
+            self.report({"ERROR"}, "Non-manifold input, choose different solver")
+            if self.keep_objects:
+                for ob in obs:
+                    bpy.data.meshes.remove(ob.data)
+            return {"FINISHED"}
 
         Mod = modlib.ModGN(self.mode, props.asdict())
 
@@ -197,18 +197,18 @@ class OBJECT_OT_destructive_slice(Destructive, Operator):
         from ...lib import meshlib, modlib, objectlib
 
         props = context.window_manager.booltron.destructive
+        check = props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD"
 
         ob1, obs = objectlib.prepare_objects(self.keep_objects)
-        meshlib.prepare((ob1,), props.merge_distance, props.dissolve_distance)
-        meshlib.prepare(obs, props.merge_distance, props.dissolve_distance, select=True)
+        nonmanifold = meshlib.prepare((ob1,), props.merge_distance, props.dissolve_distance, check)
+        nonmanifold |= meshlib.prepare(obs, props.merge_distance, props.dissolve_distance, check, select=True)
 
-        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
-            if meshlib.is_nonmanifold_eval(obs + [ob1]):
-                self.report({"ERROR"}, "Non-manifold input, choose different solver")
-                if self.keep_objects:
-                    for ob in obs:
-                        bpy.data.meshes.remove(ob.data)
-                return {"FINISHED"}
+        if nonmanifold:
+            self.report({"ERROR"}, "Non-manifold input, choose different solver")
+            if self.keep_objects:
+                for ob in obs:
+                    bpy.data.meshes.remove(ob.data)
+            return {"FINISHED"}
 
         ModDiff = modlib.ModGN("DIFFERENCE", props.asdict())
         ModIntr = modlib.ModGN("INTERSECT", props.asdict())
