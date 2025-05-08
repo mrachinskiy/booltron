@@ -31,6 +31,34 @@ def cleanup() -> None:
         bpy.data.node_groups.remove(ng)
 
 
+def test_difference() -> None:
+    bpy.ops.object.booltron_nondestructive_difference()
+
+
+def test_union() -> None:
+    bpy.ops.object.booltron_nondestructive_union()
+
+
+def test_intersect() -> None:
+    bpy.ops.object.booltron_nondestructive_intersect()
+
+
+def test_text() -> None:
+    bpy.ops.object.text_add()
+    ob2 = bpy.context.object
+    ob2.data.extrude = 0.2
+    ob2.location = 1.0, 0.0, 0.2
+
+    bpy.ops.object.text_add()
+    ob1 = bpy.context.object
+    ob1.data.extrude = 0.2
+
+    ob1.select_set(True)
+    ob2.select_set(True)
+
+    bpy.ops.object.booltron_nondestructive_difference()
+
+
 def test_dissmiss() -> None:
     bpy.ops.object.booltron_nondestructive_difference()
     ng_name = bpy.context.object.modifiers[0].node_group.name
@@ -81,20 +109,11 @@ def test_bake() -> None:
 
 
 def main() -> None:
-    tools = (
-        bpy.ops.object.booltron_nondestructive_difference,
-        bpy.ops.object.booltron_nondestructive_union,
-        bpy.ops.object.booltron_nondestructive_intersect,
-        test_dissmiss,
-        test_select,
-        test_mod_disable,
-        test_bake,
-    )
-
-    for tool in tools:
-        set_up()
-        tool()
-        cleanup()
+    for name, test in globals().items():
+        if name.startswith("test"):
+            set_up()
+            test()
+            cleanup()
 
 
 try:
