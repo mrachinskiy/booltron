@@ -86,7 +86,7 @@ class Nondestructive:
         layout.separator()
 
     def execute(self, context):
-        from ...lib import modlib, meshlib
+        from ...lib import modlib
         from . import versioning
 
         versioning.detect_and_migrate()
@@ -96,15 +96,10 @@ class Nondestructive:
         if ob1.select_get():
             obs.remove(ob1)
 
-        props = context.window_manager.booltron.non_destructive
-        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
-            if meshlib.is_nonmanifold_eval(obs + [ob1]):
-                self.report({"ERROR"}, "Non-manifold input, choose different solver")
-                return {"FINISHED"}
-
         # Secondary objects
         # ----------------------------------
 
+        props = context.window_manager.booltron.non_destructive
         for ob in obs:
             modlib.secondary_visibility_set(ob, props.display_secondary)
 
@@ -118,6 +113,12 @@ class Nondestructive:
         else:
             md = ob1.modifiers[self.modifier_name]
             Mod.extend(md, obs)
+
+        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
+            context.view_layer.update()
+            if md.node_warnings:
+                self.report({"ERROR"}, "Non-manifold input, choose different solver")
+                return {"FINISHED"}
 
         # Bake
         # ----------------------------------
@@ -134,7 +135,7 @@ class Nondestructive:
             if ob.type not in {"MESH", "CURVE", "SURFACE", "META", "FONT"}:
                 ob.select_set(False)
 
-        if len(context.selected_objects) < 2 or context.object.type != "MESH":
+        if len(context.selected_objects) < 2:
             self.report({"ERROR"}, "At least two objects must be selected")
             return {"CANCELLED"}
 
