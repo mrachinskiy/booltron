@@ -119,8 +119,10 @@ class ModGN:
         bake = nodes.new("GeometryNodeBake")
         bake.location.x = 200
         bake.select = False
+        bake.bake_items.clear()  # VER < 5.0
+        bake.bake_items.new("GEOMETRY", "Geometry")
 
-        ng.links.new(bake.outputs["Item_0"], out_geo)
+        ng.links.new(bake.outputs["Geometry"], out_geo)
 
         primary = nodes.new("GeometryNodeMeshBoolean")
         primary.name = "PRIMARY"
@@ -132,7 +134,7 @@ class ModGN:
         primary.select = False
 
         ng.links.new(in_geo, primary.inputs["Mesh 1" if self.mode == "DIFFERENCE" else "Mesh 2"])
-        ng.links.new(primary.outputs["Mesh"], bake.inputs["Item_0"])
+        ng.links.new(primary.outputs["Mesh"], bake.inputs["Geometry"])
 
         secondary = nodes.new("GeometryNodeMeshBoolean")
         secondary.name = "SECONDARY"
