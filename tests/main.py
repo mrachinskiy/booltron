@@ -10,6 +10,7 @@ TEST_VERSIONS = {
     "4.3",
     "4.4",
     "4.5",
+    "5.0",
 }
 
 # Color codes

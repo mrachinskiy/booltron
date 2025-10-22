@@ -11,7 +11,10 @@ from bpy.types import Object
 def add_md(ob1: Object, ob2: Object, mode: str) -> None:
     md = ob1.modifiers.new(mode[:3] + " COMBINED", "BOOLEAN")
     md.show_viewport = False
-    md.solver = "FAST"
+    try:  # VER < 5.0
+        md.solver = "FAST"
+    except:
+        md.solver = "FLOAT"
     md.operation = mode
     md.object = ob2
 
