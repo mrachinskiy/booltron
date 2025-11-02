@@ -69,9 +69,9 @@ def main() -> None:
     log = get_logger("performance")
     ver = ".".join(str(i) for i in bpy.app.version)
 
-    solvers = ("FLOAT", "EXACT")
-    if bpy.app.version >= (4, 5, 0):
-        solvers = ("MANIFOLD",) + solvers
+    solvers = ["MANIFOLD", "FLOAT", "EXACT"]
+    if bpy.app.version < (4, 5, 0):
+        solvers.pop(0)
 
     for solver in solvers:
         set_up(solver)
