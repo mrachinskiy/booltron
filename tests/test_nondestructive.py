@@ -9,7 +9,7 @@ from pathlib import Path
 import bpy
 
 
-def set_up() -> None:
+def set_up(solver: str) -> None:
     bpy.ops.mesh.primitive_cube_add()
     ob2 = bpy.context.object
     ob2.name = "OB2"
@@ -21,6 +21,8 @@ def set_up() -> None:
 
     ob1.select_set(True)
     ob2.select_set(True)
+
+    bpy.context.window_manager.booltron.non_destructive.solver = solver
 
 
 def cleanup() -> None:
@@ -109,9 +111,17 @@ def test_bake() -> None:
 
 
 def main() -> None:
+    solvers = ["MANIFOLD", "FLOAT", "EXACT"]
+    if bpy.app.version < (4, 5, 0):
+        solvers.pop(0)
+    solver = "FLOAT"
+
     for name, test in globals().items():
         if name.startswith("test"):
-            set_up()
+            if name in {"test_difference", "test_union", "test_intersect"}:
+                while solvers:
+                    solver = solvers.pop()
+            set_up(solver)
             test()
             cleanup()
 
