@@ -96,7 +96,10 @@ class OBJECT_OT_instance_copy(Operator):
             ob_info.select = False
 
             transf = nodes.new("GeometryNodeTransform")
-            transf.mode = "MATRIX"
+            try:  # VER >= 5.0
+                transf.inputs["Mode"].default_value = "Matrix"
+            except:
+                transf.mode = "MATRIX"
             transf.location.x = -200
             transf.select = False
 
