@@ -110,6 +110,11 @@ def test_bake() -> None:
         assert (path / "blendcache_temp" / "OB49_Difference").exists() == False
 
 
+def test_instance_copy() -> None:
+    bpy.ops.object.booltron_instance_copy()
+    assert bpy.context.object.name == "Instance OB1"
+
+
 def main() -> None:
     solvers = ["MANIFOLD", "FLOAT", "EXACT"]
     if bpy.app.version < (4, 5, 0):
