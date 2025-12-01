@@ -119,7 +119,8 @@ class Destructive:
 
         if len(obs) > 2 and self.mode != "SLICE":
             from ...lib import meshlib
-            obs.remove(context.object)
+            if context.object in obs:
+                obs.remove(context.object)
             self.is_overlap = meshlib.detect_overlap(obs)
 
         props = context.window_manager.booltron.destructive
