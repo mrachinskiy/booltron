@@ -156,13 +156,16 @@ class ModGN:
 
         if not md:
             md = ob1.modifiers.new(self.mode.title(), "NODES")
+            md.show_viewport = show_viewport
+            md.show_in_editmode = False
+            md.show_expanded = False
+
+        md.show_group_selector = False
+
         if self.use_loc_rnd:
             md[sock_ofst.identifier] = self.loc_offset
             md[sock_seed.identifier] = self.seed
-        md.show_viewport = show_viewport
-        md.show_expanded = False
-        md.show_in_editmode = False
-        md.show_group_selector = False
+
         md.node_group = ng
         if hasattr(md, "bake_target"):  # VER < Blender 4.3
             md.bake_target = "DISK"
@@ -183,6 +186,7 @@ class ModGN:
                 bpy.data.meshes.remove(ob.data)
 
     def extend(self, md: Modifier, obs: list[Object]) -> None:
+        show_viewport = md.show_viewport
         md.show_viewport = False
 
         ng = md.node_group
@@ -197,7 +201,7 @@ class ModGN:
         bpy.data.node_groups.remove(ng)
         self.add(md.id_data, ng_obs, md=md)
 
-        md.show_viewport = True
+        md.show_viewport = show_viewport
 
     def _ob_add(self, ng: NodeGroup, ob: Object, in_ofst: NodeSocket, in_seed: NodeSocket, seed: int = 0) -> NodeSocketGeometry:
         nodes = ng.nodes
@@ -245,6 +249,7 @@ class ModGN:
 
     @staticmethod
     def remove(md: Modifier, obs: set[Object]) -> bool:
+        show_viewport = md.show_viewport
         md.show_viewport = False
         nodes = md.node_group.nodes
         has_obs = False
@@ -263,7 +268,7 @@ class ModGN:
                 nodes.remove(node)
 
         if has_obs:
-            md.show_viewport = True
+            md.show_viewport = show_viewport
             return False
 
         ob = md.id_data
