@@ -28,6 +28,23 @@ def _iter_modifiers(ob: Object, mode: str) -> None:
     modifiers = tuple(mods)
 
 
+def _popup_warnings(warnings: list, is_manifold_solver: bool) -> None:
+    icons = {
+        "ERROR": "CANCEL",
+        "WARNING": "ERROR",
+    }
+
+    def draw(self, context):
+        for warn in warnings:
+            if warn.type == "ERROR" and is_manifold_solver:
+                self.layout.label(text="Non-manifold input, choose different solver", icon=icons[warn.type])
+                continue
+            if warn.type != "INFO":
+                self.layout.label(text=warn.message, icon=icons[warn.type])
+
+    bpy.context.window_manager.popup_menu(draw, title="Warning")
+
+
 class Nondestructive:
     mode: str
     modifier_name: EnumProperty(
@@ -119,10 +136,10 @@ class Nondestructive:
             md = ob1.modifiers[self.modifier_name]
             Mod.extend(md, obs)
 
-        if props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD":
+        if bpy.app.version >= (4, 3, 0):  # VER
             context.view_layer.update()
             if md.node_warnings:
-                self.report({"ERROR"}, "Non-manifold input, choose different solver")
+                _popup_warnings(md.node_warnings, props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD")
                 return {"FINISHED"}
 
         # Bake
