@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Booltron 3.1.0\n"
-"POT-Creation-Date: 2025-04-24\n"
-"PO-Revision-Date: 2025-04-24\n"
+"Project-Id-Version: Booltron 3.3.0\n"
+"POT-Creation-Date: 2026-02-13\n"
+"PO-Revision-Date: 2026-02-13\n"
 "Last-Translator: Mikhail Rachinskiy\n"
 "Language-Team: Mikhail Rachinskiy\n"
 "Language: ru_RU\n"
@@ -117,6 +117,9 @@ msgstr "Результат булевой операции неразвёрты�
 
 msgid "Non-manifold input, choose different solver"
 msgstr "Неразвёртываемая геометрия на вводе, выберите другой решатель"
+
+msgid "Float solver does not support attributes"
+msgstr "Нецелый решатель не поддерживает атрибуты"
 
 msgid "At least two objects must be selected"
 msgstr "Как минимум два объекта должны быть выделены"
