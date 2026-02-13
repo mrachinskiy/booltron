@@ -9,4 +9,4 @@ tags = ["Modeling", "Object"]
 blender_version_min = "4.2.0"
 website = "https://github.com/mrachinskiy/booltron"
 license = ["SPDX:GPL-3.0-or-later"]
-copyright = ["2014-2025 Mikhail Rachinskiy"]
+copyright = ["2014-2026 Mikhail Rachinskiy"]
