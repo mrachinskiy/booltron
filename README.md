@@ -13,8 +13,8 @@ Features:
 * Translated to multiple languages:
   * ![100%](https://geps.dev/progress/100) English
   * ![100%](https://geps.dev/progress/100) Russian
-  * ![100%](https://geps.dev/progress/100) Spanish
-  * ![87%](https://geps.dev/progress/87) French
+  * ![97%](https://geps.dev/progress/97) Spanish
+  * ![85%](https://geps.dev/progress/85) French
   * Your language is missing or incomplete? [Contribute translation](#translations).
 
 

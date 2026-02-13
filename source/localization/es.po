@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Booltron 3.1.0\n"
-"POT-Creation-Date: 2025-04-24\n"
+"Project-Id-Version: Booltron 3.3.0\n"
+"POT-Creation-Date: 2026-02-13\n"
 "PO-Revision-Date: 2025-05-01\n"
 "Last-Translator: Óscar Hernández\n"
 "Language-Team: Mikhail Rachinskiy\n"
@@ -117,6 +117,9 @@ msgstr "El resultado de la operación booleana no es desplegable"
 
 msgid "Non-manifold input, choose different solver"
 msgstr "Entrada no desplegable, elegir un solucionador diferente"
+
+msgid "Float solver does not support attributes"
+msgstr ""
 
 msgid "At least two objects must be selected"
 msgstr "Se deben seleccionar al menos dos objetos"

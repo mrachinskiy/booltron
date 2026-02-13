@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Booltron 3.1.0\n"
-"POT-Creation-Date: 2025-04-24\n"
+"Project-Id-Version: Booltron 3.3.0\n"
+"POT-Creation-Date: 2026-02-13\n"
 "PO-Revision-Date: 2025-01-15\n"
 "Last-Translator: jrbr43\n"
 "Language-Team: Mikhail Rachinskiy\n"
@@ -116,6 +116,9 @@ msgid "Boolean operation result is non-manifold"
 msgstr "Le résultat de l'opération booléenne est non-manifold"
 
 msgid "Non-manifold input, choose different solver"
+msgstr ""
+
+msgid "Float solver does not support attributes"
 msgstr ""
 
 msgid "At least two objects must be selected"
