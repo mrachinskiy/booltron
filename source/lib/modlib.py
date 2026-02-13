@@ -112,12 +112,12 @@ class ModGN:
             in_geo = weld.outputs["Geometry"]
 
         out = nodes.new("NodeGroupOutput")
-        out.location.x = 400
+        out.location.x = 600
         out.select = False
         out_geo = out.inputs[sock_geo_out.identifier]
 
         bake = nodes.new("GeometryNodeBake")
-        bake.location.x = 200
+        bake.location.x = 400
         bake.select = False
         bake.bake_items.clear()  # VER < 5.0
         bake.bake_items.new("GEOMETRY", "Geometry")
@@ -134,7 +134,39 @@ class ModGN:
         primary.select = False
 
         ng.links.new(in_geo, primary.inputs["Mesh 1" if self.mode == "DIFFERENCE" else "Mesh 2"])
-        ng.links.new(primary.outputs["Mesh"], bake.inputs["Geometry"])
+
+        if bpy.app.version >= (4, 3, 0):  # VER
+            panel_attr = ng.interface.new_panel("Attributes", default_closed=True)
+            sock_attr_name = ng.interface.new_socket("Intersecting Edges", description="Mark intersecting edges", in_out="INPUT", socket_type="NodeSocketString", parent=panel_attr)
+
+            if self.solver == "FLOAT":
+                str_len = nodes.new("FunctionNodeStringLength")
+                str_len.location.y = 130
+                str_len.select = False
+
+                warn = nodes.new("GeometryNodeWarning")
+                warn.warning_type = "WARNING"
+                warn.inputs["Message"].default_value = "Float solver does not support attributes"
+                warn.location = 200, 130
+                warn.select = False
+
+                ng.links.new(primary.outputs["Mesh"], bake.inputs["Geometry"])
+                ng.links.new(str_len.outputs["Length"], warn.inputs["Show"])
+                ng.links.new(in_.outputs[sock_attr_name.identifier], str_len.inputs["String"])
+            else:
+                attr = nodes.new("GeometryNodeStoreNamedAttribute")
+                attr.data_type = "BOOLEAN"
+                attr.domain = "EDGE"
+                attr.inputs["Value"].default_value = True
+                attr.location.x = 200
+                attr.select = False
+
+                ng.links.new(primary.outputs["Mesh"], attr.inputs["Geometry"])
+                ng.links.new(primary.outputs["Intersecting Edges"], attr.inputs["Selection"])
+                ng.links.new(in_.outputs[sock_attr_name.identifier], attr.inputs["Name"])
+                ng.links.new(attr.outputs["Geometry"], bake.inputs["Geometry"])
+        else:
+            ng.links.new(primary.outputs["Mesh"], bake.inputs["Geometry"])
 
         secondary = nodes.new("GeometryNodeMeshBoolean")
         secondary.name = "SECONDARY"
