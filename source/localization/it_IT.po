@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Booltron 3.3.0\n"
+"POT-Creation-Date: 2026-02-13\n"
+"PO-Revision-Date: 2026-02-23\n"
+"Last-Translator: Costantino Vita\n"
+"Language-Team: Mikhail Rachinskiy\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Location Offset"
+msgstr "Offset di Posizione"
+
+msgid "Keep Objects"
+msgstr "Mantieni Oggetti"
+
+msgid "Destructive"
+msgstr "Distruttivo"
+
+msgid "Non-destructive"
+msgstr "Non Distruttivo"
+
+msgid "Primary Object"
+msgstr "Oggetto Primario"
+
+msgid "Secondary Object"
+msgstr "Oggetto Secondario"
+
+msgid "Pre-processing"
+msgstr "Pre-elaborazione"
+
+msgid "+ New Modifier"
+msgstr "+ Nuovo Modificatore"
+
+msgid "Self Intersection"
+msgstr "Auto-intersezione"
+
+msgid "Hole Tolerant"
+msgstr "Gestione Fori"
+
+msgid "As Instance"
+msgstr "Come Istanza"
+
+msgid "Fastest, works only on manifold meshes"
+msgstr "Più veloce, funziona solo su mesh manifold"
+
+msgid "Good performance, doesn't work on coplanar geometry"
+msgstr "Prestazioni buone, non funziona su geometria complanare"
+
+msgid "Slowest, handles self intersection"
+msgstr "Più lento, gestisce l'auto-intersezione"
+
+msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
+msgstr "Sposta la posizione degli oggetti di una quantità molto piccola per evitare errori di geometria complanare durante l'operazione booleana"
+
+msgid "Location offset is randomly generated for each object in range [-x, +x] input value"
+msgstr "L'offset di posizione viene generato casualmente per ogni oggetto nell'intervallo [-x, +x] del valore inserito"
+
+msgid "Get different offset values"
+msgstr "Genera valori di offset diversi"
+
+msgid "Displace secondary object to create overlap between slices"
+msgstr "Sposta l'oggetto secondario per creare sovrapposizione tra le sezioni"
+
+msgid "Combine selected objects"
+msgstr "Combina gli oggetti selezionati"
+
+msgid "Subtract selected objects from active object"
+msgstr "Sottrae gli oggetti selezionati dall'oggetto attivo"
+
+msgid "Keep the common part between active and selected objects"
+msgstr "Mantiene la parte comune tra oggetto attivo e oggetti selezionati"
+
+msgid "Combine active (primary) and selected (secondary) objects"
+msgstr "Combina oggetto attivo (primario) e oggetti selezionati (secondari)"
+
+msgid "Subtract selected (secondary) objects from active (primary) object"
+msgstr "Sottrae gli oggetti selezionati (secondari) dall'oggetto attivo (primario)"
+
+msgid "Keep the common part between active (primary) and selected (secondary) objects"
+msgstr "Mantiene la parte comune tra oggetto attivo (primario) e oggetti selezionati (secondari)"
+
+msgid "Slice active object along the volume of selected objects"
+msgstr "Seziona l'oggetto attivo lungo il volume degli oggetti selezionati"
+
+msgid "Do not remove selected objects after boolean operation (Shortcut: hold Alt when using the tool)"
+msgstr "Non rimuove gli oggetti selezionati dopo l'operazione booleana (Scorciatoia: tenere premuto Alt durante l'uso dello strumento)"
+
+msgid "Dismiss selected secondary objects from boolean operation"
+msgstr "Escludi gli oggetti secondari selezionati dall'operazione booleana"
+
+msgid "Select secondary objects used by given modifier"
+msgstr "Seleziona gli oggetti secondari utilizzati dal modificatore indicato"
+
+msgid "Disable boolean modifiers on all objects"
+msgstr "Disattiva i modificatori booleani su tutti gli oggetti"
+
+msgid "Bake modifier result for selected objects"
+msgstr "Precalcola il risultato del modificatore per oggetti selezionati"
+
+msgid "Bake modifier result"
+msgstr "Precalcola il risultato del modificatore"
+
+msgid "Delete modifier bake for selected objects"
+msgstr "Elimina l'applicazione del modificatore per gli oggetti selezionati"
+
+msgid "Create instance mesh copy of selected objects"
+msgstr "Crea una copia mesh istanziata degli oggetti selezionati"
+
+msgid "Shortcut: hold Alt when using the tool"
+msgstr "Scorciatoia: tenere premuto Alt durante l'uso dello strumento"
+
+msgid "Boolean operation result is non-manifold"
+msgstr "Il risultato dell'operazione booleana è non-manifold"
+
+msgid "Non-manifold input, choose different solver"
+msgstr "Input non-manifold, scegliere un solver diverso"
+
+msgid "Float solver does not support attributes"
+msgstr "Il risolutore Float non supporta gli attributi"
+
+msgid "At least two objects must be selected"
+msgstr "Devono essere selezionati almeno due oggetti"
+
+msgid "Object does not have Booltron modifiers"
+msgstr "L'oggetto non ha modificatori Booltron"
+
+msgid "File not saved"
+msgstr "File non salvato"
+
+msgctxt "Operator"
+msgid "Union"
+msgstr "Unione"
+
+msgctxt "Operator"
+msgid "Difference"
+msgstr "Differenza"
+
+msgctxt "Operator"
+msgid "Intersect"
+msgstr "Intersezione"
+
+msgctxt "Operator"
+msgid "Slice"
+msgstr "Seziona"
+
+msgctxt "Operator"
+msgid "Dismiss"
+msgstr "Escludi"
+
+msgctxt "Operator"
+msgid "Bake Modifier"
+msgstr "Precalcolo Modificatore"
+
+msgctxt "Operator"
+msgid "Delete Bake"
+msgstr "Elimina Precalcolo"
+
+msgctxt "Operator"
+msgid "Instance Copy"
+msgstr "Copia di Istanza"
