@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Booltron 3.3.0\n"
 "POT-Creation-Date: 2026-02-13\n"
-"PO-Revision-Date: 2025-05-01\n"
-"Last-Translator: Óscar Hernández\n"
+"PO-Revision-Date: 2026-02-23\n"
+"Last-Translator: Costantino Vita\n"
 "Language-Team: Mikhail Rachinskiy\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -11,40 +11,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Location Offset"
-msgstr "Desplazar Posición"
+msgstr "Desplazar posición"
 
 msgid "Keep Objects"
-msgstr "Conservar Objetos"
+msgstr "Conservar objetos"
 
 msgid "Destructive"
 msgstr "Destructivo"
 
 msgid "Non-destructive"
-msgstr "Non Destructivo"
+msgstr "No destructivo"
 
 msgid "Primary Object"
-msgstr "Objeto Principal"
+msgstr "Objeto principal"
 
 msgid "Secondary Object"
-msgstr "Objeto Secundario"
+msgstr "Objeto secundario"
 
 msgid "Pre-processing"
 msgstr "Preprocesado"
 
 msgid "+ New Modifier"
-msgstr "+ Nuevo Modificador"
+msgstr "+ Nuevo modificador"
 
 msgid "Self Intersection"
-msgstr "Intersección Propia"
+msgstr "Intersección propia"
 
 msgid "Hole Tolerant"
-msgstr "Tolerancia a Huecos"
+msgstr "Tolerancia a huecos"
 
 msgid "As Instance"
-msgstr "Como Instancia"
+msgstr "Como instancia"
 
 msgid "Fastest, works only on manifold meshes"
-msgstr "El más rápido, funciona solo en mallas múltiples"
+msgstr "El más rápido, funciona solo en mallas desplegables"
 
 msgid "Good performance, doesn't work on coplanar geometry"
 msgstr "Buen rendimiento, no funciona en geometría coplanar"
@@ -74,7 +74,7 @@ msgid "Keep the common part between active and selected objects"
 msgstr "Conservar la parte común entre los objetos activos y seleccionados"
 
 msgid "Combine active (primary) and selected (secondary) objects"
-msgstr "Combinar objeto activo (principal) y seleccionado (secundario)"
+msgstr "Combinar el objeto activo (principal) y los objetos seleccionados (secundarios)"
 
 msgid "Subtract selected (secondary) objects from active (primary) object"
 msgstr "Restar objetos seleccionados (secundarios) del objeto activo (primario)"
@@ -119,7 +119,7 @@ msgid "Non-manifold input, choose different solver"
 msgstr "Entrada no desplegable, elegir un solucionador diferente"
 
 msgid "Float solver does not support attributes"
-msgstr ""
+msgstr "El solucionador decimal no admite atributos"
 
 msgid "At least two objects must be selected"
 msgstr "Se deben seleccionar al menos dos objetos"
@@ -152,12 +152,12 @@ msgstr "Descartar"
 
 msgctxt "Operator"
 msgid "Bake Modifier"
-msgstr "Aplicar Modificador"
+msgstr "Modificador de captura"
 
 msgctxt "Operator"
 msgid "Delete Bake"
-msgstr "Borrar Captura"
+msgstr "Borrar captura"
 
 msgctxt "Operator"
 msgid "Instance Copy"
-msgstr "Copia de Instancia"
+msgstr "Copia de instancia"
