@@ -12,9 +12,10 @@ Features:
 * Checks for non-manifold.
 * Translated to multiple languages:
   * ![100%](https://geps.dev/progress/100) English
+  * ![100%](https://geps.dev/progress/100) French
+  * ![100%](https://geps.dev/progress/100) Italian
   * ![100%](https://geps.dev/progress/100) Russian
-  * ![97%](https://geps.dev/progress/97) Spanish
-  * ![85%](https://geps.dev/progress/85) French
+  * ![100%](https://geps.dev/progress/100) Spanish
   * Your language is missing or incomplete? [Contribute translation](#translations).
 
 
