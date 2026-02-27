@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Booltron 3.3.0\n"
-"POT-Creation-Date: 2026-02-13\n"
+"Project-Id-Version: Booltron 3.3.2\n"
+"POT-Creation-Date: 2026-02-27\n"
 "PO-Revision-Date: 2026-02-23\n"
 "Last-Translator: Costantino Vita\n"
 "Language-Team: Mikhail Rachinskiy\n"
@@ -51,6 +51,9 @@ msgstr "Prestazioni buone, non funziona su geometria complanare"
 
 msgid "Slowest, handles self intersection"
 msgstr "Più lento, gestisce l'auto-intersezione"
+
+msgid "Default attribute name"
+msgstr "Nome dell'attributo predefinito"
 
 msgid "Shift objects location for a very small amount to avoid coplanar geometry errors during boolean operation"
 msgstr "Sposta la posizione degli oggetti di una quantità molto piccola per evitare errori di geometria complanare durante l'operazione booleana"
