@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import bpy
-from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, PointerProperty
+from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, PointerProperty, StringProperty
 from bpy.types import AddonPreferences, PropertyGroup
 
 from . import ui, var
@@ -131,6 +131,11 @@ class ToolPropsGroup(ToolProps, PropertyGroup):
 
 class Preferences(ToolProps, AddonPreferences):
     bl_idname = __package__
+
+    attribute_edge_intersect: StringProperty(
+        name="Intersecting Edges",
+        description="Default attribute name",
+    )
 
     def draw(self, context):
         ui.prefs_ui(self, context)

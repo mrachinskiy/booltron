@@ -166,6 +166,7 @@ class ModGN:
                 ng.links.new(in_.outputs[sock_attr_name.identifier], attr.inputs["Name"])
                 ng.links.new(attr.outputs["Geometry"], bake.inputs["Geometry"])
         else:
+            sock_attr_name = None
             ng.links.new(primary.outputs["Mesh"], bake.inputs["Geometry"])
 
         secondary = nodes.new("GeometryNodeMeshBoolean")
@@ -191,6 +192,10 @@ class ModGN:
             md.show_viewport = show_viewport
             md.show_in_editmode = False
             md.show_expanded = False
+
+            if sock_attr_name is not None:  # VER < Blender 4.3
+                prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
+                md[sock_attr_name.identifier] = prefs.attribute_edge_intersect
 
         md.show_group_selector = False
 
