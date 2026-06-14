@@ -5,10 +5,8 @@ import bpy
 from bpy.props import EnumProperty
 from bpy.types import Object, Operator
 
-from .bake import (OBJECT_OT_instance_copy, OBJECT_OT_modifier_bake,
-                   OBJECT_OT_modifier_bake_del)
+from .bake import OBJECT_OT_instance_copy, OBJECT_OT_modifier_bake, OBJECT_OT_modifier_bake_del
 from .utils import OBJECT_OT_secondary_del, OBJECT_OT_secondary_select
-
 
 modifiers: tuple[tuple[str, str, str]] = (("__NEW__", "", ""),)
 
@@ -136,11 +134,10 @@ class Nondestructive:
             md = ob1.modifiers[self.modifier_name]
             Mod.extend(md, obs)
 
-        if bpy.app.version >= (4, 3, 0):  # VER
-            context.view_layer.update()
-            if md.node_warnings:
-                _popup_warnings(md.node_warnings, props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD")
-                return {"FINISHED"}
+        context.view_layer.update()
+        if md.node_warnings:
+            _popup_warnings(md.node_warnings, props.solver == "MANIFOLD" or props.solver_secondary == "MANIFOLD")
+            return {"FINISHED"}
 
         # Bake
         # ----------------------------------

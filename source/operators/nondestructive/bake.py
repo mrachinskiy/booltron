@@ -59,7 +59,7 @@ class OBJECT_OT_instance_copy(Operator):
     )
 
     def execute(self, context):
-        from ...lib import objectlib
+        from ...lib import modlib, objectlib
 
         ob1 = context.object
         obs = context.selected_objects
@@ -115,10 +115,16 @@ class OBJECT_OT_instance_copy(Operator):
         context.view_layer.objects.active = ob
 
         md = ob.modifiers.new(name, "NODES")
-        md[inst_in_socket.identifier] = self.use_instance
         md.show_expanded = False
         md.show_group_selector = False
         md.node_group = ng
+
+        try:  # VER > 5.0
+            md.show_manage_panel = False
+        except:
+            pass
+
+        modlib.ModGN.md_input_set(md, inst_in_socket.identifier, self.use_instance)
 
         for ob in obs:
             ob.select_set(False)

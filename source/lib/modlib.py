@@ -3,6 +3,7 @@
 
 from collections.abc import Iterator
 from pathlib import Path
+from typing import Any
 
 import bpy
 from bpy.types import GeometryNode, Modifier, NodeGroup, NodeSocket, NodeSocketGeometry, Object
@@ -129,39 +130,35 @@ class ModGN:
 
         ng.links.new(in_geo, primary.inputs["Mesh 1" if self.mode == "DIFFERENCE" else "Mesh 2"])
 
-        if bpy.app.version >= (4, 3, 0):  # VER
-            panel_attr = ng.interface.new_panel("Attributes", default_closed=True)
-            sock_attr_name = ng.interface.new_socket("Intersecting Edges", description="Mark intersecting edges", in_out="INPUT", socket_type="NodeSocketString", parent=panel_attr)
+        panel_attr = ng.interface.new_panel("Attributes", default_closed=True)
+        sock_attr_name = ng.interface.new_socket("Intersecting Edges", description="Mark intersecting edges", in_out="INPUT", socket_type="NodeSocketString", parent=panel_attr)
 
-            if self.solver == "FLOAT":
-                str_len = nodes.new("FunctionNodeStringLength")
-                str_len.location.y = 130
-                str_len.select = False
+        if self.solver == "FLOAT":
+            str_len = nodes.new("FunctionNodeStringLength")
+            str_len.location.y = 130
+            str_len.select = False
 
-                warn = nodes.new("GeometryNodeWarning")
-                warn.warning_type = "WARNING"
-                warn.inputs["Message"].default_value = "Float solver does not support attributes"
-                warn.location = 200, 130
-                warn.select = False
+            warn = nodes.new("GeometryNodeWarning")
+            warn.warning_type = "WARNING"
+            warn.inputs["Message"].default_value = "Float solver does not support attributes"
+            warn.location = 200, 130
+            warn.select = False
 
-                ng.links.new(primary.outputs["Mesh"], bake.inputs["Geometry"])
-                ng.links.new(str_len.outputs["Length"], warn.inputs["Show"])
-                ng.links.new(in_.outputs[sock_attr_name.identifier], str_len.inputs["String"])
-            else:
-                attr = nodes.new("GeometryNodeStoreNamedAttribute")
-                attr.data_type = "BOOLEAN"
-                attr.domain = "EDGE"
-                attr.inputs["Value"].default_value = True
-                attr.location.x = 200
-                attr.select = False
-
-                ng.links.new(primary.outputs["Mesh"], attr.inputs["Geometry"])
-                ng.links.new(primary.outputs["Intersecting Edges"], attr.inputs["Selection"])
-                ng.links.new(in_.outputs[sock_attr_name.identifier], attr.inputs["Name"])
-                ng.links.new(attr.outputs["Geometry"], bake.inputs["Geometry"])
-        else:
-            sock_attr_name = None
             ng.links.new(primary.outputs["Mesh"], bake.inputs["Geometry"])
+            ng.links.new(str_len.outputs["Length"], warn.inputs["Show"])
+            ng.links.new(in_.outputs[sock_attr_name.identifier], str_len.inputs["String"])
+        else:
+            attr = nodes.new("GeometryNodeStoreNamedAttribute")
+            attr.data_type = "BOOLEAN"
+            attr.domain = "EDGE"
+            attr.inputs["Value"].default_value = True
+            attr.location.x = 200
+            attr.select = False
+
+            ng.links.new(primary.outputs["Mesh"], attr.inputs["Geometry"])
+            ng.links.new(primary.outputs["Intersecting Edges"], attr.inputs["Selection"])
+            ng.links.new(in_.outputs[sock_attr_name.identifier], attr.inputs["Name"])
+            ng.links.new(attr.outputs["Geometry"], bake.inputs["Geometry"])
 
         secondary = nodes.new("GeometryNodeMeshBoolean")
         secondary.name = "SECONDARY"
@@ -181,15 +178,11 @@ class ModGN:
             ng.links.new(_out, secondary.inputs["Mesh 2"])
             seed += 1
 
-        if not md:
+        if (is_md_new := not md):
             md = ob1.modifiers.new(self.mode.title(), "NODES")
             md.show_viewport = show_viewport
             md.show_in_editmode = False
             md.show_expanded = False
-
-            if sock_attr_name is not None:  # VER < Blender 4.3
-                prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
-                md[sock_attr_name.identifier] = prefs.attribute_edge_intersect
 
         md.show_group_selector = False
 
@@ -198,8 +191,11 @@ class ModGN:
             md[sock_seed.identifier] = self.seed
 
         md.node_group = ng
-        if hasattr(md, "bake_target"):  # VER < Blender 4.3
-            md.bake_target = "DISK"
+        md.bake_target = "DISK"
+
+        if is_md_new:
+            prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
+            self.md_input_set(md, sock_attr_name.identifier, prefs.attribute_edge_intersect)
 
         return md
 
@@ -259,10 +255,7 @@ class ModGN:
         rnd.location = -200, node.location.y
         rnd.select = False
 
-        try:  # VER >= 4.3
-            node_add = nodes.new("FunctionNodeIntegerMath")
-        except:
-            node_add = nodes.new("ShaderNodeMath")
+        node_add = nodes.new("FunctionNodeIntegerMath")
         node_add.inputs["Value_001"].default_value = seed
         node_add.location = -200, node.location.y - 155
         node_add.hide = True
@@ -329,14 +322,18 @@ class ModGN:
 
     @staticmethod
     def bake_del(md: Modifier) -> None:
-        try:  # VER == 4.2; silence poll error message
-            bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
-        except:
-            pass
+        bpy.ops.object.geometry_node_bake_delete_single(session_uid=md.id_data.session_uid, modifier_name=md.name, bake_id=md.bakes[0].bake_id)
 
     @staticmethod
     def is_baked(md: Modifier) -> bool:
         return bool(md.bake_directory) and Path(bpy.path.abspath(md.bake_directory)).exists()
+
+    @staticmethod
+    def md_input_set(md: Modifier, id: str, value: Any) -> None:
+        if hasattr(md, "properties"):  # VER >= 5.2
+            getattr(md.properties.inputs, id).value = value
+        else:
+            md[id] = value
 
 
 def _rnd_loc() -> NodeGroup:
@@ -392,7 +389,8 @@ def _rnd_loc() -> NodeGroup:
     trfm = nodes.new("GeometryNodeTransform")
     trfm.location = 200, -200
     trfm.select = False
-    trfm.inputs["Mode"].default_value = "Components"
+    if "Mode" in trfm.inputs:  # VER < 5.0
+        trfm.inputs["Mode"].default_value = "Components"
 
     ng.links.new(in_geo, trfm.inputs["Geometry"])
     ng.links.new(trfm.outputs["Geometry"], sw.inputs["True"])
