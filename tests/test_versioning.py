@@ -63,7 +63,7 @@ def main() -> None:
     assert len(ob.modifiers) == 3
 
     for md, (mode, comb_name, obs) in zip(ob.modifiers, mod_setup):
-        assert bpy.data.meshes.get(comb_name) == None
+        assert bpy.data.meshes.get(comb_name) is None
         assert md.type == "NODES"
         assert md.node_group["booltron"] == mode
 

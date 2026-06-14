@@ -70,8 +70,6 @@ def main() -> None:
     ver = ".".join(str(i) for i in bpy.app.version)
 
     solvers = ["MANIFOLD", "FLOAT", "EXACT"]
-    if bpy.app.version < (4, 5, 0):
-        solvers.pop(0)
 
     for solver in solvers:
         set_up(solver)

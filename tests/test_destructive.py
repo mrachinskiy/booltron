@@ -35,8 +35,6 @@ def main() -> None:
     ]
 
     solvers = ["MANIFOLD", "FLOAT", "EXACT"]
-    if bpy.app.version < (4, 5, 0):
-        solvers.pop(0)
 
     for tool in tools:
         while solvers:

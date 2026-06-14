@@ -6,11 +6,10 @@ import subprocess
 from pathlib import Path
 
 TEST_VERSIONS = {
-    "4.2",
-    "4.3",
-    "4.4",
     "4.5",
     "5.0",
+    "5.1",
+    "5.2",
 }
 
 # Color codes

@@ -66,8 +66,8 @@ def test_dissmiss() -> None:
     ng_name = bpy.context.object.modifiers[0].node_group.name
 
     bpy.ops.object.booltron_secondary_del()
-    assert bool(bpy.context.object.modifiers) == False
-    assert bpy.data.node_groups.get(ng_name) == None
+    assert bool(bpy.context.object.modifiers) is False
+    assert bpy.data.node_groups.get(ng_name) is None
 
 
 def test_select() -> None:
@@ -79,7 +79,7 @@ def test_select() -> None:
     bpy.ops.object.booltron_secondary_select(modifier_name=md_name)
     assert len(bpy.context.selected_objects) == 1
     assert bpy.context.object.name == "OB2"
-    assert bpy.context.object.select_get() == True
+    assert bpy.context.object.select_get() is True
 
 
 def test_mod_disable() -> None:
@@ -91,7 +91,7 @@ def test_mod_disable() -> None:
 
     assert len(mds) == 2
     for md in mds:
-        assert md.show_viewport == False
+        assert md.show_viewport is False
 
 
 def test_bake() -> None:
@@ -102,12 +102,12 @@ def test_bake() -> None:
         bpy.ops.object.booltron_nondestructive_difference()
         bpy.ops.object.booltron_modifier_bake()
 
-        assert (path / "blendcache_temp").exists() == True
-        assert (path / "blendcache_temp" / "OB49_Difference").exists() == True
+        assert (path / "blendcache_temp").exists() is True
+        assert (path / "blendcache_temp" / "OB49_Difference").exists() is True
 
         bpy.ops.object.booltron_modifier_bake_del()
 
-        assert (path / "blendcache_temp" / "OB49_Difference").exists() == False
+        assert (path / "blendcache_temp" / "OB49_Difference").exists() is False
 
 
 def test_instance_copy() -> None:
@@ -117,8 +117,6 @@ def test_instance_copy() -> None:
 
 def main() -> None:
     solvers = ["MANIFOLD", "FLOAT", "EXACT"]
-    if bpy.app.version < (4, 5, 0):
-        solvers.pop(0)
     solver = "FLOAT"
 
     for name, test in globals().items():
