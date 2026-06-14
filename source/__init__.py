@@ -40,6 +40,8 @@ def register():
 
 
 def unregister():
+    from .lib import previewlib
+
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
@@ -61,7 +63,7 @@ def unregister():
     # Previews
     # ---------------------------
 
-    ui.clear_previews()
+    previewlib.clear_previews()
 
 
 if __name__ == "__main__":
