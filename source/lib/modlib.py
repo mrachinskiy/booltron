@@ -5,7 +5,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import bpy
-from bpy.types import BlendData, GeometryNode, Modifier, NodeGroup, NodeSocket, NodeSocketGeometry, Object
+from bpy.types import GeometryNode, Modifier, NodeGroup, NodeSocket, NodeSocketGeometry, Object
 
 from .. import var
 
@@ -16,12 +16,6 @@ def disable_mods(value: bool) -> None:
             for md in ob.modifiers:
                 if md.type == "BOOLEAN" or ModGN.is_gn_mod(md):
                     md.show_viewport = value
-
-
-def _ng_import(filepath: Path, ng_name: str) -> BlendData:
-    with bpy.data.libraries.load(str(filepath)) as (data_from, data_to):
-        data_to.node_groups = [ng_name]
-    return data_to.node_groups[0]
 
 
 def _walk_tree(node: GeometryNode) -> Iterator[GeometryNode]:
@@ -260,11 +254,8 @@ class ModGN:
             ng.links.new(node.outputs["Geometry"], weld.inputs["Geometry"])
             node = weld
 
-        if (ng_rnd := bpy.data.node_groups.get("Randomize Location")) is None:
-            ng_rnd = _ng_import(var.NODES_FILE, "Randomize Location")
-
         rnd = nodes.new("GeometryNodeGroup")
-        rnd.node_tree = ng_rnd
+        rnd.node_tree = _rnd_loc()
         rnd.location = -200, node.location.y
         rnd.select = False
 
@@ -273,7 +264,7 @@ class ModGN:
         except:
             node_add = nodes.new("ShaderNodeMath")
         node_add.inputs["Value_001"].default_value = seed
-        node_add.location = -200, node.location.y - 150
+        node_add.location = -200, node.location.y - 155
         node_add.hide = True
         node_add.select = False
 
@@ -346,3 +337,88 @@ class ModGN:
     @staticmethod
     def is_baked(md: Modifier) -> bool:
         return bool(md.bake_directory) and Path(bpy.path.abspath(md.bake_directory)).exists()
+
+
+def _rnd_loc() -> NodeGroup:
+    name = ".booltron_rnd_loc"
+
+    if (ng := bpy.data.node_groups.get(name)) is not None:
+        return ng
+
+    ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
+    ng.color_tag = "GEOMETRY"
+
+    sock_geo_in = ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    sock_geo_out = ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+
+    sock_ofst = ng.interface.new_socket("Offset", in_out="INPUT", socket_type="NodeSocketFloat")
+    sock_ofst.subtype = "DISTANCE"
+    sock_ofst.min_value = 0.0
+    sock_ofst.force_non_field = True
+    sock_seed = ng.interface.new_socket("Seed", in_out="INPUT", socket_type="NodeSocketInt")
+    sock_seed.force_non_field = True
+
+    nodes = ng.nodes
+
+    in_ = nodes.new("NodeGroupInput")
+    in_.location.x = -200
+    in_.select = False
+    in_geo = in_.outputs[sock_geo_in.identifier]
+    in_ofst = in_.outputs[sock_ofst.identifier]
+    in_seed = in_.outputs[sock_seed.identifier]
+
+    out = nodes.new("NodeGroupOutput")
+    out.location.x = 600
+    out.select = False
+    out_geo = out.inputs[sock_geo_out.identifier]
+
+    sw = nodes.new("GeometryNodeSwitch")
+    sw.input_type = "GEOMETRY"
+    sw.location.x = 400
+    sw.select = False
+
+    ng.links.new(sw.outputs["Output"], out_geo)
+    ng.links.new(in_geo, sw.inputs["False"])
+
+    eq = nodes.new("FunctionNodeCompare")
+    eq.data_type = "FLOAT"
+    eq.operation = "GREATER_THAN"
+    eq.location = 200, 100
+    eq.select = False
+
+    ng.links.new(eq.outputs["Result"], sw.inputs["Switch"])
+    ng.links.new(in_ofst, eq.inputs["A"])
+
+    trfm = nodes.new("GeometryNodeTransform")
+    trfm.location = 200, -200
+    trfm.select = False
+    trfm.inputs["Mode"].default_value = "Components"
+
+    ng.links.new(in_geo, trfm.inputs["Geometry"])
+    ng.links.new(trfm.outputs["Geometry"], sw.inputs["True"])
+
+    rnd = nodes.new("FunctionNodeRandomValue")
+    rnd.data_type = "FLOAT_VECTOR"
+    rnd.location.y = -200
+    rnd.select = False
+
+    ng.links.new(rnd.outputs["Value"], trfm.inputs["Translation"])
+    ng.links.new(in_ofst, rnd.inputs["Max"])
+    ng.links.new(in_seed, rnd.inputs["Seed"])
+
+    const_int = nodes.new("FunctionNodeInputInt")
+    const_int.location = -200, -400
+    const_int.select = False
+
+    ng.links.new(const_int.outputs["Integer"], rnd.inputs["ID"])
+
+    flip_sign = nodes.new("ShaderNodeMath")
+    flip_sign.operation = "MULTIPLY"
+    flip_sign.location = -200, -200
+    flip_sign.select = False
+    flip_sign.inputs["Value_001"].default_value = -1.0
+
+    ng.links.new(flip_sign.outputs["Value"], rnd.inputs["Min"])
+    ng.links.new(in_ofst, flip_sign.inputs["Value"])
+
+    return ng
