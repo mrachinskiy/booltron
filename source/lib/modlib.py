@@ -261,7 +261,7 @@ class ModGN:
             node = weld
 
         if (ng_rnd := bpy.data.node_groups.get("Randomize Location")) is None:
-            ng_rnd = _ng_import(var.ASSET_NODES_FILEPATH, "Randomize Location")
+            ng_rnd = _ng_import(var.NODES_FILE, "Randomize Location")
 
         rnd = nodes.new("GeometryNodeGroup")
         rnd.node_tree = ng_rnd
