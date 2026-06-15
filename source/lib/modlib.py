@@ -329,11 +329,11 @@ class ModGN:
         return bool(md.bake_directory) and Path(bpy.path.abspath(md.bake_directory)).exists()
 
     @staticmethod
-    def md_input_set(md: Modifier, id: str, value: Any) -> None:
+    def md_input_set(md: Modifier, prop: str, value: Any) -> None:
         if hasattr(md, "properties"):  # VER >= 5.2
-            getattr(md.properties.inputs, id).value = value
+            getattr(md.properties.inputs, prop).value = value
         else:
-            md[id] = value
+            md[prop] = value
 
 
 def _rnd_loc() -> NodeGroup:
