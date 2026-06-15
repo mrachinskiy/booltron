@@ -88,14 +88,13 @@ def input_blender_ver() -> str:
 
 
 def get_tests() -> list[Path]:
-    tests = []
-
     if input_test_perf():
-        tests = [TESTS_DIR / "test_performance.py"]
-    else:
-        for entry in TESTS_DIR.iterdir():
-            if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test") and entry.stem != "test_performance":
-                tests.append(entry)
+        return [TESTS_DIR / "test_performance.py"]
+
+    tests = []
+    for entry in TESTS_DIR.iterdir():
+        if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test") and entry.stem != "test_performance":
+            tests.append(entry)
 
     return tests
 
