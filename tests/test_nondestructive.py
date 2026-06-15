@@ -1,5 +1,5 @@
-# SPDX-FileCopyrightText: 2025 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2025-2026 Mikhail Rachinskiy
 
 import sys
 import tempfile

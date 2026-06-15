@@ -1,16 +1,13 @@
-# SPDX-FileCopyrightText: 2025 Mikhail Rachinskiy
 # SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2025-2026 Mikhail Rachinskiy
 
 import os
 import subprocess
+import tomllib
 from pathlib import Path
 
-TEST_VERSIONS = {
-    "4.5",
-    "5.0",
-    "5.1",
-    "5.2",
-}
+BLENDER_APPS_DIR = Path().home()
+TESTS_DIR = Path(__file__).parent
 
 # Color codes
 RED = "\033[91m"
@@ -19,36 +16,37 @@ INVERSE = "\033[7m"
 RESET = "\033[0m"
 
 
-def input_test_perf() -> bool:
-    _input = input(
-        "█ TEST PERFORMANCE?\n"
-        "\n"
-        "[ y ] Yes\n"
-        "[ n ] No\n"
-        "\n"
-        "> "
-    )
-    return _input.strip().lower() == "y"
+def print_info(s: str) -> None:
+    print(f"{INVERSE} {s} {RESET}")
+
+
+def print_err(s: str) -> None:
+    print(f"{RED}{INVERSE} {s} {RESET}")
+
+
+def str_to_ver(s: str) -> tuple[int, ...]:
+    return tuple(int(x) for x in s.split(".")[:2] if x.isdigit())
 
 
 def main() -> None:
-    use_test_perf = input_test_perf()
-    os.system("cls")
 
-    blender_apps = []
-    for entry in Path().home().iterdir():
-        if entry.is_dir() and entry.name.startswith("blender") and entry.name.split("-")[1] in TEST_VERSIONS:
-            blender_apps.append(entry)
+    # Tests
+    # --------------------
 
-    tests = []
-    for entry in Path(__file__).parent.iterdir():
-        if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test") and entry.stem != "test_performance":
-            tests.append(entry)
+    tests = get_tests()
 
-    if use_test_perf:
-        tests = [Path(__file__).parent / "test_performance.py"]
+    # Blender apps
+    # --------------------
 
-    print(INVERSE + "BEGIN" + RESET)
+    blender_apps = get_blender_apps()
+    if not blender_apps:
+        print_err("BLENDER VERSION NOT FOUND")
+        return
+
+    # Testing
+    # --------------------
+
+    print_info("BEGIN")
 
     for blender in blender_apps:
         for test in tests:
@@ -61,7 +59,68 @@ def main() -> None:
             else:
                 print(f"{blender.name} {test.stem} {GREEN + INVERSE}PASSED{RESET}")
 
-    print(INVERSE + "END" + RESET)
+    print_info("END")
+
+
+def input_test_perf() -> bool:
+    print_info("TEST PERFORMANCE?")
+    _input = input(
+        "\n"
+        "[ y ] Yes\n"
+        "[ n ] No\n"
+        "\n"
+        "> "
+    )
+    os.system("cls")
+    return _input.strip().lower() == "y"
+
+
+def input_blender_ver() -> str:
+    print_info("TEST SPECIFIC BLENDER VERSION?")
+    _input = input(
+        "\n"
+        "DEFAULT: Manifest [blender_version_min]\n"
+        "\n"
+        "> "
+    )
+    os.system("cls")
+    return _input.strip().lower()
+
+
+def get_tests() -> list[Path]:
+    tests = []
+
+    if input_test_perf():
+        tests = [TESTS_DIR / "test_performance.py"]
+    else:
+        for entry in TESTS_DIR.iterdir():
+            if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test") and entry.stem != "test_performance":
+                tests.append(entry)
+
+    return tests
+
+
+def get_blender_apps() -> list[Path]:
+    blender_ver = input_blender_ver()
+
+    if (use_specific_ver := bool(blender_ver)):
+        ver = str_to_ver(blender_ver)
+    else:
+        with open(TESTS_DIR.parent / "source" / "blender_manifest.toml", "rb") as file:
+            manifest = tomllib.load(file)
+        ver = str_to_ver(manifest["blender_version_min"])
+
+    apps = []
+    for entry in BLENDER_APPS_DIR.iterdir():
+        if entry.is_dir() and entry.name.startswith("blender"):
+            app_ver = str_to_ver(entry.name.split("-")[1])
+            if use_specific_ver:
+                if app_ver == ver:
+                    apps.append(entry)
+            elif app_ver >= ver:
+                apps.append(entry)
+
+    return apps
 
 
 main()
