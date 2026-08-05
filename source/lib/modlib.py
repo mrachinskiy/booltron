@@ -186,12 +186,12 @@ class ModGN:
 
         md.show_group_selector = False
 
-        if self.use_loc_rnd:
-            md[sock_ofst.identifier] = self.loc_offset
-            md[sock_seed.identifier] = self.seed
-
         md.node_group = ng
         md.bake_target = "DISK"
+
+        if self.use_loc_rnd:
+            self.md_input_set(md, sock_ofst.identifier, self.loc_offset)
+            self.md_input_set(md, sock_seed.identifier, self.seed)
 
         if is_md_new:
             prefs = bpy.context.preferences.addons[var.ADDON_ID].preferences
