@@ -98,7 +98,7 @@ class OBJECT_OT_instance_copy(Operator):
             transf = nodes.new("GeometryNodeTransform")
             try:  # VER >= 5.0
                 transf.inputs["Mode"].default_value = "Matrix"
-            except:
+            except KeyError:
                 transf.mode = "MATRIX"
             transf.location.x = -200
             transf.select = False
@@ -121,7 +121,7 @@ class OBJECT_OT_instance_copy(Operator):
 
         try:  # VER > 5.0
             md.show_manage_panel = False
-        except:
+        except AttributeError:
             pass
 
         modlib.ModGN.md_input_set(md, inst_in_socket.identifier, self.use_instance)

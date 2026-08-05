@@ -5,8 +5,9 @@ import bpy
 from bpy.props import EnumProperty
 from bpy.types import Object, Operator
 
-from .bake import OBJECT_OT_instance_copy, OBJECT_OT_modifier_bake, OBJECT_OT_modifier_bake_del
-from .utils import OBJECT_OT_secondary_del, OBJECT_OT_secondary_select
+# Unused imports, needed for essentials.get_classes()
+from .bake import OBJECT_OT_instance_copy, OBJECT_OT_modifier_bake, OBJECT_OT_modifier_bake_del  # noqa: F401
+from .utils import OBJECT_OT_secondary_del, OBJECT_OT_secondary_select  # noqa: F401
 
 modifiers: tuple[tuple[str, str, str]] = (("__NEW__", "", ""),)
 

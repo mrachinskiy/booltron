@@ -50,7 +50,7 @@ def secondary_visibility_set(ob: Object, display_type="TEXTURED") -> None:
 
 
 class ModGN:
-    __slots__ = (
+    __slots__ = (  # noqa: RUF023, order important later
         "mode",
         "solver",
         "use_self",
