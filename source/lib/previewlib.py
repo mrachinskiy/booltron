@@ -8,6 +8,7 @@ from bpy.types import ImagePreview
 
 from .. import var
 
+
 _previews = {}
 _cache = {}
 
@@ -44,7 +45,7 @@ def _icon(name: str, color: tuple[float, ...]) -> int:
 
 
 def _luma(rgb: tuple[float, float, float, ...]) -> float:
-    r, g, b, *a = rgb
+    r, g, b, *_ = rgb
     return 0.299 * r + 0.587 * g + 0.114 * b
 
 

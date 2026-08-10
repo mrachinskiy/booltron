@@ -4,6 +4,7 @@
 import subprocess
 from pathlib import Path
 
+
 BL_PATH = Path("~/blender-4.5/blender.exe").expanduser()
 
 
