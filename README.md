@@ -22,43 +22,13 @@ Features:
 How to install
 ==========================
 
-### Available as an [extension](https://extensions.blender.org/add-ons/booltron/)
-
-<details>
-  <summary>For Blender 4.1 or older</summary>
-
-  1. Download [Booltron 2.9.0][v2_9_0]
-  2. Make sure you have Blender 3.2 or newer.
-  3. Open `Preferences` → `Add-ons` category.
-  4. Use `Install` to install add-on from downloaded zip archive.
-</details>
-
-> [!NOTE]
-> For mac users: Safari browser will automatically unpack downloaded zip archive, to prevent that go `Safari` → `Preferences` → `General` and uncheck `Open "safe" files after downloading` option.
-
-> [!WARNING]
-> If error occurs on add-on activation, it means you are trying to install add-on repository instead of release. Make sure you download add-on release using link provided in step one of this guide.
+### Available as an [extension][get_extension]
 
 
 Установка
 ==========================
 
-### Доступно как [расширение](https://extensions.blender.org/add-ons/booltron/)
-
-<details>
-  <summary>Для Blender 4.1 или старше</summary>
-
-  1. Загрузите [Booltron 2.9.0][v2_9_0]
-  2. Убедитесь, что у вас установлен Blender 3.2 или новее.
-  3. Откройте `Preferences` → `Add-ons`
-  4. Воспользуйтесь `Install` чтобы установить аддон из загруженного архива.
-</details>
-
-> [!NOTE]
-> Примечание для пользователей mac: браузер Safari автоматически распаковывает скачиваемые zip архивы, чтобы это предотвратить в настройках `Safari` → `Preferences` → `General` отключите опцию `Open "safe" files after downloading`.
-
-> [!WARNING]
-> Если при активации аддона возникает ошибка, значит вы пытаетесь установить репозиторий вместо релиза. Для загрузки релиза используйте ссылку, приведённую в первом шаге данного руководства.
+### Доступно как [расширение][get_extension]
 
 
 Contributing
@@ -81,5 +51,5 @@ Contributing
 > * Preserve empty braces `{}` in translation, they used as placeholders for additional information and will not appear in UI.
 
 
-[v2_9_0]: https://github.com/mrachinskiy/booltron/releases/download/v2.9.0-blender3.2.0/booltron-2_9_0.zip
+[get_extension]: https://extensions.blender.org/add-ons/booltron/
 [submit_issue]: https://github.com/mrachinskiy/booltron/issues
