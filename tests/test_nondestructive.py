@@ -1,9 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2025-2026 Mikhail Rachinskiy
 
-import sys
 import tempfile
-import traceback
 from pathlib import Path
 
 import bpy
@@ -117,7 +115,7 @@ def test_instance_copy() -> None:
 
 def main() -> None:
     solvers = ["MANIFOLD", "FLOAT", "EXACT"]
-    solver = "FLOAT"
+    solver = "EXACT"
 
     for name, test in globals().items():
         if name.startswith("test"):
@@ -127,10 +125,3 @@ def main() -> None:
             set_up(solver)
             test()
             cleanup()
-
-
-try:
-    main()
-except:
-    traceback.print_exc()
-    sys.exit(1)

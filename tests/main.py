@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2025-2026 Mikhail Rachinskiy
 
-import os
 import subprocess
 import tomllib
 from pathlib import Path
@@ -25,24 +24,49 @@ def print_err(s: str) -> None:
     print(f"{RED}{INVERSE} {s} {RESET}")
 
 
-def str_to_ver(s: str) -> tuple[int, ...]:
-    return tuple(int(x) for x in s.split(".")[:2] if x.isdigit())
+def clear() -> None:
+    print("\033[H\033[J", end="")
 
 
 def main() -> None:
+
+    # Add-on
+    # --------------------
+
+    with open(TESTS_DIR.parent / "source" / "blender_manifest.toml", "rb") as file:
+        manifest = tomllib.load(file)
+
+    addon_id = f"bl_ext.user_default.{manifest['id']}"
+
+    # Blender apps
+    # --------------------
+
+    try:
+        blender_apps = get_blender_apps(manifest)
+    except FileNotFoundError:
+        print_err("BLENDER VERSION NOT FOUND")
+        return
 
     # Tests
     # --------------------
 
     tests = get_tests()
+    expr = f"""
+import sys
+import traceback
 
-    # Blender apps
-    # --------------------
+import bpy
+bpy.ops.preferences.addon_enable(module='{addon_id}')
 
-    blender_apps = get_blender_apps()
-    if not blender_apps:
-        print_err("BLENDER VERSION NOT FOUND")
-        return
+sys.path.append(r'{TESTS_DIR}')
+import {','.join(tests)}
+
+try:
+    {';'.join(f'{test}.main()' for test in tests)}
+except:
+    traceback.print_exc()
+    sys.exit(1)
+"""
 
     # Testing
     # --------------------
@@ -50,78 +74,86 @@ def main() -> None:
     print_info("BEGIN")
 
     for blender in blender_apps:
-        for test in tests:
-            cmd = [blender / "blender.exe", "-b", "-P", test]
-            proc = subprocess.run(cmd, capture_output=True)
-            if proc.returncode:
-                print(f"{RED + blender.name} {test.stem} {INVERSE}FAILED{RESET}")
-                print(proc.stderr.decode().strip())
+        cmd = [blender / "blender.exe", "-b", "--python-expr", expr]
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        if proc.returncode:
+            print(f"{RED}{INVERSE} FAILED {RESET} {RED}{blender.name}{RESET}")
+            print(proc.stderr)
+            return
+        else:
+            print(f"{GREEN}{INVERSE} PASSED {RESET} {blender.name}")
+            if proc.stderr:
+                print(proc.stderr)
                 return
-            else:
-                print(f"{blender.name} {test.stem} {GREEN + INVERSE}PASSED{RESET}")
 
     print_info("END")
+
+
+def input_blender_ver(vers: list[tuple[int, ...]]) -> str:
+    vers = "  ".join(".".join(str(i) for i in v) for v in vers)
+
+    print_info("TEST SPECIFIC BLENDER VERSION?")
+    _input = input(
+        "\n"
+        f"DEFAULT: {vers}\n"
+        "\n"
+        "> "
+    )
+    clear()
+    return _input.strip().lower()
 
 
 def input_test_perf() -> bool:
     print_info("TEST PERFORMANCE?")
     _input = input(
         "\n"
-        "[ y ] Yes\n"
-        "[ n ] No\n"
+        "DEFAULT: n\n"
         "\n"
         "> "
     )
-    os.system("cls")
+    clear()
     return _input.strip().lower() == "y"
 
 
-def input_blender_ver() -> str:
-    print_info("TEST SPECIFIC BLENDER VERSION?")
-    _input = input(
-        "\n"
-        "DEFAULT: Manifest [blender_version_min]\n"
-        "\n"
-        "> "
-    )
-    os.system("cls")
-    return _input.strip().lower()
-
-
-def get_tests() -> list[Path]:
+def get_tests() -> list[str]:
     if input_test_perf():
-        return [TESTS_DIR / "test_performance.py"]
+        return ["test_performance"]
 
     tests = []
     for entry in TESTS_DIR.iterdir():
         if entry.is_file() and entry.suffix == ".py" and entry.name.startswith("test") and entry.stem != "test_performance":
-            tests.append(entry)
+            tests.append(entry.stem)
 
     return tests
 
 
-def get_blender_apps() -> list[Path]:
-    blender_ver = input_blender_ver()
+def get_blender_apps(manifest: dict[str, str]) -> list[Path]:
 
-    if (use_specific_ver := bool(blender_ver)):
-        ver = str_to_ver(blender_ver)
-    else:
-        with open(TESTS_DIR.parent / "source" / "blender_manifest.toml", "rb") as file:
-            manifest = tomllib.load(file)
-        ver = str_to_ver(manifest["blender_version_min"])
+    def str_to_ver(s: str) -> tuple[int, ...]:
+        return tuple(int(x) for x in s.split(".")[:2] if x.isdigit())
 
-    apps = []
+    ver = str_to_ver(manifest["blender_version_min"])
+
+    apps = {}
     for entry in BLENDER_APPS_DIR.iterdir():
         if entry.is_dir() and entry.name.startswith("blender"):
             app_ver = str_to_ver(entry.name.split("-")[1])
-            if use_specific_ver:
-                if app_ver == ver:
-                    apps.append(entry)
-            elif app_ver >= ver:
-                apps.append(entry)
+            if app_ver >= ver:
+                apps[app_ver] = entry
 
-    return apps
+    if not apps:
+        raise FileNotFoundError
+
+    blender_ver = input_blender_ver(apps.keys())
+    if blender_ver:
+        ver = str_to_ver(blender_ver)
+        if (app := apps.get(ver)):
+            return [app]
+        raise FileNotFoundError
+
+    return list(apps.values())
 
 
+clear()
 main()
 input()

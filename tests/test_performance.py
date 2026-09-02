@@ -2,9 +2,7 @@
 # SPDX-FileCopyrightText: 2025-2026 Mikhail Rachinskiy
 
 import logging
-import sys
 import time
-import traceback
 from pathlib import Path
 
 import bpy
@@ -81,10 +79,3 @@ def main() -> None:
         cleanup()
 
         log.info(f"{ver} {solver} {b-a:.3f}")
-
-
-try:
-    main()
-except:
-    traceback.print_exc()
-    sys.exit(1)
